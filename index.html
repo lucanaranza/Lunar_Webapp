@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moon Landing Site Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #03040a;
+    --fg: #e8ecff;
+    --muted: #8a93b8;
+    --accent: #7fd3ff;
+    --accent-2: #b48cff;
+    --panel: rgba(18, 22, 40, 0.65);
+    --border: rgba(127, 211, 255, 0.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--fg); overflow: hidden;
+    font-family: "Inter", system-ui, sans-serif; }
+
+  #stars { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* ---------- Home ---------- */
+  .home {
+    position: fixed; inset: 0; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3.5rem; padding: 2rem; text-align: center;
+    transition: opacity .35s ease, transform .35s ease;
+  }
+  .home.hidden { opacity: 0; transform: scale(1.06); pointer-events: none; }
+
+  .title {
+    font-family: "Orbitron", "Segoe UI", sans-serif; font-weight: 800;
+    font-size: clamp(2.4rem, 7.5vw, 6.5rem); line-height: 1.05; letter-spacing: .02em;
+    background: linear-gradient(180deg, #ffffff 0%, #bfe9ff 55%, #8fa8ff 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 40px rgba(127, 211, 255, .25);
+    max-width: 14ch;
+  }
+  .subtitle { margin-top: 1rem; color: var(--muted); font-size: clamp(.9rem, 1.6vw, 1.1rem);
+    letter-spacing: .25em; text-transform: uppercase; }
+
+  .actions { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    min-width: 220px; padding: 1.1rem 2rem; border-radius: 14px;
+    font-family: "Orbitron", sans-serif; font-weight: 500; font-size: 1.05rem; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--fg); cursor: pointer;
+    background: var(--panel); border: 1px solid var(--border);
+    backdrop-filter: blur(6px);
+    transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .btn:hover, .btn:focus-visible { transform: translateY(-2px); border-color: var(--accent);
+    box-shadow: 0 0 24px rgba(127, 211, 255, .3); outline: none; }
+  .btn.primary {
+    background: linear-gradient(135deg, rgba(127,211,255,.22), rgba(180,140,255,.22));
+    border-color: rgba(127, 211, 255, .6);
+  }
+
+  /* ---------- Language selector ---------- */
+  .lang { position: fixed; top: 1.25rem; right: 1.25rem; z-index: 5; }
+  .lang-toggle {
+    display: flex; align-items: center; gap: .5rem; padding: .55rem .85rem;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 999px;
+    color: var(--fg); cursor: pointer; font: 600 .85rem "Inter", sans-serif; letter-spacing: .08em;
+  }
+  .lang-toggle:hover { border-color: var(--accent); }
+  .lang-toggle svg { width: 18px; height: 18px; }
+  .lang-menu {
+    position: absolute; right: 0; top: calc(100% + .5rem); min-width: 160px; list-style: none;
+    background: rgba(12, 15, 30, .95); border: 1px solid var(--border); border-radius: 12px;
+    padding: .35rem; display: none;
+  }
+  .lang-menu.open { display: block; }
+  .lang-menu button {
+    width: 100%; text-align: left; padding: .55rem .75rem; border: 0; border-radius: 8px;
+    background: transparent; color: var(--fg); cursor: pointer; font: .9rem "Inter", sans-serif;
+  }
+  .lang-menu button:hover, .lang-menu button[aria-current="true"] { background: rgba(127,211,255,.15); }
+
+  /* ---------- Warp overlay ---------- */
+  .warp-text {
+    position: fixed; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center;
+    pointer-events: none; opacity: 0;
+    font-family: "Orbitron", sans-serif; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
+    font-size: clamp(2rem, 6vw, 5rem); color: #fff;
+    text-shadow: 0 0 30px var(--accent), 0 0 60px var(--accent-2);
+  }
+  .warp-text.show { animation: takeOut 1.6s ease-out forwards; }
+  @keyframes takeOut {
+    0%   { opacity: 0; transform: scale(.7); letter-spacing: .6em; }
+    25%  { opacity: 1; transform: scale(1);  letter-spacing: .2em; }
+    80%  { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 0; transform: scale(1.5); }
+  }
+  .flash { position: fixed; inset: 0; z-index: 4; background: #fff; opacity: 0; pointer-events: none; }
+  .flash.show { animation: flash .35s ease-out forwards; }
+  @keyframes flash { 0% { opacity: 0; } 40% { opacity: .9; } 100% { opacity: 0; } }
+
+  .skip-hint {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 4;
+    color: var(--muted); font-size: .8rem; letter-spacing: .15em; text-transform: uppercase;
+    opacity: 0; transition: opacity .2s;
+  }
+  .skip-hint.show { opacity: .8; }
+
+  /* ---------- Placeholder views ---------- */
+  .view {
+    position: fixed; inset: 0; z-index: 2; display: none;
+    flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;
+  }
+  .view.active { display: flex; animation: fadeIn .4s ease; }
+  .view h2 { font-family: "Orbitron", sans-serif; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: .1em; }
+  .view p { color: var(--muted); }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .warp-text.show, .flash.show { animation-duration: .01s; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<!-- Language selector -->
+<div class="lang">
+  <button class="lang-toggle" id="langToggle" aria-haspopup="true" aria-expanded="false" aria-label="Language">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z"/>
+    </svg>
+    <span id="langCode">IT</span>
+  </button>
+  <ul class="lang-menu" id="langMenu" role="menu"></ul>
+</div>
+
+<!-- Home -->
+<main class="home" id="home">
+  <header>
+    <h1 class="title" data-i18n="title">Thrusters ready, captain</h1>
+    <p class="subtitle" data-i18n="subtitle">Moon Landing Site Navigator · Artemis</p>
+  </header>
+  <nav class="actions">
+    <button class="btn" id="btnTutorial" data-i18n="tutorial">Tutorial</button>
+    <button class="btn primary" id="btnWorkspace" data-i18n="workspace">Workspace</button>
+  </nav>
+</main>
+
+<!-- Warp overlay -->
+<div class="warp-text" id="warpText" data-i18n="takeoff">Take us out</div>
+<div class="flash" id="flash"></div>
+<div class="skip-hint" id="skipHint" data-i18n="skip">Click to skip</div>
+
+<!-- Placeholder views (da sostituire) -->
+<section class="view" id="viewWorkspace">
+  <h2 data-i18n="workspace">Workspace</h2>
+  <p data-i18n="placeholder">Coming soon</p>
+  <button class="btn" data-back data-i18n="back">Back</button>
+</section>
+<section class="view" id="viewTutorial">
+  <h2 data-i18n="tutorial">Tutorial</h2>
+  <p data-i18n="placeholder">Coming soon</p>
+  <button class="btn" data-back data-i18n="back">Back</button>
+</section>
+
+<script>
+/* ================= i18n =================
+   In futuro questi testi possono arrivare da un JSON generato da Python:
+   fetch('i18n.json').then(r => r.json()).then(d => Object.assign(I18N, d));            */
+const I18N = {
+  it: { name: "Italiano", title: "Propulsori pronti, capitano", subtitle: "Moon Landing Site Navigator · Artemis",
+        tutorial: "Tutorial", workspace: "Workspace", takeoff: "Si parte", skip: "Clicca per saltare",
+        placeholder: "In arrivo", back: "Indietro" },
+  en: { name: "English", title: "Thrusters ready, captain", subtitle: "Moon Landing Site Navigator · Artemis",
+        tutorial: "Tutorial", workspace: "Workspace", takeoff: "Take us out", skip: "Click to skip",
+        placeholder: "Coming soon", back: "Back" },
+  es: { name: "Español", title: "Propulsores listos, capitán", subtitle: "Moon Landing Site Navigator · Artemis",
+        tutorial: "Tutorial", workspace: "Espacio de trabajo", takeoff: "Sácanos de aquí", skip: "Haz clic para saltar",
+        placeholder: "Próximamente", back: "Atrás" },
+  fr: { name: "Français", title: "Propulseurs prêts, capitaine", subtitle: "Moon Landing Site Navigator · Artemis",
+        tutorial: "Tutoriel", workspace: "Espace de travail", takeoff: "En avant", skip: "Cliquez pour passer",
+        placeholder: "Bientôt disponible", back: "Retour" },
+  de: { name: "Deutsch", title: "Triebwerke bereit, Captain", subtitle: "Moon Landing Site Navigator · Artemis",
+        tutorial: "Tutorial", workspace: "Arbeitsbereich", takeoff: "Bring uns raus", skip: "Klicken zum Überspringen",
+        placeholder: "Demnächst", back: "Zurück" },
+};
+
+let lang = "en";
+try { lang = localStorage.getItem("lang") || lang; } catch (e) {}
+
+const langMenu = document.getElementById("langMenu");
+const langToggle = document.getElementById("langToggle");
+
+function applyLang(code) {
+  lang = I18N[code] ? code : "en";
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const t = I18N[lang][el.dataset.i18n];
+    if (t) el.textContent = t;
+  });
+  document.getElementById("langCode").textContent = lang.toUpperCase();
+  langMenu.querySelectorAll("button").forEach(b => b.setAttribute("aria-current", b.dataset.lang === lang));
+  try { localStorage.setItem("lang", lang); } catch (e) {}
+}
+
+Object.entries(I18N).forEach(([code, d]) => {
+  const li = document.createElement("li");
+  li.innerHTML = `<button role="menuitem" data-lang="${code}">${d.name}</button>`;
+  langMenu.appendChild(li);
+});
+langToggle.addEventListener("click", e => {
+  e.stopPropagation();
+  const open = langMenu.classList.toggle("open");
+  langToggle.setAttribute("aria-expanded", open);
+});
+langMenu.addEventListener("click", e => {
+  const b = e.target.closest("button[data-lang]");
+  if (b) { applyLang(b.dataset.lang); langMenu.classList.remove("open"); }
+});
+document.addEventListener("click", () => langMenu.classList.remove("open"));
+applyLang(lang);
+
+/* ================= Starfield / Warp ================= */
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+let W, H, CX, CY;
+const STAR_COUNT = 900;
+const stars = [];
+let speed = 0.4;          // velocità corrente
+let targetSpeed = 0.4;    // velocità desiderata
+
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  W = canvas.width = innerWidth * dpr;
+  H = canvas.height = innerHeight * dpr;
+  CX = W / 2; CY = H / 2;
+}
+function newStar(s, randomZ = true) {
+  s.x = (Math.random() - 0.5) * W * 2;
+  s.y = (Math.random() - 0.5) * H * 2;
+  s.z = randomZ ? Math.random() * W : W;
+  s.pz = s.z;
+  return s;
+}
+resize();
+for (let i = 0; i < STAR_COUNT; i++) stars.push(newStar({}));
+addEventListener("resize", resize);
+
+function frame() {
+  speed += (targetSpeed - speed) * 0.08;
+  const warp = Math.min(speed / 60, 1);           // 0 = idle, 1 = salto pieno
+  ctx.fillStyle = `rgba(3, 4, 10, ${0.9 - warp * 0.55})`; // scia più lunga in warp
+  ctx.fillRect(0, 0, W, H);
+
+  for (const s of stars) {
+    s.pz = s.z;
+    s.z -= speed * (W / 1000);
+    if (s.z < 1) { newStar(s, false); continue; }
+
+    const k = 300 / s.z, pk = 300 / s.pz;
+    const x = s.x * k + CX, y = s.y * k + CY;
+    const px = s.x * pk + CX, py = s.y * pk + CY;
+    if (x < 0 || x > W || y < 0 || y > H) { newStar(s, false); continue; }
+
+    const b = Math.min(1, (1 - s.z / W) * 1.4);
+    ctx.strokeStyle = warp > 0.05
+      ? `rgba(${180 + 75 * b | 0}, ${220 + 35 * b | 0}, 255, ${b})`
+      : `rgba(232, 236, 255, ${b})`;
+    ctx.lineWidth = Math.max(0.6, (1 - s.z / W) * 2.6) * (window.devicePixelRatio || 1);
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(x + 0.1, y + 0.1);
+    ctx.stroke();
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ================= Navigazione ================= */
+const home = document.getElementById("home");
+const warpText = document.getElementById("warpText");
+const flash = document.getElementById("flash");
+const skipHint = document.getElementById("skipHint");
+const views = { workspace: document.getElementById("viewWorkspace"), tutorial: document.getElementById("viewTutorial") };
+
+const WARP_DURATION = 2000; // ms, massimo richiesto
+let warping = false;
+let warpTimers = [];
+
+function showView(name) {
+  home.classList.add("hidden");
+  Object.values(views).forEach(v => v.classList.remove("active"));
+  if (views[name]) views[name].classList.add("active");
+}
+function goHome() {
+  Object.values(views).forEach(v => v.classList.remove("active"));
+  home.classList.remove("hidden");
+  targetSpeed = 0.4;
+}
+
+function startWarp() {
+  if (warping) return;
+  warping = true;
+  home.classList.add("hidden");
+  skipHint.classList.add("show");
+  targetSpeed = 80;                                   // accelerazione salto
+  warpText.classList.remove("show"); void warpText.offsetWidth; warpText.classList.add("show");
+
+  warpTimers.push(setTimeout(() => { flash.classList.add("show"); }, WARP_DURATION - 350));
+  warpTimers.push(setTimeout(endWarp, WARP_DURATION));
+}
+
+function endWarp() {
+  if (!warping) return;
+  warping = false;
+  warpTimers.forEach(clearTimeout); warpTimers = [];
+  warpText.classList.remove("show");
+  flash.classList.remove("show");
+  skipHint.classList.remove("show");
+  targetSpeed = 1.2;  // crociera dopo il salto
+  speed = 1.2;
+  showView("workspace");
+}
+
+document.getElementById("btnWorkspace").addEventListener("click", startWarp);
+document.getElementById("btnTutorial").addEventListener("click", () => showView("tutorial"));
+document.querySelectorAll("[data-back]").forEach(b => b.addEventListener("click", goHome));
+
+// Tasto sinistro (e Esc) per saltare l'animazione.
+// Uso mousedown: il click che avvia il salto è già passato, quindi non lo salta subito.
+document.addEventListener("mousedown", e => { if (warping && e.button === 0) { e.preventDefault(); endWarp(); } });
+document.addEventListener("touchstart", () => { if (warping) endWarp(); }, { passive: true });
+document.addEventListener("keydown", e => { if (warping && e.key === "Escape") endWarp(); });
+</script>
+</body>
+</html>
