@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lunar Webapp</title>
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --fg: #e8eaf0;
+      --muted: #9aa1b2;
+      --accent: #c9b77a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+    }
+    header, main, footer {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    h1 { color: var(--accent); margin-bottom: 0; }
+    .sottotitolo { color: var(--muted); margin-top: 4px; }
+    footer { color: var(--muted); font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Lunar Webapp</h1>
+    <p class="sottotitolo">NASA Space Apps Hackathon</p>
+  </header>
+
+  <main id="contenuto">
+    <section id="effemeridi">
+      <h2>Effemeridi</h2>
+      <p>Visibilità di Sole e Terra dai siti lunari.</p>
+    </section>
+
+    <section id="terreno">
+      <h2>Analisi del terreno</h2>
+      <p>In arrivo.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Lunar Webapp &middot; Hackathon</p>
+  </footer>
+</body>
+</html>
