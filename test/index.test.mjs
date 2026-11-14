@@ -54,3 +54,93 @@ test('nessun id duplicato', () => {
   const duplicati = ids.filter((id, i) => ids.indexOf(id) !== i);
   assert.deepEqual(duplicati, [], `id duplicati: ${duplicati.join(', ')}`);
 });
+
+// ---------- Struttura specifica: Moon Landing Site Navigator ----------
+import vm from 'node:vm';
+
+const script = (html.match(/<script>([\s\S]*?)<\/script>/i) ?? [, ''])[1];
+
+// Estrae l'oggetto I18N dallo script e lo valuta in una sandbox
+function loadI18N() {
+  const m = script.match(/const I18N = (\{[\s\S]*?\n\});/);
+  assert.ok(m, 'oggetto I18N non trovato nello script');
+  return vm.runInNewContext(`(${m[1]})`);
+}
+
+test('il titolo è "Moon Landing Site Navigator"', () => {
+  assert.match(html, /<title>\s*Moon Landing Site Navigator\s*<\/title>/i);
+});
+
+test('contiene gli elementi principali della pagina', () => {
+  const richiesti = [
+    'stars', 'langToggle', 'langCode', 'langMenu', 'home', 'btnTutorial', 'btnWorkspace',
+    'warpText', 'flash', 'skipHint', 'viewWorkspace', 'viewTutorial',
+  ];
+  for (const id of richiesti) {
+    assert.match(html, new RegExp(String.raw`\sid=["']${id}["']`), `#${id} mancante`);
+  }
+  assert.match(html, /<canvas[^>]*id=["']stars["']/i, '#stars deve essere un <canvas>');
+});
+
+test('ogni getElementById dello script punta a un id esistente', () => {
+  const usati = [...script.matchAll(/getElementById\(["']([^"']+)["']\)/g)].map((m) => m[1]);
+  assert.ok(usati.length > 0);
+  for (const id of new Set(usati)) {
+    assert.match(html, new RegExp(String.raw`\sid=["']${id}["']`), `id "${id}" usato nello script ma assente`);
+  }
+});
+
+test('la home ha i pulsanti Tutorial e Workspace', () => {
+  const home = html.match(/<main[^>]*id=["']home["'][\s\S]*?<\/main>/i)?.[0] ?? '';
+  assert.match(home, /<button[^>]*id=["']btnTutorial["']/);
+  assert.match(home, /<button[^>]*id=["']btnWorkspace["']/);
+});
+
+test('ogni vista ha un pulsante "Indietro" (data-back)', () => {
+  for (const id of ['viewWorkspace', 'viewTutorial']) {
+    const view = html.match(new RegExp(String.raw`<section[^>]*id=["']${id}["'][\s\S]*?</section>`, 'i'))?.[0] ?? '';
+    assert.ok(view, `#${id} mancante`);
+    assert.match(view, /<button[^>]*data-back/, `#${id} senza pulsante data-back`);
+  }
+});
+
+test('I18N contiene le lingue it, en, es, fr, de', () => {
+  const I18N = loadI18N();
+  assert.deepEqual(Object.keys(I18N).sort(), ['de', 'en', 'es', 'fr', 'it']);
+});
+
+test('tutte le lingue hanno le stesse chiavi, non vuote', () => {
+  const I18N = loadI18N();
+  const chiaviEn = Object.keys(I18N.en).sort();
+  for (const [code, testi] of Object.entries(I18N)) {
+    assert.deepEqual(Object.keys(testi).sort(), chiaviEn, `chiavi diverse in "${code}"`);
+    for (const [k, v] of Object.entries(testi)) {
+      assert.ok(typeof v === 'string' && v.trim(), `"${code}.${k}" vuoto`);
+    }
+  }
+});
+
+test('ogni data-i18n nella pagina ha una traduzione', () => {
+  const I18N = loadI18N();
+  const chiavi = [...html.matchAll(/data-i18n=["']([^"']+)["']/g)].map((m) => m[1]);
+  assert.ok(chiavi.length > 0);
+  for (const k of new Set(chiavi)) {
+    assert.ok(k in I18N.en, `data-i18n="${k}" senza traduzione`);
+  }
+});
+
+test('il salto (warp) dura al massimo 2 secondi', () => {
+  const m = script.match(/const WARP_DURATION = (\d+)/);
+  assert.ok(m, 'WARP_DURATION non trovato');
+  assert.ok(Number(m[1]) <= 2000, `WARP_DURATION = ${m[1]} ms`);
+});
+
+test('rispetta prefers-reduced-motion', () => {
+  assert.match(html, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
+});
+
+test('localStorage è sempre protetto da try/catch', () => {
+  const usi = script.split('\n').filter((l) => l.includes('localStorage'));
+  assert.ok(usi.length > 0);
+  for (const riga of usi) assert.match(riga, /try\s*\{/, `localStorage senza try: ${riga.trim()}`);
+});
