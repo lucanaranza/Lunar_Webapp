@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Moon Landing Site Navigator</title>
+<!-- Privacy: la pagina può comunicare solo con la propria origine (es. il JSON da Python sullo stesso host).
+     Nessun dato può essere inviato a server esterni. -->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -13,6 +18,8 @@
     --muted: #8a93b8;
     --accent: #7fd3ff;
     --accent-2: #b48cff;
+    --danger: #ff7a8a;
+    --ok: #9ff0c4;
     --panel: rgba(18, 22, 40, 0.65);
     --border: rgba(127, 211, 255, 0.25);
   }
@@ -22,14 +29,18 @@
 
   #stars { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 
-  /* ---------- Home ---------- */
-  .home {
+  /* ---------- Views (tutte le schermate) ---------- */
+  .view {
     position: fixed; inset: 0; z-index: 2;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 3.5rem; padding: 2rem; text-align: center;
-    transition: opacity .35s ease, transform .35s ease;
+    gap: 3rem; padding: 2rem; text-align: center; overflow-y: auto;
+    opacity: 0; transform: scale(1.04); pointer-events: none; visibility: hidden;
+    transition: opacity .35s ease, transform .35s ease, visibility 0s linear .35s;
   }
-  .home.hidden { opacity: 0; transform: scale(1.06); pointer-events: none; }
+  .view.active {
+    opacity: 1; transform: none; pointer-events: auto; visibility: visible;
+    transition: opacity .35s ease, transform .35s ease, visibility 0s;
+  }
 
   .title {
     font-family: "Orbitron", "Segoe UI", sans-serif; font-weight: 800;
@@ -41,11 +52,13 @@
   }
   .subtitle { margin-top: 1rem; color: var(--muted); font-size: clamp(.9rem, 1.6vw, 1.1rem);
     letter-spacing: .25em; text-transform: uppercase; }
+  .view h2 { font-family: "Orbitron", sans-serif; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: .1em; }
+  .view p.muted { color: var(--muted); }
 
   .actions { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
   .btn {
-    min-width: 220px; padding: 1.1rem 2rem; border-radius: 14px;
-    font-family: "Orbitron", sans-serif; font-weight: 500; font-size: 1.05rem; letter-spacing: .15em;
+    min-width: 240px; padding: 1.1rem 2rem; border-radius: 14px;
+    font-family: "Orbitron", sans-serif; font-weight: 500; font-size: 1rem; letter-spacing: .15em;
     text-transform: uppercase; color: var(--fg); cursor: pointer;
     background: var(--panel); border: 1px solid var(--border);
     backdrop-filter: blur(6px);
@@ -53,10 +66,44 @@
   }
   .btn:hover, .btn:focus-visible { transform: translateY(-2px); border-color: var(--accent);
     box-shadow: 0 0 24px rgba(127, 211, 255, .3); outline: none; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
   .btn.primary {
     background: linear-gradient(135deg, rgba(127,211,255,.22), rgba(180,140,255,.22));
     border-color: rgba(127, 211, 255, .6);
   }
+  .btn.small { min-width: 0; padding: .7rem 1.2rem; font-size: .8rem; }
+  .btn .lock { display: inline-block; width: 14px; height: 14px; margin-left: .5rem; vertical-align: -1px; }
+  .btn.danger:hover { border-color: var(--danger); box-shadow: 0 0 20px rgba(255,122,138,.25); }
+
+  .link-btn { background: none; border: 0; color: var(--muted); cursor: pointer;
+    font: .85rem "Inter", sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+  .link-btn:hover { color: var(--fg); }
+
+  .user-badge { color: var(--muted); font-size: .9rem; letter-spacing: .05em; }
+  .user-badge strong { color: var(--accent); font-weight: 600; }
+
+  /* ---------- Login ---------- */
+  .login-card {
+    width: min(420px, 100%); padding: 2.2rem; border-radius: 18px; text-align: left;
+    background: rgba(12, 15, 30, .8); border: 1px solid var(--border); backdrop-filter: blur(10px);
+    display: flex; flex-direction: column; gap: 1.1rem;
+  }
+  .login-card h2 { font-size: 1.4rem; text-align: center; }
+  .login-card .muted { text-align: center; font-size: .9rem; margin-top: -.4rem; }
+  .field { display: flex; flex-direction: column; gap: .4rem; }
+  .field label { font-size: .75rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
+  .field input {
+    padding: .85rem 1rem; border-radius: 10px; border: 1px solid var(--border);
+    background: rgba(255,255,255,.04); color: var(--fg); font: 1rem "Inter", sans-serif;
+  }
+  .field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(127,211,255,.15); }
+  .field-hint { font-size: .75rem; color: var(--muted); line-height: 1.45; }
+  .login-error { color: var(--danger); font-size: .85rem; min-height: 1.2em; text-align: center; }
+  .login-info { color: #ffd38a; font-size: .85rem; text-align: center; }
+  .login-info:empty { display: none; }
+  .login-card .btn { width: 100%; min-width: 0; }
+  .login-card.shake { animation: shake .35s; }
+  @keyframes shake { 20%,60% { transform: translateX(-8px); } 40%,80% { transform: translateX(8px); } }
 
   /* ---------- Language selector ---------- */
   .lang { position: fixed; top: 1.25rem; right: 1.25rem; z-index: 5; }
@@ -101,19 +148,226 @@
   .skip-hint {
     position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 4;
     color: var(--muted); font-size: .8rem; letter-spacing: .15em; text-transform: uppercase;
-    opacity: 0; transition: opacity .2s;
+    opacity: 0; transition: opacity .2s; pointer-events: none;
   }
   .skip-hint.show { opacity: .8; }
 
-  /* ---------- Placeholder views ---------- */
-  .view {
-    position: fixed; inset: 0; z-index: 2; display: none;
-    flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;
+  /* ---------- Private badge & workspace ---------- */
+  .private-badge {
+    display: inline-flex; align-items: center; gap: .5rem; padding: .45rem .9rem; border-radius: 999px;
+    font-size: .78rem; letter-spacing: .08em; color: var(--ok);
+    background: rgba(80, 220, 150, .08); border: 1px solid rgba(80, 220, 150, .35);
   }
-  .view.active { display: flex; animation: fadeIn .4s ease; }
-  .view h2 { font-family: "Orbitron", sans-serif; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: .1em; }
-  .view p { color: var(--muted); }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .private-badge svg { width: 14px; height: 14px; }
+  .private-badge.warn { color: #ffd38a; background: rgba(255, 190, 90, .08); border-color: rgba(255, 190, 90, .4); }
+
+  .ws-panel {
+    width: min(640px, 100%); padding: 1.5rem; border-radius: 18px; text-align: left;
+    background: rgba(12, 15, 30, .8); border: 1px solid var(--border); backdrop-filter: blur(10px);
+    display: flex; flex-direction: column; gap: .9rem;
+  }
+  .ws-panel label, .ws-panel summary { font-size: .75rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
+  .ws-panel textarea {
+    min-height: 120px; resize: vertical; padding: .9rem 1rem; border-radius: 10px;
+    border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--fg);
+    font: .95rem/1.5 "Inter", sans-serif;
+  }
+  .ws-panel textarea:focus { outline: none; border-color: var(--accent); }
+  .ws-status { font-size: .8rem; color: var(--muted); min-height: 1.2em; }
+  .ws-tools { display: flex; gap: .6rem; flex-wrap: wrap; }
+  .sec-info { font-size: .8rem; color: var(--muted); line-height: 1.5; }
+  .sec-info b { color: var(--ok); font-weight: 600; }
+  details summary { cursor: pointer; }
+  .audit { list-style: none; margin-top: .6rem; max-height: 150px; overflow-y: auto;
+    font: .78rem/1.6 ui-monospace, "SF Mono", Menlo, monospace; color: var(--muted); }
+  .audit li span { color: var(--fg); }
+
+  /* Filigrana con utente e istituzione (scoraggia la diffusione di screenshot) */
+  .watermark { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0; transition: opacity .4s; }
+  body.ws-on .watermark { opacity: 1; }
+
+  /* Schermo privacy: copre i dati quando la finestra perde il focus */
+  .privacy-shield {
+    position: fixed; inset: 0; z-index: 6; display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: .8rem;
+    background: rgba(3, 4, 10, .75); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+    color: var(--muted); letter-spacing: .15em; text-transform: uppercase; font-size: .85rem;
+  }
+  .privacy-shield.show { display: flex; }
+  .privacy-shield svg { width: 28px; height: 28px; color: var(--accent); }
+
+  /* ---------- Workspace Polo Sud ---------- */
+  .view.ws-view { justify-content: flex-start; align-items: stretch; gap: 1rem; padding: 1rem 1.25rem;
+    text-align: left; overflow: hidden; }
+  .ws-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    padding-right: 110px; }
+  .ws-title { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+  .view.ws-view h2 { font-size: 1.3rem; letter-spacing: .08em; }
+  .demo-badge { padding: .35rem .75rem; border-radius: 999px; font-size: .72rem; letter-spacing: .08em;
+    color: #ffd38a; border: 1px dashed rgba(255, 190, 90, .5); }
+  .demo-badge[hidden] { display: none; }
+  .ws-top-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .ws-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 340px 1fr; gap: 1rem; }
+  .ws-side { overflow-y: auto; display: flex; flex-direction: column; gap: .9rem; padding-right: .3rem; }
+  .side-card { background: rgba(12, 15, 30, .82); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1rem; display: flex; flex-direction: column; gap: .8rem; }
+  .side-card h3, .mini-lbl { font: 600 .7rem "Inter", sans-serif; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+  .vault-card summary { list-style: none; cursor: pointer; }
+  .vault-card summary::-webkit-details-marker { display: none; }
+  .vault-card summary h3::after { content: " +"; }
+  .vault-card[open] summary h3::after { content: " −"; }
+  .vault-card textarea { min-height: 90px; resize: vertical; padding: .7rem .8rem; border-radius: 10px;
+    border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--fg); font: .9rem/1.5 "Inter", sans-serif; }
+
+  .sliders { display: flex; flex-direction: column; gap: .9rem; }
+  .slider-row { display: flex; flex-direction: column; gap: .35rem; }
+  .slider-head { display: flex; align-items: center; gap: .5rem; font-size: .9rem; font-weight: 600; }
+  .slider-head .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); }
+  .slider-head output { margin-left: auto; font: 600 .9rem "Orbitron", sans-serif; color: var(--c); min-width: 2ch; text-align: right; }
+  .slider-desc { font-size: .75rem; color: var(--muted); line-height: 1.4; }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 3px; cursor: pointer;
+    background: linear-gradient(90deg, var(--c) var(--p, 50%), rgba(255,255,255,.12) var(--p, 50%)); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; border: 3px solid var(--c); box-shadow: 0 0 10px var(--c); }
+  input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--c); }
+  input[type=datetime-local], select { color-scheme: dark; padding: .6rem .75rem; border-radius: 10px;
+    border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--fg); font: .9rem "Inter", sans-serif; }
+  .ephem { font-size: .75rem; color: var(--muted); line-height: 1.5; }
+  .ephem b { font-weight: 600; }
+
+  .layer-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: .3rem; padding: .25rem;
+    background: rgba(255,255,255,.04); border-radius: 10px; }
+  .layer-tabs button { padding: .5rem .2rem; border: 0; border-radius: 8px; background: transparent; color: var(--muted);
+    font: 600 .78rem "Inter", sans-serif; cursor: pointer; }
+  .layer-tabs button.active { background: rgba(127,211,255,.18); color: var(--fg); }
+  .legend { display: flex; flex-direction: column; gap: .35rem; }
+  .legend-title { font-size: .78rem; color: var(--fg); }
+  .legend-bar { height: 12px; border-radius: 6px; }
+  .legend-labels { display: flex; justify-content: space-between; font-size: .72rem; color: var(--muted); }
+  .legend-mask { display: flex; align-items: center; gap: .5rem; font-size: .72rem; color: var(--muted); }
+  .legend-mask i { width: 22px; height: 12px; border-radius: 3px; flex: none;
+    background: repeating-linear-gradient(45deg, #3a3f52 0 3px, #1a1d29 3px 7px); }
+  .legend-mask[hidden] { display: none; }
+  .map-opts { display: flex; align-items: center; justify-content: space-between; gap: .5rem; font-size: .8rem; color: var(--muted); }
+  .map-opts label { display: flex; align-items: center; gap: .5rem; }
+  .map-opts select { padding: .35rem .5rem; }
+  .chk input { accent-color: var(--accent); }
+
+  .sites { list-style: none; display: flex; flex-direction: column; gap: .4rem; counter-reset: s; }
+  .sites button { width: 100%; text-align: left; display: grid; grid-template-columns: 26px 1fr auto; gap: .2rem .6rem;
+    align-items: center; padding: .55rem .6rem; border-radius: 10px; border: 1px solid transparent;
+    background: rgba(255,255,255,.04); color: var(--fg); cursor: pointer; font: .8rem "Inter", sans-serif; }
+  .sites button:hover, .sites button.sel { border-color: var(--accent); background: rgba(127,211,255,.08); }
+  .sites .n { grid-row: span 2; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+    font: 700 .75rem "Orbitron", sans-serif; background: #fff; color: #03040a; }
+  .sites .sc { font: 700 .95rem "Orbitron", sans-serif; color: #c4f06a; }
+  .sites .vals { grid-column: 2 / 4; font-size: .72rem; color: var(--muted); display: flex; gap: .7rem; }
+  .sites .vals i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: .25rem; }
+  .sites .empty { font-size: .8rem; color: var(--muted); }
+
+  .map-wrap { position: relative; min-height: 0; min-width: 0; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 50%, rgba(18,22,40,.6), rgba(6,8,16,.35)); border: 1px solid var(--border); border-radius: 18px; }
+  #mapCanvas { display: block; cursor: crosshair; }
+  .map-tip { position: absolute; pointer-events: none; z-index: 2; display: none; white-space: nowrap;
+    background: rgba(6, 8, 18, .94); border: 1px solid var(--border); border-radius: 10px;
+    padding: .55rem .7rem; font-size: .76rem; line-height: 1.55; }
+  .map-tip b { font-family: "Orbitron", sans-serif; font-size: .8rem; }
+  .map-tip .row { display: flex; justify-content: space-between; gap: 1rem; }
+  .map-tip .row span:first-child { color: var(--muted); }
+  .map-tip .warn { color: #ffd38a; }
+  .map-busy { position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+    color: var(--muted); letter-spacing: .2em; text-transform: uppercase; font-size: .8rem; }
+  .map-busy.show { display: flex; }
+
+  .setup { position: absolute; inset: 0; z-index: 3; display: none; align-items: center; justify-content: center;
+    padding: 1.5rem; background: rgba(3, 4, 10, .6); backdrop-filter: blur(8px); overflow-y: auto; }
+  .setup.show { display: flex; }
+  .setup-card { width: min(520px, 100%); padding: 2rem; border-radius: 18px; background: rgba(12, 15, 30, .92);
+    border: 1px solid var(--border); display: flex; flex-direction: column; gap: 1.2rem; }
+  .setup-card .step { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+  .setup-card h3 { font: 800 1.5rem "Orbitron", sans-serif; letter-spacing: .05em; margin-top: -.6rem; }
+  .setup-card .muted { color: var(--muted); font-size: .9rem; margin-top: -.6rem; }
+  .setup-card .btn { width: 100%; min-width: 0; }
+
+  /* Sfondo neutro (grafite) nel workspace: niente stelle, la Terra blu risalta */
+  body.ws-on { background: radial-gradient(ellipse at 50% 0%, #2a2d33 0%, #1a1c20 45%, #111214 100%); }
+  body.ws-on #stars { display: none; }
+  body.ws-on .map-wrap { background: radial-gradient(circle at 50% 45%, #26292f 0%, #1b1d21 60%, #16171a 100%);
+    border-color: rgba(255,255,255,.08); }
+  body.ws-on .side-card { background: rgba(30, 32, 37, .92); border-color: rgba(255,255,255,.08); }
+
+  .stage { display: none; }
+  .stage.on { display: grid; }
+  .ws-view[data-stage="globe"] .map-only { display: none; }
+  .stage-sub { font-size: .85rem; color: var(--muted); }
+  .user-chip { font-size: .78rem; padding: .35rem .75rem; border-radius: 999px; color: var(--fg);
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+  .user-chip strong { color: var(--accent); font-weight: 600; }
+  .step-tag { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+  .side-card h3 + .slider-desc { margin-top: -.3rem; }
+  .layer-tabs.two { grid-template-columns: 1fr 1fr; }
+  .globe-hover { font: .8rem ui-monospace, Menlo, monospace; color: var(--muted); }
+  .coord-row { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+  .coord-row input, #selRadius { width: 100%; padding: .6rem .7rem; color-scheme: dark; }
+  .sel-info { font-size: .82rem; line-height: 1.7; color: var(--muted); }
+  .sel-info b { color: var(--fg); font-weight: 600; }
+  .sel-info .hint { display: block; margin-top: .3rem; font-size: .76rem; line-height: 1.45; }
+  .sel-status { font-size: .82rem; font-weight: 600; }
+  .sel-status.ok { color: var(--ok); }
+  .sel-status.bad { color: var(--danger); }
+  #globeCanvas { display: block; cursor: grab; touch-action: none; }
+  #globeCanvas.select { cursor: crosshair; }
+  #globeCanvas.dragging { cursor: grabbing; }
+  .map-busy.show { background: rgba(17,18,20,.6); }
+
+  /* Aree con dati */
+  .cov-list { list-style: none; display: flex; flex-direction: column; gap: .35rem; max-height: 220px; overflow-y: auto; }
+  .cov-list li { display: flex; align-items: center; gap: .4rem; }
+  .cov-list button.go { flex: 1; text-align: left; padding: .5rem .6rem; border-radius: 9px; border: 1px solid transparent;
+    background: rgba(255,255,255,.04); color: var(--fg); cursor: pointer; font: .8rem/1.35 "Inter", sans-serif; }
+  .cov-list button.go:hover, .cov-list button.go.sel { border-color: #4ade80; background: rgba(74,222,128,.08); }
+  .cov-list small { display: block; color: var(--muted); font-size: .7rem; }
+  .cov-list .tag { font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; padding: .1rem .35rem; border-radius: 4px;
+    margin-left: .35rem; color: #4ade80; border: 1px solid rgba(74,222,128,.4); }
+  .cov-list .tag.demo { color: #ffd38a; border-color: rgba(255,190,90,.4); }
+  .cov-list button.rm { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: .3rem; }
+  .cov-list button.rm:hover { color: var(--danger); }
+
+  /* Personalizza missione */
+  .mission-card { max-height: calc(100vh - 3rem); overflow-y: auto; gap: 1rem; }
+  .mission-files { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .mission-files .btn { flex: 1 1 auto; min-width: 0; width: auto; }
+  .mission-msg:empty { display: none; }
+  .mission-msg { color: var(--ok); }
+  .mission-msg.bad { color: var(--danger); }
+  .m-sec { border-top: 1px solid rgba(255,255,255,.08); padding-top: .8rem; }
+  .m-sec summary { cursor: pointer; font: 600 .72rem "Inter", sans-serif; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: .8rem; }
+  .m-sec .field-hint { margin-top: .5rem; }
+  .coord-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .mission-card input[type=number], .mission-card input[type=text] { width: 100%; padding: .6rem .7rem; border-radius: 10px;
+    border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--fg); font: .9rem "Inter", sans-serif; color-scheme: dark; }
+
+  /* Barra del tempo */
+  .map-wrap { flex-direction: column; }
+  .timebar { position: absolute; left: 1rem; right: 1rem; bottom: .8rem; display: flex; align-items: center; gap: .4rem;
+    padding: .5rem .7rem; border-radius: 12px; background: rgba(17,18,20,.85); border: 1px solid rgba(255,255,255,.1);
+    backdrop-filter: blur(6px); }
+  .timebar .tb { min-width: 44px; padding: .4rem .5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.05); color: var(--fg); cursor: pointer; font: 600 .75rem "Inter", sans-serif; }
+  .timebar .tb:hover { border-color: var(--accent); }
+  .timebar .play { min-width: 40px; font-size: .9rem; color: var(--accent); }
+  .timebar input[type=range] { flex: 1; --c: #7fd3ff; min-width: 80px; }
+  .timebar select { padding: .35rem .4rem; font-size: .75rem; }
+  .tb-label { min-width: 190px; text-align: right; font: .76rem/1.3 ui-monospace, Menlo, monospace; color: var(--fg); }
+  .tb-label small { display: block; color: var(--muted); }
+
+  @media (max-width: 900px) {
+    .view.ws-view { overflow-y: auto; }
+    .ws-body { grid-template-columns: 1fr; }
+    .map-wrap { min-height: 420px; order: -1; }
+    .ws-top { padding-right: 0; padding-top: 2.5rem; }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .warp-text.show, .flash.show { animation-duration: .01s; }
@@ -123,6 +377,7 @@
 <body>
 
 <canvas id="stars"></canvas>
+<div class="watermark" id="watermark"></div>
 
 <!-- Language selector -->
 <div class="lang">
@@ -130,64 +385,435 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
       <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z"/>
     </svg>
-    <span id="langCode">IT</span>
+    <span id="langCode">EN</span>
   </button>
   <ul class="lang-menu" id="langMenu" role="menu"></ul>
 </div>
 
-<!-- Home -->
-<main class="home" id="home">
+<!-- HOME (pubblica) -->
+<main class="view active" id="view-home">
   <header>
     <h1 class="title" data-i18n="title">Thrusters ready, captain</h1>
     <p class="subtitle" data-i18n="subtitle">Moon Landing Site Navigator · Artemis</p>
   </header>
   <nav class="actions">
-    <button class="btn" id="btnTutorial" data-i18n="tutorial">Tutorial</button>
-    <button class="btn primary" id="btnWorkspace" data-i18n="workspace">Workspace</button>
+    <button class="btn" data-go="educational" data-i18n="educational">Educational Edition</button>
+    <button class="btn primary" id="btnExpert">
+      <span data-i18n="expert">Expert Edition</span>
+      <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    </button>
   </nav>
 </main>
+
+<!-- EDUCATIONAL (pubblica, placeholder) -->
+<section class="view" id="view-educational">
+  <h2 data-i18n="educational">Educational Edition</h2>
+  <p class="muted" data-i18n="placeholder">Coming soon</p>
+  <button class="btn small" data-go="home" data-i18n="back">Back</button>
+</section>
+
+<!-- LOGIN ISTITUZIONALE -->
+<section class="view" id="view-login">
+  <form class="login-card" id="loginForm" autocomplete="off" novalidate>
+    <h2 data-i18n="loginTitle">Institutional access</h2>
+    <p class="muted" data-i18n="loginSub">Expert Edition is reserved for accredited institutions</p>
+    <p class="login-info" id="loginInfo"></p>
+    <div class="field">
+      <label for="loginName" data-i18n="nameLbl">Name</label>
+      <input id="loginName" type="text" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="field">
+      <label for="loginInst" data-i18n="institution">Institution</label>
+      <input id="loginInst" type="text" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="field">
+      <label for="loginPass" data-i18n="passLbl">Vault passphrase</label>
+      <input id="loginPass" type="password" autocomplete="new-password">
+      <p class="field-hint" data-i18n="passHint">First access: this passphrase creates your encrypted vault. It cannot be recovered.</p>
+    </div>
+    <p class="login-error" id="loginError" aria-live="polite"></p>
+    <button class="btn primary" type="button" id="btnLogin" data-i18n="enter">Sign in</button>
+    <button class="link-btn" type="button" data-go="home" data-i18n="back">Back</button>
+  </form>
+</section>
+
+<!-- EXPERT MENU (privata) -->
+<section class="view" id="view-expert">
+  <header>
+    <h2 data-i18n="expert">Expert Edition</h2>
+    <p class="user-badge" style="margin-top:.8rem"><span id="userName"></span> · <strong id="userInst"></strong></p>
+    <p style="margin-top:1rem"><span class="private-badge" data-private-badge>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span data-i18n="privateBadge">Private mode</span></span></p>
+  </header>
+  <nav class="actions">
+    <button class="btn" data-go="tutorial" data-i18n="tutorial">Tutorial</button>
+    <button class="btn primary" id="btnWorkspace" data-i18n="workspace">Workspace</button>
+  </nav>
+  <div class="actions">
+    <button class="link-btn" data-go="home" data-i18n="back">Back</button>
+    <button class="link-btn" data-lock data-i18n="lockBtn">Lock</button>
+  </div>
+</section>
+
+<!-- TUTORIAL (privata, placeholder) -->
+<section class="view" id="view-tutorial">
+  <h2 data-i18n="tutorial">Tutorial</h2>
+  <p class="muted" data-i18n="placeholder">Coming soon</p>
+  <button class="btn small" data-go="expert" data-i18n="back">Back</button>
+</section>
+
+<!-- WORKSPACE (privata) · Polo Sud -->
+<section class="view ws-view" id="view-workspace">
+  <header class="ws-top">
+    <div class="ws-title">
+      <h2 data-i18n="wsTitle">Workspace</h2>
+      <span class="stage-sub" id="stageSub"></span>
+      <span class="user-chip" id="wsUser"></span>
+      <span class="private-badge" data-private-badge>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <span data-i18n="privateBadge">Private mode</span>
+      </span>
+      <span class="demo-badge" id="demoBadge" data-i18n="demoData">Demo data</span>
+    </div>
+    <div class="ws-top-actions">
+      <button class="btn small map-only" id="btnChangeArea" data-i18n="changeArea">Change area</button>
+      <button class="btn small map-only" id="btnParams" data-i18n="editParams">Parameters</button>
+      <button class="btn small" data-go="expert" data-i18n="back">Back</button>
+      <button class="btn small" data-lock data-i18n="lockBtn">Lock</button>
+    </div>
+  </header>
+
+  <!-- STAGE 1: globo 3D -->
+  <div class="ws-body stage" id="stageGlobe">
+    <aside class="ws-side">
+      <section class="side-card">
+        <p class="step-tag" data-i18n="stepArea">Step 1 · Area</p>
+        <h3 data-i18n="globeTitle">Select the area</h3>
+        <p class="slider-desc" data-i18n="globeHelp"></p>
+        <div class="layer-tabs two" id="globeMode">
+          <button data-mode="rotate" class="active" data-i18n="modeRotate">Rotate</button>
+          <button data-mode="select" data-i18n="modeSelect">Select</button>
+        </div>
+        <p class="globe-hover" id="globeHover">&nbsp;</p>
+      </section>
+      <section class="side-card">
+        <h3 data-i18n="coordsTitle">Coordinates</h3>
+        <div class="coord-row">
+          <div class="field"><label for="inLat" data-i18n="latLbl">Latitude (°)</label>
+            <input id="inLat" type="number" min="-90" max="90" step="0.01" placeholder="-89.5"></div>
+          <div class="field"><label for="inLon" data-i18n="lonLbl">Longitude (°)</label>
+            <input id="inLon" type="number" min="-180" max="180" step="0.01" placeholder="130"></div>
+        </div>
+        <p class="field-hint" data-i18n="coordHint">Latitude: + north / − south · Longitude: + east / − west</p>
+        <button class="btn small" id="btnCenter" data-i18n="centerBtn">Select max area here</button>
+        <p class="login-error" id="coordErr"></p>
+      </section>
+      <section class="side-card">
+        <h3 data-i18n="coverageTitle">Areas with data</h3>
+        <ul class="cov-list" id="covList"></ul>
+        <button class="btn small" id="btnImportData" data-i18n="importData">Import area data</button>
+        <input type="file" id="dataFile" accept=".json,application/json" hidden>
+        <p class="field-hint" id="dataMsg"></p>
+      </section>
+      <section class="side-card">
+        <h3 data-i18n="selTitle">Selected area</h3>
+        <div id="selInfo" class="sel-info"></div>
+        <div class="field">
+          <label for="selRadius"><span data-i18n="selRadius">Radius</span> (°)</label>
+          <input id="selRadius" type="number" min="0.1" max="90" step="0.5">
+        </div>
+        <p class="sel-status" id="selStatus"></p>
+        <button class="btn small" id="btnShrink" hidden data-i18n="fit">Fit to allowed area</button>
+        <button class="btn primary" id="btnConfirmArea" disabled data-i18n="confirmArea">Confirm area</button>
+      </section>
+    </aside>
+    <div class="map-wrap" id="globeWrap">
+      <canvas id="globeCanvas"></canvas>
+      <div class="map-busy" id="globeBusy" data-i18n="computing">Computing…</div>
+    </div>
+  </div>
+
+  <!-- Conferma area -->
+  <div class="setup" id="confirmBox">
+    <div class="setup-card">
+      <h3 data-i18n="confirmTitle">Confirm the area?</h3>
+      <p class="muted" id="confirmText"></p>
+      <div class="actions" style="gap:.8rem">
+        <button class="btn small" id="btnConfirmNo" data-i18n="cancel">Cancel</button>
+        <button class="btn small primary" id="btnConfirmYes" data-i18n="confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 2: mappa 2D -->
+  <div class="ws-body stage" id="stageMap">
+    <aside class="ws-side">
+      <section class="side-card">
+        <h3 data-i18n="weightsTitle">Project weights</h3>
+        <div class="sliders" data-sliders="side"></div>
+        <div class="field">
+          <label for="arrivalSide" data-i18n="arrival">Arrival date</label>
+          <input type="datetime-local" id="arrivalSide" data-arrival>
+        </div>
+        <p class="ephem" id="ephem"></p>
+      </section>
+
+      <section class="side-card">
+        <h3 data-i18n="layers">Map layer</h3>
+        <div class="layer-tabs" id="layerTabs">
+          <button data-layer="score" data-i18n="l_score">Score</button>
+          <button data-layer="sun" data-i18n="l_sun">Sun</button>
+          <button data-layer="earth" data-i18n="l_earth">Earth</button>
+          <button data-layer="ice" data-i18n="l_ice">Ice</button>
+        </div>
+        <div class="field">
+          <label data-i18n="horizonLbl">Evaluate on</label>
+          <div class="layer-tabs two" id="horizonMode">
+            <button data-h="stay" data-i18n="hStay">Stay window</button>
+            <button data-h="cycle" data-i18n="hCycle">Lunar cycle</button>
+          </div>
+        </div>
+        <div class="legend">
+          <div class="legend-title" id="legendTitle"></div>
+          <div class="legend-bar" id="legendBar"></div>
+          <div class="legend-labels"><span id="legendLo"></span><span id="legendHi"></span></div>
+          <div class="legend-mask" id="legendMask"><i></i><span data-i18n="masked">Earth not visible at arrival</span></div>
+        </div>
+        <div class="map-opts">
+          <label><span data-i18n="zoom">Extent</span>
+            <select id="zoomSel">
+              <option value="1">100%</option><option value="0.6">60%</option><option value="0.3">30%</option>
+            </select></label>
+          <label class="chk"><input type="checkbox" id="cratersChk" checked> <span data-i18n="craters">Craters</span></label>
+        </div>
+      </section>
+
+      <section class="side-card">
+        <h3 data-i18n="topSites">Best sites</h3>
+        <ol class="sites" id="sitesList"></ol>
+      </section>
+
+      <details class="side-card vault-card">
+        <summary><h3 data-i18n="vaultTitle">Notes &amp; data</h3></summary>
+        <label for="wsNotes" class="mini-lbl" data-i18n="notesLabel">Mission notes</label>
+        <textarea id="wsNotes" data-i18n-ph="notesPh" spellcheck="false"></textarea>
+        <div class="ws-status" id="wsStatus"></div>
+        <div class="ws-tools">
+          <button class="btn small" id="btnExport" data-i18n="exportBtn">Export</button>
+          <button class="btn small" id="btnImport" data-i18n="importBtn">Import</button>
+          <button class="btn small danger" id="btnClear" data-i18n="clearBtn">Delete local data</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+        </div>
+        <p class="sec-info" id="secInfo"></p>
+        <details>
+          <summary class="mini-lbl" data-i18n="auditTitle">Access log</summary>
+          <ul class="audit" id="auditList"></ul>
+        </details>
+      </details>
+    </aside>
+
+    <div class="map-wrap" id="mapWrap">
+      <canvas id="mapCanvas"></canvas>
+      <div class="map-tip" id="mapTip"></div>
+      <div class="timebar" id="timebar">
+        <button class="tb" data-step="-24"></button>
+        <button class="tb" data-step="-1"></button>
+        <button class="tb play" id="btnPlay" aria-label="Play">▶</button>
+        <button class="tb" data-step="1"></button>
+        <button class="tb" data-step="24"></button>
+        <input type="range" id="timeSlider" min="0" max="720" step="1" value="0">
+        <select id="playStep" aria-label="Step"><option value="1">1 h</option><option value="6">6 h</option><option value="24">24 h</option></select>
+        <div class="tb-label" id="timeLabel"></div>
+      </div>
+      <div class="map-busy" id="mapBusy" data-i18n="computing">Computing…</div>
+    </div>
+  </div>
+
+  <!-- Passo 2: personalizza missione -->
+  <div class="setup" id="setup">
+    <div class="setup-card mission-card">
+      <p class="step" data-i18n="setupStep">Step 2</p>
+      <h3 data-i18n="missionTitle">Customize mission</h3>
+      <p class="muted" data-i18n="missionSub">Set or import your parameters</p>
+      <div class="mission-files">
+        <button class="btn small" id="btnImportMission" data-i18n="importMission">Import mission</button>
+        <button class="btn small" id="btnExportMission" data-i18n="exportMission">Export mission</button>
+        <button class="btn small" id="btnExportData" data-i18n="exportData">Export area data</button>
+        <input type="file" id="missionFile" accept=".json,application/json" hidden>
+      </div>
+      <p class="field-hint mission-msg" id="missionMsg"></p>
+      <div class="field">
+        <label for="mName" data-i18n="mName">Mission name</label>
+        <input id="mName" type="text" maxlength="60" data-m="name" autocomplete="off">
+      </div>
+      <details class="m-sec" open>
+        <summary data-i18n="weightsTitle">Weights</summary>
+        <div class="sliders" data-sliders="setup"></div>
+      </details>
+      <details class="m-sec" open>
+        <summary data-i18n="timeTitle">Timing</summary>
+        <div class="coord-row">
+          <div class="field"><label for="arrivalSetup" data-i18n="arrival">Landing</label>
+            <input type="datetime-local" id="arrivalSetup" data-arrival></div>
+          <div class="field"><label for="mStay" data-i18n="mStay">Stay (hours)</label>
+            <input id="mStay" type="number" min="1" max="720" step="1" data-m="stayHours"></div>
+        </div>
+        <p class="field-hint" data-i18n="arrivalNote"></p>
+      </details>
+      <details class="m-sec" open>
+        <summary data-i18n="constraintsTitle">Hard constraints</summary>
+        <div class="coord-row three">
+          <div class="field"><label for="cSun" data-i18n="cSun">Min Sun %</label>
+            <input id="cSun" type="number" min="0" max="100" step="1" data-m="minSun"></div>
+          <div class="field"><label for="cEarth" data-i18n="cEarth">Min Earth %</label>
+            <input id="cEarth" type="number" min="0" max="100" step="1" data-m="minEarth"></div>
+          <div class="field"><label for="cIce" data-i18n="cIce">Max ice km</label>
+            <input id="cIce" type="number" min="0" step="0.5" data-m="maxIce"></div>
+        </div>
+        <p class="field-hint" data-i18n="constraintsHint"></p>
+      </details>
+      <button class="btn primary" id="btnGenerate" data-i18n="generate">Compute map</button>
+    </div>
+  </div>
+</section>
 
 <!-- Warp overlay -->
 <div class="warp-text" id="warpText" data-i18n="takeoff">Take us out</div>
 <div class="flash" id="flash"></div>
 <div class="skip-hint" id="skipHint" data-i18n="skip">Click to skip</div>
 
-<!-- Placeholder views (da sostituire) -->
-<section class="view" id="viewWorkspace">
-  <h2 data-i18n="workspace">Workspace</h2>
-  <p data-i18n="placeholder">Coming soon</p>
-  <button class="btn" data-back data-i18n="back">Back</button>
-</section>
-<section class="view" id="viewTutorial">
-  <h2 data-i18n="tutorial">Tutorial</h2>
-  <p data-i18n="placeholder">Coming soon</p>
-  <button class="btn" data-back data-i18n="back">Back</button>
-</section>
+<!-- Privacy shield -->
+<div class="privacy-shield" id="privacyShield">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/></svg>
+  <span data-i18n="shield">Hidden for privacy</span>
+</div>
 
 <script>
+/* =====================================================================
+   CONFIGURAZIONE SICUREZZA
+   ===================================================================== */
+const SECURITY = {
+  idleLockMinutes: 10,        // blocco automatico dopo inattività
+  maxAttempts: 5,             // tentativi di login prima del blocco
+  lockoutBaseSeconds: 30,     // durata blocco, raddoppia a ogni blocco successivo
+  minPassphrase: 10,          // lunghezza minima passphrase del vault
+  pbkdf2Iterations: 310000,   // derivazione chiave (OWASP: ≥ 310k per PBKDF2-SHA256)
+  privacyShield: true,        // copre i dati quando la finestra perde il focus
+};
+
 /* ================= i18n =================
-   In futuro questi testi possono arrivare da un JSON generato da Python:
-   fetch('i18n.json').then(r => r.json()).then(d => Object.assign(I18N, d));            */
+   In futuro questi testi possono arrivare da un JSON generato da Python.   */
 const I18N = {
   it: { name: "Italiano", title: "Propulsori pronti, capitano", subtitle: "Moon Landing Site Navigator · Artemis",
+        educational: "Educational Edition", expert: "Expert Edition",
         tutorial: "Tutorial", workspace: "Workspace", takeoff: "Si parte", skip: "Clicca per saltare",
-        placeholder: "In arrivo", back: "Indietro" },
+        placeholder: "In arrivo", back: "Indietro",
+        loginTitle: "Accesso istituzionale", loginSub: "La Expert Edition è riservata alle istituzioni accreditate",
+        nameLbl: "Nome", institution: "Istituzione", enter: "Accedi",
+        loginError: "Credenziali non riconosciute", loginEmpty: "Compila tutti i campi",
+        passLbl: "Passphrase del vault", passHint: "Primo accesso: questa passphrase crea il tuo archivio cifrato. Non è recuperabile.",
+        passShort: "La passphrase deve avere almeno {n} caratteri", lockedOut: "Troppi tentativi. Riprova tra {s} s",
+        lockedIdle: "Sessione bloccata per inattività", lockedManual: "Sessione bloccata", lockBtn: "Blocca",
+        noCrypto: "Questo browser non supporta la cifratura: Expert Edition non disponibile", checking: "Verifica…",
+        privateBadge: "Modalità privata · dati cifrati su questo dispositivo", notesLabel: "Note di missione",
+        notesPh: "Scrivi qui… viene cifrato e salvato solo su questo PC", savedAt: "Cifrato e salvato in locale alle", saving: "Salvataggio…",
+        exportBtn: "Esporta cifrato", importBtn: "Importa .json", clearBtn: "Elimina dati locali", clearConfirm: "Clicca ancora per confermare",
+        cleared: "Dati locali eliminati", imported: "Dati importati", importErr: "File non valido", importForeign: "Backup di un altro vault: non decifrabile",
+        noStorage: "Archiviazione locale non disponibile qui: i dati si perdono alla chiusura",
+        secInfo: "<b>AES-256-GCM</b> · chiave derivata dalla passphrase, mai salvata · blocco automatico dopo {m} min di inattività",
+        auditTitle: "Registro accessi", shield: "Nascosto per privacy",
+        ev_vault_created: "Vault creato", ev_login: "Accesso", ev_failed: "Tentativi falliti prima dell'accesso: {n}",
+        ev_export: "Esportazione cifrata", ev_import: "Importazione", ev_clear: "Dati eliminati", ev_lock: "Blocco sessione", ev_area: "Area selezionata: {c}, r {r}°" },
   en: { name: "English", title: "Thrusters ready, captain", subtitle: "Moon Landing Site Navigator · Artemis",
+        educational: "Educational Edition", expert: "Expert Edition",
         tutorial: "Tutorial", workspace: "Workspace", takeoff: "Take us out", skip: "Click to skip",
-        placeholder: "Coming soon", back: "Back" },
+        placeholder: "Coming soon", back: "Back",
+        loginTitle: "Institutional access", loginSub: "Expert Edition is reserved for accredited institutions",
+        nameLbl: "Name", institution: "Institution", enter: "Sign in",
+        loginError: "Credentials not recognised", loginEmpty: "Please fill in all fields",
+        passLbl: "Vault passphrase", passHint: "First access: this passphrase creates your encrypted vault. It cannot be recovered.",
+        passShort: "Passphrase must be at least {n} characters", lockedOut: "Too many attempts. Retry in {s} s",
+        lockedIdle: "Session locked due to inactivity", lockedManual: "Session locked", lockBtn: "Lock",
+        noCrypto: "This browser cannot encrypt data: Expert Edition unavailable", checking: "Checking…",
+        privateBadge: "Private mode · encrypted data on this device", notesLabel: "Mission notes",
+        notesPh: "Write here… encrypted and saved only on this computer", savedAt: "Encrypted and saved locally at", saving: "Saving…",
+        exportBtn: "Encrypted export", importBtn: "Import .json", clearBtn: "Delete local data", clearConfirm: "Click again to confirm",
+        cleared: "Local data deleted", imported: "Data imported", importErr: "Invalid file", importForeign: "Backup from another vault: cannot decrypt",
+        noStorage: "Local storage unavailable here: data will be lost on close",
+        secInfo: "<b>AES-256-GCM</b> · key derived from passphrase, never stored · auto-lock after {m} min of inactivity",
+        auditTitle: "Access log", shield: "Hidden for privacy",
+        ev_vault_created: "Vault created", ev_login: "Sign in", ev_failed: "Failed attempts before sign in: {n}",
+        ev_export: "Encrypted export", ev_import: "Import", ev_clear: "Data deleted", ev_lock: "Session locked", ev_area: "Area selected: {c}, r {r}°" },
   es: { name: "Español", title: "Propulsores listos, capitán", subtitle: "Moon Landing Site Navigator · Artemis",
+        educational: "Educational Edition", expert: "Expert Edition",
         tutorial: "Tutorial", workspace: "Espacio de trabajo", takeoff: "Sácanos de aquí", skip: "Haz clic para saltar",
-        placeholder: "Próximamente", back: "Atrás" },
+        placeholder: "Próximamente", back: "Atrás",
+        loginTitle: "Acceso institucional", loginSub: "La Expert Edition está reservada a instituciones acreditadas",
+        nameLbl: "Nombre", institution: "Institución", enter: "Entrar",
+        loginError: "Credenciales no reconocidas", loginEmpty: "Rellena todos los campos",
+        passLbl: "Frase de acceso del vault", passHint: "Primer acceso: esta frase crea tu archivo cifrado. No se puede recuperar.",
+        passShort: "La frase debe tener al menos {n} caracteres", lockedOut: "Demasiados intentos. Reintenta en {s} s",
+        lockedIdle: "Sesión bloqueada por inactividad", lockedManual: "Sesión bloqueada", lockBtn: "Bloquear",
+        noCrypto: "Este navegador no puede cifrar datos: Expert Edition no disponible", checking: "Verificando…",
+        privateBadge: "Modo privado · datos cifrados en este dispositivo", notesLabel: "Notas de misión",
+        notesPh: "Escribe aquí… se cifra y guarda solo en este equipo", savedAt: "Cifrado y guardado localmente a las", saving: "Guardando…",
+        exportBtn: "Exportar cifrado", importBtn: "Importar .json", clearBtn: "Borrar datos locales", clearConfirm: "Haz clic otra vez para confirmar",
+        cleared: "Datos locales borrados", imported: "Datos importados", importErr: "Archivo no válido", importForeign: "Copia de otro vault: no se puede descifrar",
+        noStorage: "Almacenamiento local no disponible aquí: los datos se perderán al cerrar",
+        secInfo: "<b>AES-256-GCM</b> · clave derivada de la frase, nunca guardada · bloqueo automático tras {m} min de inactividad",
+        auditTitle: "Registro de accesos", shield: "Oculto por privacidad",
+        ev_vault_created: "Vault creado", ev_login: "Acceso", ev_failed: "Intentos fallidos antes del acceso: {n}",
+        ev_export: "Exportación cifrada", ev_import: "Importación", ev_clear: "Datos borrados", ev_lock: "Sesión bloqueada", ev_area: "Área seleccionada: {c}, r {r}°" },
   fr: { name: "Français", title: "Propulseurs prêts, capitaine", subtitle: "Moon Landing Site Navigator · Artemis",
+        educational: "Educational Edition", expert: "Expert Edition",
         tutorial: "Tutoriel", workspace: "Espace de travail", takeoff: "En avant", skip: "Cliquez pour passer",
-        placeholder: "Bientôt disponible", back: "Retour" },
+        placeholder: "Bientôt disponible", back: "Retour",
+        loginTitle: "Accès institutionnel", loginSub: "L'Expert Edition est réservée aux institutions accréditées",
+        nameLbl: "Nom", institution: "Institution", enter: "Se connecter",
+        loginError: "Identifiants non reconnus", loginEmpty: "Remplissez tous les champs",
+        passLbl: "Phrase secrète du coffre", passHint: "Premier accès : cette phrase crée votre coffre chiffré. Elle est irrécupérable.",
+        passShort: "La phrase doit contenir au moins {n} caractères", lockedOut: "Trop de tentatives. Réessayez dans {s} s",
+        lockedIdle: "Session verrouillée pour inactivité", lockedManual: "Session verrouillée", lockBtn: "Verrouiller",
+        noCrypto: "Ce navigateur ne peut pas chiffrer : Expert Edition indisponible", checking: "Vérification…",
+        privateBadge: "Mode privé · données chiffrées sur cet appareil", notesLabel: "Notes de mission",
+        notesPh: "Écrivez ici… chiffré et enregistré uniquement sur cet ordinateur", savedAt: "Chiffré et enregistré localement à", saving: "Enregistrement…",
+        exportBtn: "Export chiffré", importBtn: "Importer .json", clearBtn: "Supprimer les données locales", clearConfirm: "Cliquez encore pour confirmer",
+        cleared: "Données locales supprimées", imported: "Données importées", importErr: "Fichier invalide", importForeign: "Sauvegarde d'un autre coffre : indéchiffrable",
+        noStorage: "Stockage local indisponible ici : les données seront perdues à la fermeture",
+        secInfo: "<b>AES-256-GCM</b> · clé dérivée de la phrase, jamais stockée · verrouillage auto après {m} min d'inactivité",
+        auditTitle: "Journal d'accès", shield: "Masqué pour confidentialité",
+        ev_vault_created: "Coffre créé", ev_login: "Connexion", ev_failed: "Tentatives échouées avant connexion : {n}",
+        ev_export: "Export chiffré", ev_import: "Import", ev_clear: "Données supprimées", ev_lock: "Session verrouillée", ev_area: "Zone sélectionnée : {c}, r {r}°" },
   de: { name: "Deutsch", title: "Triebwerke bereit, Captain", subtitle: "Moon Landing Site Navigator · Artemis",
+        educational: "Educational Edition", expert: "Expert Edition",
         tutorial: "Tutorial", workspace: "Arbeitsbereich", takeoff: "Bring uns raus", skip: "Klicken zum Überspringen",
-        placeholder: "Demnächst", back: "Zurück" },
+        placeholder: "Demnächst", back: "Zurück",
+        loginTitle: "Institutioneller Zugang", loginSub: "Die Expert Edition ist akkreditierten Institutionen vorbehalten",
+        nameLbl: "Name", institution: "Institution", enter: "Anmelden",
+        loginError: "Zugangsdaten nicht erkannt", loginEmpty: "Bitte alle Felder ausfüllen",
+        passLbl: "Tresor-Passphrase", passHint: "Erster Zugang: Diese Passphrase erstellt deinen verschlüsselten Tresor. Sie ist nicht wiederherstellbar.",
+        passShort: "Die Passphrase muss mindestens {n} Zeichen haben", lockedOut: "Zu viele Versuche. Erneut in {s} s",
+        lockedIdle: "Sitzung wegen Inaktivität gesperrt", lockedManual: "Sitzung gesperrt", lockBtn: "Sperren",
+        noCrypto: "Dieser Browser kann nicht verschlüsseln: Expert Edition nicht verfügbar", checking: "Prüfen…",
+        privateBadge: "Privater Modus · verschlüsselte Daten auf diesem Gerät", notesLabel: "Missionsnotizen",
+        notesPh: "Hier schreiben… verschlüsselt und nur auf diesem Computer gespeichert", savedAt: "Verschlüsselt lokal gespeichert um", saving: "Speichern…",
+        exportBtn: "Verschlüsselt exportieren", importBtn: ".json importieren", clearBtn: "Lokale Daten löschen", clearConfirm: "Zum Bestätigen erneut klicken",
+        cleared: "Lokale Daten gelöscht", imported: "Daten importiert", importErr: "Ungültige Datei", importForeign: "Backup eines anderen Tresors: nicht entschlüsselbar",
+        noStorage: "Lokaler Speicher hier nicht verfügbar: Daten gehen beim Schließen verloren",
+        secInfo: "<b>AES-256-GCM</b> · Schlüssel aus Passphrase abgeleitet, nie gespeichert · Auto-Sperre nach {m} Min. Inaktivität",
+        auditTitle: "Zugriffsprotokoll", shield: "Aus Datenschutzgründen ausgeblendet",
+        ev_vault_created: "Tresor erstellt", ev_login: "Anmeldung", ev_failed: "Fehlversuche vor Anmeldung: {n}",
+        ev_export: "Verschlüsselter Export", ev_import: "Import", ev_clear: "Daten gelöscht", ev_lock: "Sitzung gesperrt", ev_area: "Gebiet gewählt: {c}, r {r}°" },
 };
 
 let lang = "en";
 try { lang = localStorage.getItem("lang") || lang; } catch (e) {}
+const t = (key, vars = {}) => {
+  let s = (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
+  for (const [k, v] of Object.entries(vars)) s = s.replace("{" + k + "}", v);
+  return s;
+};
 
 const langMenu = document.getElementById("langMenu");
 const langToggle = document.getElementById("langToggle");
@@ -195,12 +821,13 @@ const langToggle = document.getElementById("langToggle");
 function applyLang(code) {
   lang = I18N[code] ? code : "en";
   document.documentElement.lang = lang;
-  document.querySelectorAll("[data-i18n]").forEach(el => {
-    const t = I18N[lang][el.dataset.i18n];
-    if (t) el.textContent = t;
-  });
-  document.getElementById("langCode").textContent = lang.toUpperCase();
-  langMenu.querySelectorAll("button").forEach(b => b.setAttribute("aria-current", b.dataset.lang === lang));
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  [loginError, loginInfo].forEach(el => { if (el.dataset.key) el.textContent = t(el.dataset.key, JSON.parse(el.dataset.vars || "{}")); });
+  document.getElementById("secInfo").innerHTML = t("secInfo", { m: SECURITY.idleLockMinutes });
+  refreshStorageBadge();
+  if (session) renderAudit();
+  onLangChange();
   try { localStorage.setItem("lang", lang); } catch (e) {}
 }
 
@@ -219,7 +846,6 @@ langMenu.addEventListener("click", e => {
   if (b) { applyLang(b.dataset.lang); langMenu.classList.remove("open"); }
 });
 document.addEventListener("click", () => langMenu.classList.remove("open"));
-applyLang(lang);
 
 /* ================= Starfield / Warp ================= */
 const canvas = document.getElementById("stars");
@@ -227,8 +853,8 @@ const ctx = canvas.getContext("2d");
 let W, H, CX, CY;
 const STAR_COUNT = 900;
 const stars = [];
-let speed = 0.4;          // velocità corrente
-let targetSpeed = 0.4;    // velocità desiderata
+let speed = 0.4;
+let targetSpeed = 0.4;
 
 function resize() {
   const dpr = window.devicePixelRatio || 1;
@@ -249,15 +875,15 @@ addEventListener("resize", resize);
 
 function frame() {
   speed += (targetSpeed - speed) * 0.08;
-  const warp = Math.min(speed / 60, 1);           // 0 = idle, 1 = salto pieno
-  ctx.fillStyle = `rgba(3, 4, 10, ${0.9 - warp * 0.55})`; // scia più lunga in warp
+  const warp = Math.min(speed / 60, 1);
+  ctx.fillStyle = `rgba(3, 4, 10, ${0.9 - warp * 0.55})`;
   ctx.fillRect(0, 0, W, H);
+  const dpr = window.devicePixelRatio || 1;
 
   for (const s of stars) {
     s.pz = s.z;
     s.z -= speed * (W / 1000);
     if (s.z < 1) { newStar(s, false); continue; }
-
     const k = 300 / s.z, pk = 300 / s.pz;
     const x = s.x * k + CX, y = s.y * k + CY;
     const px = s.x * pk + CX, py = s.y * pk + CY;
@@ -267,7 +893,7 @@ function frame() {
     ctx.strokeStyle = warp > 0.05
       ? `rgba(${180 + 75 * b | 0}, ${220 + 35 * b | 0}, 255, ${b})`
       : `rgba(232, 236, 255, ${b})`;
-    ctx.lineWidth = Math.max(0.6, (1 - s.z / W) * 2.6) * (window.devicePixelRatio || 1);
+    ctx.lineWidth = Math.max(0.6, (1 - s.z / W) * 2.6) * dpr;
     ctx.beginPath();
     ctx.moveTo(px, py);
     ctx.lineTo(x + 0.1, y + 0.1);
@@ -277,61 +903,1987 @@ function frame() {
 }
 requestAnimationFrame(frame);
 
+/* =====================================================================
+   CRITTOGRAFIA (Web Crypto, nativa del browser)
+   ===================================================================== */
+const enc = new TextEncoder(), dec = new TextDecoder();
+const b64 = buf => {            // a blocchi: evita lo stack overflow su dati grandi
+  const u8 = new Uint8Array(buf); let s = "";
+  for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(s);
+};
+const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const hasCrypto = !!(window.crypto && crypto.subtle);
+
+async function sha256hex(text) {
+  const h = await crypto.subtle.digest("SHA-256", enc.encode(text));
+  return [...new Uint8Array(h)].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+async function deriveKey(passphrase, salt, iterations) {
+  const base = await crypto.subtle.importKey("raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey(
+    { name: "PBKDF2", hash: "SHA-256", salt, iterations },
+    base, { name: "AES-GCM", length: 256 }, false /* chiave NON estraibile */, ["encrypt", "decrypt"]);
+}
+async function encryptJSON(key, value) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, enc.encode(JSON.stringify(value)));
+  return { iv: b64(iv), ct: b64(ct) };
+}
+async function decryptJSON(key, box) {
+  const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(box.iv) }, key, unb64(box.ct));
+  return JSON.parse(dec.decode(pt));
+}
+
+/* =====================================================================
+   AUTENTICAZIONE (PROVVISORIA, lato client)
+   Le credenziali NON sono in chiaro: si conserva solo SHA-256("mlsn:v1|nome|istituzione").
+   Per aggiungere un utente: calcola l'hash (es. in Python:
+     hashlib.sha256(b"mlsn:v1|mario|esa").hexdigest()) e aggiungilo qui.
+   In produzione va sostituita da una verifica lato server.
+   ===================================================================== */
+const AUTHORIZED_HASHES = [
+  "8ae66a64fc5f2939103b24ff5df7847cd6b7770fc755306f3c7ccdb6e451d9ca", // Edoardo · Patos
+];
+const norm = s => s.trim().toLowerCase().replace(/\s+/g, " ");
+
+let session = null; // SOLO in memoria: ricaricare la pagina richiede un nuovo accesso
+
+// --- Limitazione tentativi (persistente tra i ricaricamenti) ---
+const Throttle = {
+  read() { try { return JSON.parse(localStorage.getItem("mlsn-throttle")) || { fails: 0, lockouts: 0, until: 0 }; } catch (e) { return { fails: 0, lockouts: 0, until: 0 }; } },
+  write(s) { try { localStorage.setItem("mlsn-throttle", JSON.stringify(s)); } catch (e) {} },
+  remaining() { return Math.max(0, Math.ceil((this.read().until - Date.now()) / 1000)); },
+  fail() {
+    const s = this.read();
+    s.fails++;
+    if (s.fails % SECURITY.maxAttempts === 0) {
+      s.until = Date.now() + SECURITY.lockoutBaseSeconds * 1000 * 2 ** s.lockouts;
+      s.lockouts++;
+    }
+    this.write(s);
+  },
+  success() { const n = this.read().fails; this.write({ fails: 0, lockouts: 0, until: 0 }); return n; },
+};
+
+/* =====================================================================
+   LocalVault: archivio CIFRATO solo sul dispositivo
+   - IndexedDB del browser, nessuna chiamata di rete.
+   - Ogni valore è cifrato con AES-256-GCM; la chiave deriva dalla passphrase
+     (PBKDF2-SHA256) e resta solo in memoria finché la sessione è aperta.
+   - Separato per utente + istituzione.
+   API: await LocalVault.set(k, v) · get(k) · all() · clear() · setMany(obj)
+   ===================================================================== */
+const LocalVault = (() => {
+  const DB = "mlsn-expert", STORE = "vault", META = "__meta";
+  let db = null, tried = false, ns = "", key = null, meta = null;
+  const mem = new Map();
+  const full = k => ns + "::" + k;
+
+  function openDB() {
+    return new Promise(res => {
+      try {
+        const r = indexedDB.open(DB, 1);
+        r.onupgradeneeded = () => r.result.createObjectStore(STORE);
+        r.onsuccess = () => { db = r.result; res(); };
+        r.onerror = () => res();
+      } catch (e) { res(); }
+    });
+  }
+  function run(mode, fn) {
+    return new Promise((res, rej) => {
+      const tx = db.transaction(STORE, mode);
+      let out;
+      fn(tx.objectStore(STORE), v => { out = v; });
+      tx.oncomplete = () => res(out);
+      tx.onerror = () => rej(tx.error);
+    });
+  }
+  async function rawGet(k) {
+    if (!db) return mem.get(full(k));
+    return run("readonly", (s, out) => { const r = s.get(full(k)); r.onsuccess = () => out(r.result); });
+  }
+  async function rawSet(k, v) {
+    if (!db) return void mem.set(full(k), v);
+    await run("readwrite", s => s.put(v, full(k)));
+  }
+  async function rawEntries() {
+    const prefix = ns + "::", out = [];
+    if (!db) { for (const [k, v] of mem) if (k.startsWith(prefix)) out.push([k.slice(prefix.length), v]); return out; }
+    await run("readonly", s => {
+      s.openCursor().onsuccess = e => {
+        const c = e.target.result; if (!c) return;
+        if (String(c.key).startsWith(prefix)) out.push([String(c.key).slice(prefix.length), c.value]);
+        c.continue();
+      };
+    });
+    return out;
+  }
+  async function rawDelete(k) {
+    if (!db) return void mem.delete(full(k));
+    await run("readwrite", s => s.delete(full(k)));
+  }
+  const need = () => { if (!key) throw new Error("vault locked"); };
+
+  return {
+    get persistent() { return !!db; },
+    get unlocked() { return !!key; },
+    get meta() { return meta; },
+
+    // Ritorna "ok" | "created" | "wrong" | "short"
+    async unlock(user, passphrase) {
+      ns = norm(user.institution) + "/" + norm(user.name);
+      if (!tried) { tried = true; await openDB(); }
+      meta = await rawGet(META);
+      if (!meta) {
+        if (passphrase.length < SECURITY.minPassphrase) return "short";
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        key = await deriveKey(passphrase, salt, SECURITY.pbkdf2Iterations);
+        meta = { v: 1, salt: b64(salt), iterations: SECURITY.pbkdf2Iterations,
+                 check: await encryptJSON(key, "mlsn-ok"), createdAt: new Date().toISOString() };
+        await rawSet(META, meta);
+        try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
+        return "created";
+      }
+      const k = await deriveKey(passphrase, unb64(meta.salt), meta.iterations);
+      try { if (await decryptJSON(k, meta.check) !== "mlsn-ok") throw 0; }
+      catch (e) { return "wrong"; }
+      key = k;
+      return "ok";
+    },
+    lock() { key = null; meta = null; },
+
+    async set(k, v) { need(); await rawSet(k, await encryptJSON(key, v)); },
+    async setMany(obj) { for (const [k, v] of Object.entries(obj)) await this.set(k, v); },
+    async get(k) { need(); const box = await rawGet(k); return box ? decryptJSON(key, box) : undefined; },
+    async all() { // solo dati utente (esclude chiavi di sistema "__")
+      need();
+      const data = {};
+      for (const [k, box] of await rawEntries()) if (!k.startsWith("__")) data[k] = await decryptJSON(key, box);
+      return data;
+    },
+    async clear() {
+      need();
+      for (const [k] of await rawEntries()) if (k !== META) await rawDelete(k);
+    },
+    encrypt: v => (need(), encryptJSON(key, v)),
+    decrypt: box => (need(), decryptJSON(key, box)),
+  };
+})();
+
+/* ================= Registro accessi (cifrato nel vault) ================= */
+async function audit(type, vars = {}) {
+  if (!LocalVault.unlocked) return;
+  const log = (await LocalVault.get("__audit")) || [];
+  log.unshift({ at: new Date().toISOString(), type, vars });
+  await LocalVault.set("__audit", log.slice(0, 200));
+  await renderAudit();
+}
+async function renderAudit() {
+  const ul = document.getElementById("auditList");
+  if (!LocalVault.unlocked) { ul.innerHTML = ""; return; }
+  let log;
+  try { log = (await LocalVault.get("__audit")) || []; }
+  catch (e) { ul.innerHTML = ""; return; } // vault bloccato nel frattempo
+  ul.innerHTML = "";
+  log.slice(0, 50).forEach(e => {
+    const li = document.createElement("li");
+    li.textContent = new Date(e.at).toLocaleString(lang) + "  ";
+    const sp = document.createElement("span");
+    sp.textContent = t("ev_" + e.type, e.vars);
+    li.appendChild(sp);
+    ul.appendChild(li);
+  });
+}
+
 /* ================= Navigazione ================= */
-const home = document.getElementById("home");
+const PROTECTED = ["expert", "tutorial", "workspace"]; // richiedono vault sbloccato
+let current = "home";
+
+function showView(name) {
+  if (PROTECTED.includes(name) && !(session && LocalVault.unlocked)) name = "login";
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + name));
+  current = name;
+  document.body.classList.toggle("ws-on", name === "workspace");
+  if (name === "expert") {
+    document.getElementById("userName").textContent = session.name;
+    document.getElementById("userInst").textContent = session.institution;
+  }
+  if (name === "workspace") loadWorkspace();
+  if (name === "login") {
+    updateLockoutUI();
+    setTimeout(() => document.getElementById("loginName").focus(), 350);
+  }
+  if (name !== "workspace") targetSpeed = 0.4;
+}
+
+document.addEventListener("click", e => {
+  const go = e.target.closest("[data-go]");
+  if (go) showView(go.dataset.go);
+  if (e.target.closest("[data-lock]")) lockSession("lockedManual");
+});
+document.getElementById("btnExpert").addEventListener("click", () => showView("expert"));
+
+/* ================= Login ================= */
+const loginForm = document.getElementById("loginForm");
+const loginError = document.getElementById("loginError");
+const loginInfo = document.getElementById("loginInfo");
+const btnLogin = document.getElementById("btnLogin");
+const fName = document.getElementById("loginName");
+const fInst = document.getElementById("loginInst");
+const fPass = document.getElementById("loginPass");
+
+function setMsg(el, key, vars = {}) {
+  el.dataset.key = key || ""; el.dataset.vars = JSON.stringify(vars);
+  el.textContent = key ? t(key, vars) : "";
+}
+function fail(key, vars) {
+  setMsg(loginError, key, vars);
+  loginForm.classList.remove("shake"); void loginForm.offsetWidth; loginForm.classList.add("shake");
+}
+let lockoutTimer = null;
+function updateLockoutUI() {
+  clearInterval(lockoutTimer);
+  const tick = () => {
+    const s = Throttle.remaining();
+    btnLogin.disabled = s > 0 || !hasCrypto;
+    if (!hasCrypto) setMsg(loginError, "noCrypto");
+    else if (s > 0) setMsg(loginError, "lockedOut", { s });
+    else { if (loginError.dataset.key === "lockedOut") setMsg(loginError, ""); clearInterval(lockoutTimer); }
+  };
+  tick();
+  if (Throttle.remaining() > 0) lockoutTimer = setInterval(tick, 1000);
+}
+
+loginForm.addEventListener("submit", e => { e.preventDefault(); tryLogin(); });
+btnLogin.addEventListener("click", tryLogin);
+[fName, fInst, fPass].forEach(f => f.addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); tryLogin(); }
+}));
+
+let busy = false;
+async function tryLogin() {
+  if (busy || !hasCrypto || Throttle.remaining() > 0) return updateLockoutUI();
+  const name = fName.value, inst = fInst.value, pass = fPass.value;
+  if (!name.trim() || !inst.trim() || !pass) return fail("loginEmpty");
+
+  busy = true; btnLogin.disabled = true; btnLogin.textContent = t("checking");
+  try {
+    const hash = await sha256hex(`mlsn:v1|${norm(name)}|${norm(inst)}`);
+    if (!AUTHORIZED_HASHES.includes(hash)) { Throttle.fail(); return fail("loginError"); }
+
+    const user = { name: name.trim(), institution: inst.trim() };
+    const res = await LocalVault.unlock(user, pass);
+    if (res === "short") return fail("passShort", { n: SECURITY.minPassphrase });
+    if (res === "wrong") { Throttle.fail(); return fail("loginError"); } // messaggio generico apposta
+
+    const prevFails = Throttle.success();
+    session = user;
+    fName.value = fInst.value = fPass.value = "";
+    setMsg(loginError, ""); setMsg(loginInfo, "");
+    if (res === "created") await audit("vault_created");
+    await audit("login");
+    if (prevFails) await audit("failed", { n: prevFails });
+    buildWatermark();
+    resetIdle();
+    showView("expert");
+  } finally {
+    busy = false; btnLogin.textContent = t("enter");
+    updateLockoutUI();
+  }
+}
+
+/* ================= Blocco sessione ================= */
+async function lockSession(reasonKey) {
+  if (!session) return;
+  if (warping) endWarp(true);
+  clearTimeout(saveTimer);
+  if (pendingSave) await pendingSave();             // non perdere l'ultima modifica
+  await audit("lock");
+  session = null;
+  LocalVault.lock();
+  wsNotes.value = "";
+  document.getElementById("auditList").innerHTML = "";
+  document.getElementById("watermark").style.backgroundImage = "";
+  hideShield();
+  setMsg(loginInfo, reasonKey);
+  showView("login");
+}
+
+// Blocco automatico per inattività
+let idleTimer = null;
+function resetIdle() {
+  clearTimeout(idleTimer);
+  if (session) idleTimer = setTimeout(() => lockSession("lockedIdle"), SECURITY.idleLockMinutes * 60 * 1000);
+}
+["mousemove", "mousedown", "keydown", "touchstart", "wheel"].forEach(ev =>
+  document.addEventListener(ev, resetIdle, { passive: true }));
+
+/* ================= Schermo privacy & filigrana ================= */
+const shield = document.getElementById("privacyShield");
+function showShield() { if (SECURITY.privacyShield && session) shield.classList.add("show"); }
+function hideShield() { shield.classList.remove("show"); }
+window.addEventListener("blur", showShield);
+window.addEventListener("focus", hideShield);
+document.addEventListener("visibilitychange", () => document.hidden ? showShield() : hideShield());
+shield.addEventListener("click", hideShield);
+
+function buildWatermark() {
+  const text = `${session.name} · ${session.institution} · ${new Date().toLocaleDateString()}`
+    .replace(/[<>&"]/g, "");
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='420' height='220'>
+    <text x='0' y='120' transform='rotate(-20 210 110)' fill='rgba(232,236,255,0.05)'
+      font-family='Inter, sans-serif' font-size='16' letter-spacing='2'>${text}</text></svg>`;
+  document.getElementById("watermark").style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
+
+/* ================= Workspace ================= */
+const wsNotes = document.getElementById("wsNotes");
+const wsStatus = document.getElementById("wsStatus");
+let saveTimer = null, clearArmed = null, pendingSave = null;
+
+function setStatus(text) { wsStatus.textContent = text; }
+function refreshStorageBadge() {
+  const ok = !LocalVault.unlocked || LocalVault.persistent;
+  document.querySelectorAll("[data-private-badge]").forEach(b => {
+    b.classList.toggle("warn", !ok);
+    b.querySelector("span").textContent = t(ok ? "privateBadge" : "noStorage");
+  });
+}
+async function loadWorkspace() {
+  if (!LocalVault.unlocked) return;
+  refreshStorageBadge();
+  wsNotes.value = (await LocalVault.get("notes")) || "";
+  setStatus("");
+  renderAudit();
+  await loadMissionParams();
+  showStage("globe");               // prima di tutto: scelta dell'area sul globo 3D
+}
+wsNotes.addEventListener("input", () => {
+  setStatus(t("saving"));
+  clearTimeout(saveTimer);
+  pendingSave = async () => {
+    pendingSave = null;
+    if (!LocalVault.unlocked) return;
+    await LocalVault.set("notes", wsNotes.value);
+    await LocalVault.set("updatedAt", new Date().toISOString());
+    setStatus(LocalVault.persistent ? `${t("savedAt")} ${new Date().toLocaleTimeString(lang)}` : t("noStorage"));
+  };
+  saveTimer = setTimeout(() => pendingSave && pendingSave(), 400);
+});
+
+// Esporta CIFRATO: decifrabile solo con la passphrase (anche da Python, vedi decrypt_export.py)
+document.getElementById("btnExport").addEventListener("click", async () => {
+  const m = LocalVault.meta;
+  const payload = {
+    app: "moon-landing-site-navigator", edition: "expert", version: 2, encrypted: true,
+    kdf: { name: "PBKDF2", hash: "SHA-256", iterations: m.iterations, salt: m.salt },
+    cipher: { name: "AES-GCM", ...(await LocalVault.encrypt({
+      user: session, exportedAt: new Date().toISOString(), data: await LocalVault.all() })) },
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `mlsn-expert-${new Date().toISOString().slice(0, 10)}.enc.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  audit("export");
+});
+
+// Importa: backup cifrato dello stesso vault, oppure JSON in chiaro (es. generato da Python)
+const importFile = document.getElementById("importFile");
+document.getElementById("btnImport").addEventListener("click", () => importFile.click());
+importFile.addEventListener("change", async () => {
+  const f = importFile.files[0]; importFile.value = "";
+  if (!f) return;
+  try {
+    const json = JSON.parse(await f.text());
+    let data;
+    if (json && json.encrypted) {
+      if (json.kdf.salt !== LocalVault.meta.salt) return setStatus(t("importForeign"));
+      data = (await LocalVault.decrypt(json.cipher)).data;
+    } else data = json && json.data;
+    if (!data || typeof data !== "object") throw new Error("bad");
+    for (const k of Object.keys(data)) if (k.startsWith("__")) delete data[k];
+    await LocalVault.setMany(data);
+    await loadWorkspace();
+    setStatus(t("imported"));
+    audit("import");
+  } catch (e) { setStatus(t("importErr")); }
+});
+
+// Elimina: doppio click per confermare (niente popup del browser)
+const btnClear = document.getElementById("btnClear");
+btnClear.addEventListener("click", async () => {
+  if (!clearArmed) {
+    btnClear.textContent = t("clearConfirm");
+    clearArmed = setTimeout(() => { clearArmed = null; btnClear.textContent = t("clearBtn"); }, 3000);
+    return;
+  }
+  clearTimeout(clearArmed); clearArmed = null;
+  btnClear.textContent = t("clearBtn");
+  await LocalVault.clear();
+  wsNotes.value = "";
+  setStatus(t("cleared"));
+  await audit("clear");
+});
+
+/* =====================================================================
+   WORKSPACE POLO SUD
+   ===================================================================== */
+const I18N_WS = {
+  it: { wsTitle: "Workspace · Polo Sud", demoData: "Dati dimostrativi", editParams: "Parametri", weightsTitle: "Pesi di progetto",
+        setupStep: "Passo 1", setupTitle: "Parametri di progetto", setupSub: "Assegna un peso da 1 a 10 a ciascun requisito del sito di atterraggio",
+        p_sun: "Visibilità solare", p_sun_d: "Quota di tempo in cui il sito è illuminato dal Sole",
+        p_earth: "Visibilità della Terra", p_earth_d: "Quota di tempo con la Terra in vista per le comunicazioni",
+        p_ice: "Ghiaccio nelle vicinanze", p_ice_d: "Crateri in ombra permanente con ghiaccio entro 2 km (great circle)",
+        arrival: "Data di arrivo", arrivalNote: "All'arrivo la Terra deve essere visibile: le zone escluse appaiono tratteggiate",
+        generate: "Genera mappa", computing: "Calcolo…", layers: "Livello mappa",
+        l_score: "Punteggio", l_sun: "Sole", l_earth: "Terra", l_ice: "Ghiaccio", zoom: "Estensione", craters: "Crateri",
+        topSites: "Siti migliori", noSites: "Nessun sito compatibile con i vincoli", vaultTitle: "Note e dati",
+        masked: "Terra non visibile all'arrivo", sunLbl: "Sole", earthLbl: "Terra",
+        lg_score: "Punteggio combinato (media pesata)", lg_sun: "Tempo illuminato dal Sole", lg_earth: "Tempo con la Terra in vista",
+        lg_ice: "Vicinanza a ghiaccio (crateri in ombra)", lo: "basso", hi: "alto", far: "≥ 10 km", near: "≤ 2 km",
+        tipSun: "Sole", tipEarth: "Terra", tipIce: "Ghiaccio a", tipScore: "Punteggio",
+        ephem: "All'arrivo, dal polo: <b style='color:#fbbf24'>Sole</b> long. {sl}, elev. {se} · <b style='color:#38bdf8'>Terra</b> long. {el}, elev. {ee}" },
+  en: { wsTitle: "Workspace · South Pole", demoData: "Demo data", editParams: "Parameters", weightsTitle: "Project weights",
+        setupStep: "Step 1", setupTitle: "Project parameters", setupSub: "Give each landing-site requirement a weight from 1 to 10",
+        p_sun: "Sun visibility", p_sun_d: "Share of time the site is illuminated by the Sun",
+        p_earth: "Earth visibility", p_earth_d: "Share of time Earth is in view for communications",
+        p_ice: "Nearby ice", p_ice_d: "Permanently shadowed craters with ice within 2 km (great circle)",
+        arrival: "Arrival date", arrivalNote: "Earth must be visible at arrival: excluded areas are hatched",
+        generate: "Generate map", computing: "Computing…", layers: "Map layer",
+        l_score: "Score", l_sun: "Sun", l_earth: "Earth", l_ice: "Ice", zoom: "Extent", craters: "Craters",
+        topSites: "Best sites", noSites: "No site meets the constraints", vaultTitle: "Notes & data",
+        masked: "Earth not visible at arrival", sunLbl: "Sun", earthLbl: "Earth",
+        lg_score: "Combined score (weighted mean)", lg_sun: "Time in sunlight", lg_earth: "Time with Earth in view",
+        lg_ice: "Proximity to ice (shadowed craters)", lo: "low", hi: "high", far: "≥ 10 km", near: "≤ 2 km",
+        tipSun: "Sun", tipEarth: "Earth", tipIce: "Ice at", tipScore: "Score",
+        ephem: "At arrival, from the pole: <b style='color:#fbbf24'>Sun</b> lon. {sl}, elev. {se} · <b style='color:#38bdf8'>Earth</b> lon. {el}, elev. {ee}" },
+  es: { wsTitle: "Workspace · Polo Sur", demoData: "Datos de demostración", editParams: "Parámetros", weightsTitle: "Pesos del proyecto",
+        setupStep: "Paso 1", setupTitle: "Parámetros del proyecto", setupSub: "Asigna un peso de 1 a 10 a cada requisito del sitio de alunizaje",
+        p_sun: "Visibilidad solar", p_sun_d: "Fracción de tiempo en que el sitio está iluminado",
+        p_earth: "Visibilidad de la Tierra", p_earth_d: "Fracción de tiempo con la Tierra a la vista para comunicaciones",
+        p_ice: "Hielo cercano", p_ice_d: "Cráteres en sombra permanente con hielo a menos de 2 km (círculo máximo)",
+        arrival: "Fecha de llegada", arrivalNote: "A la llegada la Tierra debe ser visible: las zonas excluidas aparecen rayadas",
+        generate: "Generar mapa", computing: "Calculando…", layers: "Capa del mapa",
+        l_score: "Puntuación", l_sun: "Sol", l_earth: "Tierra", l_ice: "Hielo", zoom: "Extensión", craters: "Cráteres",
+        topSites: "Mejores sitios", noSites: "Ningún sitio cumple las restricciones", vaultTitle: "Notas y datos",
+        masked: "Tierra no visible a la llegada", sunLbl: "Sol", earthLbl: "Tierra",
+        lg_score: "Puntuación combinada (media ponderada)", lg_sun: "Tiempo al sol", lg_earth: "Tiempo con la Tierra a la vista",
+        lg_ice: "Cercanía al hielo (cráteres en sombra)", lo: "bajo", hi: "alto", far: "≥ 10 km", near: "≤ 2 km",
+        tipSun: "Sol", tipEarth: "Tierra", tipIce: "Hielo a", tipScore: "Puntuación",
+        ephem: "A la llegada, desde el polo: <b style='color:#fbbf24'>Sol</b> long. {sl}, elev. {se} · <b style='color:#38bdf8'>Tierra</b> long. {el}, elev. {ee}" },
+  fr: { wsTitle: "Workspace · Pôle Sud", demoData: "Données de démonstration", editParams: "Paramètres", weightsTitle: "Pondérations du projet",
+        setupStep: "Étape 1", setupTitle: "Paramètres du projet", setupSub: "Attribuez un poids de 1 à 10 à chaque exigence du site d'alunissage",
+        p_sun: "Visibilité solaire", p_sun_d: "Part du temps où le site est éclairé par le Soleil",
+        p_earth: "Visibilité de la Terre", p_earth_d: "Part du temps avec la Terre en vue pour les communications",
+        p_ice: "Glace à proximité", p_ice_d: "Cratères à ombre permanente avec glace à moins de 2 km (grand cercle)",
+        arrival: "Date d'arrivée", arrivalNote: "La Terre doit être visible à l'arrivée : les zones exclues sont hachurées",
+        generate: "Générer la carte", computing: "Calcul…", layers: "Couche",
+        l_score: "Score", l_sun: "Soleil", l_earth: "Terre", l_ice: "Glace", zoom: "Étendue", craters: "Cratères",
+        topSites: "Meilleurs sites", noSites: "Aucun site ne respecte les contraintes", vaultTitle: "Notes et données",
+        masked: "Terre non visible à l'arrivée", sunLbl: "Soleil", earthLbl: "Terre",
+        lg_score: "Score combiné (moyenne pondérée)", lg_sun: "Temps au soleil", lg_earth: "Temps avec la Terre en vue",
+        lg_ice: "Proximité de la glace (cratères ombragés)", lo: "faible", hi: "élevé", far: "≥ 10 km", near: "≤ 2 km",
+        tipSun: "Soleil", tipEarth: "Terre", tipIce: "Glace à", tipScore: "Score",
+        ephem: "À l'arrivée, depuis le pôle : <b style='color:#fbbf24'>Soleil</b> long. {sl}, élév. {se} · <b style='color:#38bdf8'>Terre</b> long. {el}, élév. {ee}" },
+  de: { wsTitle: "Workspace · Südpol", demoData: "Demodaten", editParams: "Parameter", weightsTitle: "Projektgewichte",
+        setupStep: "Schritt 1", setupTitle: "Projektparameter", setupSub: "Gewichte jede Anforderung an den Landeplatz von 1 bis 10",
+        p_sun: "Sonnensichtbarkeit", p_sun_d: "Zeitanteil, in dem der Ort von der Sonne beleuchtet ist",
+        p_earth: "Erdsichtbarkeit", p_earth_d: "Zeitanteil mit Erde in Sicht für die Kommunikation",
+        p_ice: "Eis in der Nähe", p_ice_d: "Dauerhaft beschattete Krater mit Eis innerhalb von 2 km (Großkreis)",
+        arrival: "Ankunftsdatum", arrivalNote: "Bei Ankunft muss die Erde sichtbar sein: ausgeschlossene Zonen sind schraffiert",
+        generate: "Karte erzeugen", computing: "Berechnung…", layers: "Kartenebene",
+        l_score: "Wertung", l_sun: "Sonne", l_earth: "Erde", l_ice: "Eis", zoom: "Ausdehnung", craters: "Krater",
+        topSites: "Beste Orte", noSites: "Kein Ort erfüllt die Bedingungen", vaultTitle: "Notizen & Daten",
+        masked: "Erde bei Ankunft nicht sichtbar", sunLbl: "Sonne", earthLbl: "Erde",
+        lg_score: "Gesamtwertung (gewichtetes Mittel)", lg_sun: "Zeit im Sonnenlicht", lg_earth: "Zeit mit Erde in Sicht",
+        lg_ice: "Nähe zu Eis (beschattete Krater)", lo: "niedrig", hi: "hoch", far: "≥ 10 km", near: "≤ 2 km",
+        tipSun: "Sonne", tipEarth: "Erde", tipIce: "Eis in", tipScore: "Wertung",
+        ephem: "Bei Ankunft, vom Pol: <b style='color:#fbbf24'>Sonne</b> Länge {sl}, Höhe {se} · <b style='color:#38bdf8'>Erde</b> Länge {el}, Höhe {ee}" },
+};
+Object.keys(I18N).forEach(c => Object.assign(I18N[c], I18N_WS[c]));
+
+/* ---------- Testi globo / area / missione / tempo ---------- */
+const I18N_GLOBE = {
+  it: { wsTitle: "Workspace", stepArea: "Passo 1 · Area", setupStep: "Passo 2 · Missione", globeTitle: "Seleziona l'area da osservare",
+        globeHelp: "Le zone verdi hanno dati dettagliati: l'area va scelta al loro interno. Trascina per ruotare, rotella per lo zoom. In modalità Seleziona: clicca il centro e trascina per il raggio (un clic seleziona l'area massima possibile).",
+        modeRotate: "Ruota", modeSelect: "Seleziona", coordsTitle: "Coordinate", latLbl: "Latitudine (°)", lonLbl: "Longitudine (°)",
+        coordHint: "Latitudine: + nord / − sud · Longitudine: + est / − ovest", centerBtn: "Seleziona area massima qui",
+        invalidCoords: "Coordinate non valide (lat −90…90, lon −180…180)", selTitle: "Area selezionata", selNone: "Nessuna area selezionata",
+        selCenter: "Centro", selRadius: "Raggio", selArea: "Superficie", tooBig: "✕ Area troppo grande: massimo {m}° di raggio (≈ {km} km)",
+        tooSmall: "✕ Area troppo piccola: minimo {m}°", okSize: "✓ Area valida · dati: {n}", fit: "Adatta all'area consentita",
+        noData: "✕ Nessun dato dettagliato in questo punto: scegli una zona verde", outside: "✕ L'area esce dalla zona con dati: qui il raggio massimo è {m}°",
+        edge: "✕ Troppo vicino al bordo della zona con dati",
+        confirmArea: "Conferma area", confirmTitle: "Confermi l'area?", confirmText: "Centro {c}, raggio {r}° (≈ {km} km), dati: {n}. Si passerà alla personalizzazione della missione.",
+        cancel: "Annulla", confirm: "Conferma", changeArea: "Cambia area",
+        nearSide: "Lato visibile: la Terra è sempre o quasi sempre in vista.", farSide: "Lato nascosto: la Terra non è mai visibile (servirebbe un satellite relay).",
+        limb: "Bordo del disco: Terra visibile solo a tratti (librazione).", polar: "Regione polare: possibile ghiaccio nei crateri in ombra permanente.",
+        areaSub: "{n} · {c} · r {r}°", zoom: "Zoom",
+        coverageTitle: "Aree con dati dettagliati", covDemo: "demo", covImport: "importata", covServer: "server",
+        importData: "Importa dati area (.json)", dataImported: "✓ Area importata: {n}", dataErr: "✕ File dati non valido: {e}", removeData: "Rimuovi",
+        missionTitle: "Personalizza missione", missionSub: "Imposta i parametri o importa un file missione: la mappa 2D verrà calcolata su questi.",
+        importMission: "Importa missione", exportMission: "Esporta missione + risultati", exportData: "Esporta dati area",
+        mName: "Nome missione", timeTitle: "Tempi", mStay: "Permanenza (ore)", constraintsTitle: "Vincoli rigidi (facoltativi)",
+        cSun: "Sole min %", cEarth: "Terra min %", cIce: "Ghiaccio max km",
+        constraintsHint: "0 = nessun vincolo. Le zone che non li rispettano vengono escluse dalla mappa.",
+        generate: "Calcola mappa", editParams: "Personalizza missione",
+        missionImported: "✓ Missione importata: {n}", missionErr: "✕ File missione non valido", missionRegionOut: "Area del file fuori dalle zone con dati: mantenuta l'area attuale.",
+        arrivalNote: "All'istante di atterraggio la Terra deve essere visibile. Sole e Terra sono valutati durante la permanenza.",
+        horizonLbl: "Valuta su", hStay: "Permanenza", hCycle: "Ciclo lunare",
+        lg_sun: "Tempo al Sole", lg_earth: "Tempo con la Terra in vista",
+        lg_sun_stay: "Sole durante la permanenza ({h} h)", lg_earth_stay: "Terra in vista durante la permanenza ({h} h)",
+        masked: "Escluso: Terra non visibile ora o vincoli non rispettati", maskEarth: "Terra non visibile in questo istante", maskCons: "Non rispetta i vincoli di missione",
+        dayShort: "g", tNow: "Ora", sunUp: "☀ al Sole", sunDown: "☾ in ombra", earthUp: "⊕ visibile", earthDown: "⊕ non visibile",
+        ephem: "In questo istante, dal centro dell'area: <b style='color:#fbbf24'>Sole</b> elev. {se}, az. {sa} · <b style='color:#38bdf8'>Terra</b> elev. {ee}, az. {ea}",
+        earthBelow: "⚠ In questo istante la Terra è sotto l'orizzonte al centro dell'area: gran parte dell'area è esclusa.",
+        ev_data_import: "Dati area importati: {n}", ev_mission_import: "Missione importata: {n}", ev_mission_export: "Missione esportata: {n}" },
+  en: { wsTitle: "Workspace", stepArea: "Step 1 · Area", setupStep: "Step 2 · Mission", globeTitle: "Select the area to observe",
+        globeHelp: "Green zones have detailed data: the area must lie inside them. Drag to rotate, scroll to zoom. In Select mode: click the centre and drag for the radius (a single click selects the largest possible area).",
+        modeRotate: "Rotate", modeSelect: "Select", coordsTitle: "Coordinates", latLbl: "Latitude (°)", lonLbl: "Longitude (°)",
+        coordHint: "Latitude: + north / − south · Longitude: + east / − west", centerBtn: "Select maximum area here",
+        invalidCoords: "Invalid coordinates (lat −90…90, lon −180…180)", selTitle: "Selected area", selNone: "No area selected",
+        selCenter: "Centre", selRadius: "Radius", selArea: "Surface", tooBig: "✕ Area too large: maximum radius {m}° (≈ {km} km)",
+        tooSmall: "✕ Area too small: minimum {m}°", okSize: "✓ Valid area · data: {n}", fit: "Fit to allowed area",
+        noData: "✕ No detailed data at this point: choose a green zone", outside: "✕ The area leaves the data zone: maximum radius here is {m}°",
+        edge: "✕ Too close to the edge of the data zone",
+        confirmArea: "Confirm area", confirmTitle: "Confirm the area?", confirmText: "Centre {c}, radius {r}° (≈ {km} km), data: {n}. Next: mission customization.",
+        cancel: "Cancel", confirm: "Confirm", changeArea: "Change area",
+        nearSide: "Near side: Earth is always or almost always in view.", farSide: "Far side: Earth is never visible (a relay satellite would be needed).",
+        limb: "Limb: Earth visible only at times (libration).", polar: "Polar region: possible ice in permanently shadowed craters.",
+        areaSub: "{n} · {c} · r {r}°", zoom: "Zoom",
+        coverageTitle: "Areas with detailed data", covDemo: "demo", covImport: "imported", covServer: "server",
+        importData: "Import area data (.json)", dataImported: "✓ Area imported: {n}", dataErr: "✕ Invalid data file: {e}", removeData: "Remove",
+        missionTitle: "Customize mission", missionSub: "Set the parameters or import a mission file: the 2D map will be computed from them.",
+        importMission: "Import mission", exportMission: "Export mission + results", exportData: "Export area data",
+        mName: "Mission name", timeTitle: "Timing", mStay: "Stay (hours)", constraintsTitle: "Hard constraints (optional)",
+        cSun: "Min Sun %", cEarth: "Min Earth %", cIce: "Max ice km",
+        constraintsHint: "0 = no constraint. Areas that fail them are excluded from the map.",
+        generate: "Compute map", editParams: "Customize mission",
+        missionImported: "✓ Mission imported: {n}", missionErr: "✕ Invalid mission file", missionRegionOut: "The file's area is outside the data zones: current area kept.",
+        arrivalNote: "Earth must be visible at the landing instant. Sun and Earth are evaluated over the stay.",
+        horizonLbl: "Evaluate on", hStay: "Stay window", hCycle: "Lunar cycle",
+        lg_sun: "Time in sunlight", lg_earth: "Time with Earth in view",
+        lg_sun_stay: "Sunlight during the stay ({h} h)", lg_earth_stay: "Earth in view during the stay ({h} h)",
+        masked: "Excluded: Earth not visible now or constraints not met", maskEarth: "Earth not visible at this instant", maskCons: "Fails mission constraints",
+        dayShort: "d", tNow: "Now", sunUp: "☀ sunlit", sunDown: "☾ shadow", earthUp: "⊕ visible", earthDown: "⊕ not visible",
+        ephem: "At this instant, from the area centre: <b style='color:#fbbf24'>Sun</b> elev. {se}, az. {sa} · <b style='color:#38bdf8'>Earth</b> elev. {ee}, az. {ea}",
+        earthBelow: "⚠ At this instant Earth is below the horizon at the area centre: most of the area is excluded.",
+        ev_data_import: "Area data imported: {n}", ev_mission_import: "Mission imported: {n}", ev_mission_export: "Mission exported: {n}" },
+  es: { wsTitle: "Workspace", stepArea: "Paso 1 · Área", setupStep: "Paso 2 · Misión", globeTitle: "Selecciona el área a observar",
+        globeHelp: "Las zonas verdes tienen datos detallados: el área debe estar dentro de ellas. Arrastra para girar, rueda para el zoom. En modo Seleccionar: clic en el centro y arrastra para el radio (un clic selecciona el área máxima posible).",
+        modeRotate: "Girar", modeSelect: "Seleccionar", coordsTitle: "Coordenadas", latLbl: "Latitud (°)", lonLbl: "Longitud (°)",
+        coordHint: "Latitud: + norte / − sur · Longitud: + este / − oeste", centerBtn: "Seleccionar área máxima aquí",
+        invalidCoords: "Coordenadas no válidas (lat −90…90, lon −180…180)", selTitle: "Área seleccionada", selNone: "Ninguna área seleccionada",
+        selCenter: "Centro", selRadius: "Radio", selArea: "Superficie", tooBig: "✕ Área demasiado grande: radio máximo {m}° (≈ {km} km)",
+        tooSmall: "✕ Área demasiado pequeña: mínimo {m}°", okSize: "✓ Área válida · datos: {n}", fit: "Ajustar al área permitida",
+        noData: "✕ No hay datos detallados en este punto: elige una zona verde", outside: "✕ El área sale de la zona con datos: aquí el radio máximo es {m}°",
+        edge: "✕ Demasiado cerca del borde de la zona con datos",
+        confirmArea: "Confirmar área", confirmTitle: "¿Confirmas el área?", confirmText: "Centro {c}, radio {r}° (≈ {km} km), datos: {n}. Siguiente: personalizar la misión.",
+        cancel: "Cancelar", confirm: "Confirmar", changeArea: "Cambiar área",
+        nearSide: "Cara visible: la Tierra está siempre o casi siempre a la vista.", farSide: "Cara oculta: la Tierra nunca es visible (haría falta un satélite relé).",
+        limb: "Borde del disco: Tierra visible solo a ratos (libración).", polar: "Región polar: posible hielo en cráteres en sombra permanente.",
+        areaSub: "{n} · {c} · r {r}°", zoom: "Zoom",
+        coverageTitle: "Áreas con datos detallados", covDemo: "demo", covImport: "importada", covServer: "servidor",
+        importData: "Importar datos de área (.json)", dataImported: "✓ Área importada: {n}", dataErr: "✕ Archivo de datos no válido: {e}", removeData: "Quitar",
+        missionTitle: "Personalizar misión", missionSub: "Define los parámetros o importa un archivo de misión: el mapa 2D se calculará con ellos.",
+        importMission: "Importar misión", exportMission: "Exportar misión + resultados", exportData: "Exportar datos del área",
+        mName: "Nombre de la misión", timeTitle: "Tiempos", mStay: "Estancia (horas)", constraintsTitle: "Restricciones (opcionales)",
+        cSun: "Sol mín %", cEarth: "Tierra mín %", cIce: "Hielo máx km",
+        constraintsHint: "0 = sin restricción. Las zonas que no las cumplen se excluyen.",
+        generate: "Calcular mapa", editParams: "Personalizar misión",
+        missionImported: "✓ Misión importada: {n}", missionErr: "✕ Archivo de misión no válido", missionRegionOut: "El área del archivo está fuera de las zonas con datos: se mantiene la actual.",
+        arrivalNote: "En el instante del alunizaje la Tierra debe ser visible. Sol y Tierra se evalúan durante la estancia.",
+        horizonLbl: "Evaluar en", hStay: "Estancia", hCycle: "Ciclo lunar",
+        lg_sun: "Tiempo al sol", lg_earth: "Tiempo con la Tierra a la vista",
+        lg_sun_stay: "Sol durante la estancia ({h} h)", lg_earth_stay: "Tierra a la vista durante la estancia ({h} h)",
+        masked: "Excluido: Tierra no visible ahora o restricciones no cumplidas", maskEarth: "Tierra no visible en este instante", maskCons: "No cumple las restricciones",
+        dayShort: "d", tNow: "Ahora", sunUp: "☀ al sol", sunDown: "☾ en sombra", earthUp: "⊕ visible", earthDown: "⊕ no visible",
+        ephem: "En este instante, desde el centro: <b style='color:#fbbf24'>Sol</b> elev. {se}, az. {sa} · <b style='color:#38bdf8'>Tierra</b> elev. {ee}, az. {ea}",
+        earthBelow: "⚠ En este instante la Tierra está bajo el horizonte en el centro del área: gran parte queda excluida.",
+        ev_data_import: "Datos de área importados: {n}", ev_mission_import: "Misión importada: {n}", ev_mission_export: "Misión exportada: {n}" },
+  fr: { wsTitle: "Workspace", stepArea: "Étape 1 · Zone", setupStep: "Étape 2 · Mission", globeTitle: "Sélectionnez la zone à observer",
+        globeHelp: "Les zones vertes ont des données détaillées : la zone doit s'y trouver. Glissez pour tourner, molette pour zoomer. En mode Sélection : cliquez le centre et glissez pour le rayon (un clic sélectionne la zone maximale possible).",
+        modeRotate: "Tourner", modeSelect: "Sélectionner", coordsTitle: "Coordonnées", latLbl: "Latitude (°)", lonLbl: "Longitude (°)",
+        coordHint: "Latitude : + nord / − sud · Longitude : + est / − ouest", centerBtn: "Sélectionner la zone maximale ici",
+        invalidCoords: "Coordonnées invalides (lat −90…90, lon −180…180)", selTitle: "Zone sélectionnée", selNone: "Aucune zone sélectionnée",
+        selCenter: "Centre", selRadius: "Rayon", selArea: "Surface", tooBig: "✕ Zone trop grande : rayon maximal {m}° (≈ {km} km)",
+        tooSmall: "✕ Zone trop petite : minimum {m}°", okSize: "✓ Zone valide · données : {n}", fit: "Ajuster à la zone autorisée",
+        noData: "✕ Pas de données détaillées ici : choisissez une zone verte", outside: "✕ La zone sort de la zone de données : rayon maximal ici {m}°",
+        edge: "✕ Trop près du bord de la zone de données",
+        confirmArea: "Confirmer la zone", confirmTitle: "Confirmer la zone ?", confirmText: "Centre {c}, rayon {r}° (≈ {km} km), données : {n}. Ensuite : personnalisation de la mission.",
+        cancel: "Annuler", confirm: "Confirmer", changeArea: "Changer de zone",
+        nearSide: "Face visible : la Terre est toujours ou presque toujours en vue.", farSide: "Face cachée : la Terre n'est jamais visible (un satellite relais serait nécessaire).",
+        limb: "Bord du disque : Terre visible par moments (libration).", polar: "Région polaire : glace possible dans les cratères à ombre permanente.",
+        areaSub: "{n} · {c} · r {r}°", zoom: "Zoom",
+        coverageTitle: "Zones avec données détaillées", covDemo: "démo", covImport: "importée", covServer: "serveur",
+        importData: "Importer des données (.json)", dataImported: "✓ Zone importée : {n}", dataErr: "✕ Fichier de données invalide : {e}", removeData: "Retirer",
+        missionTitle: "Personnaliser la mission", missionSub: "Définissez les paramètres ou importez un fichier mission : la carte 2D sera calculée à partir d'eux.",
+        importMission: "Importer une mission", exportMission: "Exporter mission + résultats", exportData: "Exporter les données",
+        mName: "Nom de la mission", timeTitle: "Temps", mStay: "Séjour (heures)", constraintsTitle: "Contraintes (facultatives)",
+        cSun: "Soleil min %", cEarth: "Terre min %", cIce: "Glace max km",
+        constraintsHint: "0 = aucune contrainte. Les zones qui ne les respectent pas sont exclues.",
+        generate: "Calculer la carte", editParams: "Personnaliser la mission",
+        missionImported: "✓ Mission importée : {n}", missionErr: "✕ Fichier mission invalide", missionRegionOut: "La zone du fichier est hors des zones de données : zone actuelle conservée.",
+        arrivalNote: "La Terre doit être visible à l'instant de l'alunissage. Soleil et Terre sont évalués sur le séjour.",
+        horizonLbl: "Évaluer sur", hStay: "Séjour", hCycle: "Cycle lunaire",
+        lg_sun: "Temps au soleil", lg_earth: "Temps avec la Terre en vue",
+        lg_sun_stay: "Soleil pendant le séjour ({h} h)", lg_earth_stay: "Terre en vue pendant le séjour ({h} h)",
+        masked: "Exclu : Terre non visible maintenant ou contraintes non respectées", maskEarth: "Terre non visible à cet instant", maskCons: "Ne respecte pas les contraintes",
+        dayShort: "j", tNow: "Maintenant", sunUp: "☀ au soleil", sunDown: "☾ à l'ombre", earthUp: "⊕ visible", earthDown: "⊕ non visible",
+        ephem: "À cet instant, depuis le centre : <b style='color:#fbbf24'>Soleil</b> élév. {se}, az. {sa} · <b style='color:#38bdf8'>Terre</b> élév. {ee}, az. {ea}",
+        earthBelow: "⚠ À cet instant la Terre est sous l'horizon au centre de la zone : la majeure partie est exclue.",
+        ev_data_import: "Données importées : {n}", ev_mission_import: "Mission importée : {n}", ev_mission_export: "Mission exportée : {n}" },
+  de: { wsTitle: "Workspace", stepArea: "Schritt 1 · Gebiet", setupStep: "Schritt 2 · Mission", globeTitle: "Gebiet zur Beobachtung wählen",
+        globeHelp: "Grüne Zonen haben detaillierte Daten: das Gebiet muss darin liegen. Ziehen zum Drehen, Mausrad zum Zoomen. Im Auswahlmodus: Mitte anklicken und für den Radius ziehen (ein Klick wählt das größtmögliche Gebiet).",
+        modeRotate: "Drehen", modeSelect: "Auswählen", coordsTitle: "Koordinaten", latLbl: "Breite (°)", lonLbl: "Länge (°)",
+        coordHint: "Breite: + Nord / − Süd · Länge: + Ost / − West", centerBtn: "Maximales Gebiet hier wählen",
+        invalidCoords: "Ungültige Koordinaten (Breite −90…90, Länge −180…180)", selTitle: "Gewähltes Gebiet", selNone: "Kein Gebiet gewählt",
+        selCenter: "Mitte", selRadius: "Radius", selArea: "Fläche", tooBig: "✕ Gebiet zu groß: maximaler Radius {m}° (≈ {km} km)",
+        tooSmall: "✕ Gebiet zu klein: mindestens {m}°", okSize: "✓ Gültiges Gebiet · Daten: {n}", fit: "An erlaubtes Gebiet anpassen",
+        noData: "✕ Keine detaillierten Daten hier: wähle eine grüne Zone", outside: "✕ Das Gebiet verlässt die Datenzone: maximaler Radius hier {m}°",
+        edge: "✕ Zu nah am Rand der Datenzone",
+        confirmArea: "Gebiet bestätigen", confirmTitle: "Gebiet bestätigen?", confirmText: "Mitte {c}, Radius {r}° (≈ {km} km), Daten: {n}. Als Nächstes: Mission anpassen.",
+        cancel: "Abbrechen", confirm: "Bestätigen", changeArea: "Gebiet ändern",
+        nearSide: "Vorderseite: Die Erde ist immer oder fast immer sichtbar.", farSide: "Rückseite: Die Erde ist nie sichtbar (ein Relaissatellit wäre nötig).",
+        limb: "Rand: Erde nur zeitweise sichtbar (Libration).", polar: "Polarregion: mögliches Eis in dauerhaft beschatteten Kratern.",
+        areaSub: "{n} · {c} · r {r}°", zoom: "Zoom",
+        coverageTitle: "Gebiete mit Detaildaten", covDemo: "Demo", covImport: "importiert", covServer: "Server",
+        importData: "Gebietsdaten importieren (.json)", dataImported: "✓ Gebiet importiert: {n}", dataErr: "✕ Ungültige Datendatei: {e}", removeData: "Entfernen",
+        missionTitle: "Mission anpassen", missionSub: "Parameter festlegen oder Missionsdatei importieren: die 2D-Karte wird daraus berechnet.",
+        importMission: "Mission importieren", exportMission: "Mission + Ergebnisse exportieren", exportData: "Gebietsdaten exportieren",
+        mName: "Missionsname", timeTitle: "Zeiten", mStay: "Aufenthalt (Stunden)", constraintsTitle: "Harte Bedingungen (optional)",
+        cSun: "Sonne min %", cEarth: "Erde min %", cIce: "Eis max km",
+        constraintsHint: "0 = keine Bedingung. Gebiete, die sie nicht erfüllen, werden ausgeschlossen.",
+        generate: "Karte berechnen", editParams: "Mission anpassen",
+        missionImported: "✓ Mission importiert: {n}", missionErr: "✕ Ungültige Missionsdatei", missionRegionOut: "Gebiet der Datei liegt außerhalb der Datenzonen: aktuelles Gebiet beibehalten.",
+        arrivalNote: "Im Landemoment muss die Erde sichtbar sein. Sonne und Erde werden über den Aufenthalt bewertet.",
+        horizonLbl: "Bewerten über", hStay: "Aufenthalt", hCycle: "Mondzyklus",
+        lg_sun: "Zeit im Sonnenlicht", lg_earth: "Zeit mit Erde in Sicht",
+        lg_sun_stay: "Sonne während des Aufenthalts ({h} h)", lg_earth_stay: "Erde in Sicht während des Aufenthalts ({h} h)",
+        masked: "Ausgeschlossen: Erde jetzt nicht sichtbar oder Bedingungen nicht erfüllt", maskEarth: "Erde in diesem Moment nicht sichtbar", maskCons: "Erfüllt die Missionsbedingungen nicht",
+        dayShort: "T", tNow: "Jetzt", sunUp: "☀ in der Sonne", sunDown: "☾ im Schatten", earthUp: "⊕ sichtbar", earthDown: "⊕ nicht sichtbar",
+        ephem: "In diesem Moment, von der Gebietsmitte: <b style='color:#fbbf24'>Sonne</b> Höhe {se}, Az. {sa} · <b style='color:#38bdf8'>Erde</b> Höhe {ee}, Az. {ea}",
+        earthBelow: "⚠ In diesem Moment steht die Erde in der Gebietsmitte unter dem Horizont: der Großteil ist ausgeschlossen.",
+        ev_data_import: "Gebietsdaten importiert: {n}", ev_mission_import: "Mission importiert: {n}", ev_mission_export: "Mission exportiert: {n}" },
+};
+Object.keys(I18N).forEach(c => Object.assign(I18N[c], I18N_GLOBE[c]));
+
+/* ---------- Geometria lunare (sfera) ---------- */
+const MOON_R = 1737.4;                 // km
+const DEG = Math.PI / 180;
+const wrap180 = a => ((a + 540) % 360) - 180;
+const AREA_LIMITS = { maxDeg: 10, minDeg: 1 };   // raggio massimo/minimo dell'area (gradi d'arco)
+const degToKm = d => d * DEG * MOON_R;
+const unit = (lat, lon) => { const p = lat * DEG, l = lon * DEG; return [Math.cos(p) * Math.cos(l), Math.cos(p) * Math.sin(l), Math.sin(p)]; };
+const angDeg = (a, b) => Math.acos(Math.max(-1, Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]))) / DEG;
+const fmtLat = v => `${Math.abs(v).toFixed(2)}°${v >= 0 ? "N" : "S"}`;
+const fmtLon = v => { v = wrap180(v); return `${Math.abs(v).toFixed(2)}°${v >= 0 ? "E" : "W"}`; };
+const fmtLL = (la, lo) => `${fmtLat(la)} · ${fmtLon(lo)}`;
+const esc = s => String(s).replace(/[<>&"']/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&#39;" }[c]));
+function bearing(la1, lo1, la2, lo2) {
+  const p1 = la1 * DEG, p2 = la2 * DEG, dl = (lo2 - lo1) * DEG;
+  return (Math.atan2(Math.sin(dl) * Math.cos(p2), Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl)) / DEG + 360) % 360;
+}
+function destination(la, lo, brgDeg, distDeg) {
+  const p = la * DEG, l = lo * DEG, b = brgDeg * DEG, d = distDeg * DEG;
+  const p2 = Math.asin(Math.sin(p) * Math.cos(d) + Math.cos(p) * Math.sin(d) * Math.cos(b));
+  const l2 = l + Math.atan2(Math.sin(b) * Math.sin(d) * Math.cos(p), Math.cos(d) - Math.sin(p) * Math.sin(p2));
+  return [p2 / DEG, wrap180(l2 / DEG)];
+}
+function elevation(la, lo, body) {
+  const p = la * DEG, b = body.lat * DEG;
+  return Math.asin(Math.sin(p) * Math.sin(b) + Math.cos(p) * Math.cos(b) * Math.cos((lo - body.lon) * DEG)) / DEG;
+}
+
+/* Proiezione stereografica centrata (x verso est, y verso nord; al polo sud: 0° in alto) */
+let REGION = { lat: -90, lon: 0, r: 10 };
+function projFwd(lat, lon, C = REGION) {
+  const p = lat * DEG, p0 = C.lat * DEG, d = (lon - C.lon) * DEG;
+  const cosc = Math.sin(p0) * Math.sin(p) + Math.cos(p0) * Math.cos(p) * Math.cos(d);
+  const k = 2 * MOON_R / (1 + cosc);
+  return [k * Math.cos(p) * Math.sin(d), k * (Math.cos(p0) * Math.sin(p) - Math.sin(p0) * Math.cos(p) * Math.cos(d))];
+}
+function projInv(x, y, C = REGION) {
+  const rho = Math.hypot(x, y), p0 = C.lat * DEG;
+  if (rho < 1e-9) return [C.lat, C.lon];
+  const c = 2 * Math.atan(rho / (2 * MOON_R)), sc = Math.sin(c), cc = Math.cos(c);
+  const lat = Math.asin(cc * Math.sin(p0) + y * sc * Math.cos(p0) / rho) / DEG;
+  const lon = C.lon + Math.atan2(x * sc, rho * Math.cos(p0) * cc - y * Math.sin(p0) * sc) / DEG;
+  return [lat, wrap180(lon)];
+}
+const rForDeg = deg => 2 * MOON_R * Math.tan(deg * DEG / 2);
+
+/* ---------- Effemeridi APPROSSIMATE (dimostrative) — da sostituire con SPICE ---------- */
+const DAY = 864e5, SYNODIC = 29.530588853, NEW_MOON_2000 = Date.UTC(2000, 0, 6, 18, 14) / DAY;
+function sunAt(date) {
+  const d = date / DAY, age = (((d - NEW_MOON_2000) % SYNODIC) + SYNODIC) % SYNODIC;
+  return { lon: wrap180(180 - 360 * age / SYNODIC), lat: 1.54 * Math.sin(2 * Math.PI * d / 346.62) };
+}
+function earthAt(date) {
+  const d = date / DAY;
+  return { lon: 7.9 * Math.sin(2 * Math.PI * (d - 10) / 27.5546), lat: 6.68 * Math.sin(2 * Math.PI * (d - 3) / 27.2122) };
+}
+
+/* ---------- Crateri e rilievi (coordinate APPROSSIMATE) ---------- */
+const CRATERS = [
+  { name: "Shackleton",  lat: -89.67, lon: 129.2,  d: 21,  ice: true },
+  { name: "de Gerlache", lat: -88.50, lon: -87.1,  d: 32,  ice: true },
+  { name: "Sverdrup",    lat: -88.30, lon: -152.0, d: 32,  ice: true },
+  { name: "Slater",      lat: -88.10, lon: 110.5,  d: 24,  ice: true },
+  { name: "Shoemaker",   lat: -88.10, lon: 44.9,   d: 51,  ice: true },
+  { name: "Faustini",    lat: -87.30, lon: 77.0,   d: 39,  ice: true },
+  { name: "Haworth",     lat: -87.45, lon: -5.0,   d: 35,  ice: true },
+  { name: "Cabeus",      lat: -85.30, lon: -42.1,  d: 98,  ice: true },
+  { name: "Nobile",      lat: -85.20, lon: 53.5,   d: 73,  ice: true },
+  { name: "Amundsen",    lat: -84.50, lon: 82.8,   d: 103, ice: true },
+  { name: "Peary",       lat: 88.6,   lon: 33.0,   d: 73,  ice: true },
+  { name: "Hermite",     lat: 86.0,   lon: -89.9,  d: 104, ice: true },
+  { name: "Whipple",     lat: 89.1,   lon: 118.2,  d: 15,  ice: true },
+  { name: "Rozhdestvenskiy", lat: 85.2, lon: -155.4, d: 177, ice: true },
+  { name: "Tycho",       lat: -43.3,  lon: -11.2,  d: 85 },
+  { name: "Copernicus",  lat: 9.6,    lon: -20.1,  d: 93 },
+  { name: "Clavius",     lat: -58.4,  lon: -14.4,  d: 225 },
+  { name: "Plato",       lat: 51.6,   lon: -9.4,   d: 101 },
+  { name: "Aristarchus", lat: 23.7,   lon: -47.4,  d: 40 },
+  { name: "Kepler",      lat: 8.1,    lon: -38.0,  d: 31 },
+  { name: "Tsiolkovskiy", lat: -20.4, lon: 129.1,  d: 185 },
+  { name: "Schrödinger", lat: -75.0,  lon: 132.4,  d: 312 },
+];
+const MASSIFS = [
+  { name: "Malapert",    p: [[-86.0, 0]], r: 14, h: .8 },
+  { name: "Mons Mouton", p: [[-84.6, 31]], r: 16, h: .85 },
+  { name: "Connecting ridge", p: [[-89.5, -150], [-89.3, -138], [-89.1, -125], [-88.9, -112], [-88.75, -100]], r: 4, h: .75 },
+  { name: "Peak near Shackleton", p: [[-88.8, 124]], r: 5, h: .7 },
+];
+const MARIA = [
+  [33, -16, 16], [28, 17, 9], [8.5, 31, 10], [17, 59, 7], [-8, 51, 8], [-15, 35, 5], [-21, -17, 9],
+  [18, -57, 20], [5, -45, 12], [-24, -39, 6], [56, 1, 7], [-10, -23, 5], [13, 4, 4], [7, -31, 6],
+  [27, 148, 4], [-19, -93, 5], [3, 87, 5], [-14, 67, 3],
+];
+
+/* =====================================================================
+   COPERTURA DATI: solo alcune aree hanno dati dettagliati.
+   - demo: aree d'esempio con dati sintetici
+   - import: file caricati dall'utente (salvati cifrati nel vault)
+   - server: file elencati in data/areas/index.json (stessa origine)
+   Formato file area ("mlsn-area-data"):
+   {
+     "format": "mlsn-area-data", "version": 1, "name": "Polo Sud LOLA 20m",
+     "region": { "lat": -90, "lon": 0, "radiusDeg": 12 },
+     "size": N, "extentKm": 365,                 // griglia N×N in proiezione stereografica centrata sulla regione
+     "layers": {                                 // array N*N, riga 0 = alto (nord / 0° al polo sud), colonna 0 = sinistra
+       "sunFraction":    [...0..1],              // frazione di tempo illuminato (ciclo lunare)
+       "earthFraction":  [...0..1],              // frazione di tempo con Terra visibile
+       "iceDistanceKm":  [...km],                // distanza great-circle dal ghiaccio più vicino
+       "earthHorizonDeg":[...gradi],             // orizzonte locale verso la Terra
+       "sunHorizonDeg":  [...gradi]              // (opzionale) orizzonte verso il Sole, per l'evoluzione temporale
+     },
+     "craters": [{ "name", "lat", "lon", "d", "ice" }]   // opzionale
+   }
+   ===================================================================== */
+const COVERAGE = [
+  { id: "demo-sp",    name: "South Pole · Artemis",          lat: -90,  lon: 0,      r: 12, source: "demo" },
+  { id: "demo-np",    name: "North Pole",                    lat: 90,   lon: 0,      r: 8,  source: "demo" },
+  { id: "demo-tranq", name: "Mare Tranquillitatis · Apollo 11", lat: .67, lon: 23.47, r: 6,  source: "demo" },
+  { id: "demo-aris",  name: "Aristarchus Plateau",           lat: 25,   lon: -50,    r: 6,  source: "demo" },
+  { id: "demo-cop",   name: "Copernicus",                    lat: 9.6,  lon: -20.1,  r: 5,  source: "demo" },
+  { id: "demo-schr",  name: "Schrödinger Basin",             lat: -75,  lon: 132.4,  r: 6,  source: "demo" },
+];
+const DATASETS = new Map();     // id → dataset caricato/generato
+
+function noise3(x, y, z) {
+  return (Math.sin(x * .071 + 1.3) * Math.sin(y * .083 + .7) * Math.cos(z * .05)
+    + .6 * Math.sin(x * .19 + y * .13 + 2.1) * Math.sin(y * .21 - z * .05)
+    + .35 * Math.sin(x * .43 - .9 + z * .1) * Math.sin(y * .37 + 1.9)) / 1.95;
+}
+
+function generateDemoData(cov) {
+  const region = { lat: cov.lat, lon: cov.lon, r: cov.r };
+  const N = 360, ext = rForDeg(region.r), cell = 2 * ext / N, n = N * N;
+  const sun = new Float32Array(n), earth = new Float32Array(n), ice = new Float32Array(n), hz = new Float32Array(n), hzs = new Float32Array(n);
+  const cen = unit(region.lat, region.lon), reach = region.r + 8;
+  const cr = CRATERS.filter(c => angDeg(cen, unit(c.lat, c.lon)) < reach + c.d / 2 / MOON_R / DEG)
+                    .map(c => ({ ...c, u: unit(c.lat, c.lon), R: c.d / 2 }));
+  const icy = CRATERS.filter(c => c.ice).map(c => ({ u: unit(c.lat, c.lon), R: c.d / 2 }));
+  const ms = MASSIFS.map(m => ({ ...m, us: m.p.map(([a, b]) => unit(a, b)) }));
+  const lib = [];
+  for (let i = 0; i < 8; i++) for (let k = 0; k < 8; k++)
+    lib.push({ lon: 7.9 * Math.sin(2 * Math.PI * (i + .5) / 8), lat: 6.68 * Math.sin(2 * Math.PI * (k + .25) / 8) });
+  const decl = [...Array(8)].map((_, k) => 1.54 * Math.sin(2 * Math.PI * (k + .5) / 8) * DEG);
+
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const x = -ext + (j + .5) * cell, y = ext - (i + .5) * cell, idx = i * N + j;
+    const [lat, lon] = projInv(x, y, region), u = unit(lat, lon);
+    const X = u[0] * MOON_R, Y = u[1] * MOON_R, Z = u[2] * MOON_R;
+    let h = .42 + .12 * noise3(X, Y, Z), floor = 0;
+    for (const k of cr) {
+      const q = degToKm(angDeg(u, k.u)) / k.R;
+      if (q < 1) { h -= .55 * (1 - q * q); floor = Math.max(floor, 1 - q); }
+      if (q < 2) h += .22 * Math.exp(-(((q - 1) / .18) ** 2));
+    }
+    for (const m of ms) {
+      let d = Infinity;
+      for (const v of m.us) d = Math.min(d, degToKm(angDeg(u, v)));
+      if (d < m.r * 4) h += m.h * Math.exp(-((d / m.r) ** 2));
+    }
+    h = Math.max(0, Math.min(1.2, h));
+    const horizon = 4.5 * (1 - h) - 1.2 + 7 * floor;
+    hz[idx] = horizon;
+    const hsDeg = horizon + .6 * noise3(X * 1.7, Y * 1.7, Z);
+    hzs[idx] = hsDeg;
+    const p = lat * DEG, hs = hsDeg * DEG;
+    let s = 0;
+    for (const dl of decl) {
+      const den = Math.cos(p) * Math.cos(dl);
+      const xx = den < 1e-9 ? (Math.sin(hs) < Math.sin(p) * Math.sin(dl) ? -2 : 2) : (Math.sin(hs) - Math.sin(p) * Math.sin(dl)) / den;
+      s += Math.acos(Math.max(-1, Math.min(1, xx))) / Math.PI;
+    }
+    sun[idx] = Math.min(.95, s / decl.length);
+    let e = 0;
+    for (const b of lib) if (elevation(lat, lon, b) > horizon) e++;
+    earth[idx] = e / lib.length;
+    let dIce = Infinity;
+    for (const k of icy) dIce = Math.min(dIce, Math.max(0, degToKm(angDeg(u, k.u)) - .7 * k.R));
+    ice[idx] = Math.min(dIce, 9999);
+  }
+  return { id: cov.id, name: cov.name, region, N, ext, sun, earth, ice, hz, hzs, craters: CRATERS, demo: true, source: "demo" };
+}
+
+/* --- import / export file dati area --- */
+const f32ToB64 = a => { const u8 = new Uint8Array(a.buffer, a.byteOffset, a.byteLength); let s = "";
+  for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); };
+const b64ToF32 = s => { const bin = atob(s), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return new Float32Array(u8.buffer); };
+
+function parseDataset(j, source) {
+  if (!j || typeof j !== "object") throw new Error("JSON");
+  if (!j.region || !j.layers) throw new Error("region / layers");
+  const lat = +j.region.lat, lon = +j.region.lon, r = +(j.region.radiusDeg ?? j.region.r);
+  if (!(Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && r > 0 && r <= 30)) throw new Error("region");
+  const N = j.size | 0;
+  if (N < 8 || N > 2048) throw new Error("size");
+  const arr = (name, required = true) => {
+    const a = j.layers[name];
+    if (a == null && !required) return null;
+    if (!Array.isArray(a) || a.length !== N * N) throw new Error(`${name} (${N}×${N})`);
+    const f = Float32Array.from(a);
+    for (let i = 0; i < f.length; i += 997) if (!isFinite(f[i])) throw new Error(name);
+    return f;
+  };
+  const sun = arr("sunFraction"), earth = arr("earthFraction"), ice = arr("iceDistanceKm"), hz = arr("earthHorizonDeg"), hzs = arr("sunHorizonDeg", false);
+  const craters = Array.isArray(j.craters)
+    ? j.craters.filter(c => c && isFinite(c.lat) && isFinite(c.lon) && c.d > 0).slice(0, 500)
+               .map(c => ({ name: String(c.name || "").slice(0, 40), lat: +c.lat, lon: +c.lon, d: +c.d, ice: !!c.ice }))
+    : CRATERS;
+  const name = String(j.name || "Area").slice(0, 60);
+  const id = (source === "import" ? "imp-" : "srv-") + (j.id ? String(j.id).replace(/[^\w-]/g, "").slice(0, 30) : Date.now().toString(36));
+  return { id, name, region: { lat, lon, r }, N, ext: +j.extentKm > 0 ? +j.extentKm : rForDeg(r),
+           sun, earth, ice, hz, hzs, craters, demo: false, source };
+}
+function datasetToJSON(D) {
+  const round = (a, k) => Array.from(a, v => Math.round(v * k) / k);
+  const out = {
+    format: "mlsn-area-data", version: 1, name: D.name, region: { lat: D.region.lat, lon: D.region.lon, radiusDeg: D.region.r },
+    size: D.N, extentKm: D.ext, projection: "stereographic-centered",
+    layers: { sunFraction: round(D.sun, 1e4), earthFraction: round(D.earth, 1e4), iceDistanceKm: round(D.ice, 1e3), earthHorizonDeg: round(D.hz, 1e3) },
+    craters: (D.craters || []).filter(c => angDeg(unit(c.lat, c.lon), unit(D.region.lat, D.region.lon)) < D.region.r + 3),
+  };
+  if (D.hzs) out.layers.sunHorizonDeg = round(D.hzs, 1e3);
+  return out;
+}
+function covFromDataset(D) { return { id: D.id, name: D.name, lat: D.region.lat, lon: D.region.lon, r: D.region.r, source: D.source }; }
+async function storeDataset(D) {
+  const ids = (await LocalVault.get("datasets")) || [];
+  await LocalVault.set("dataset:" + D.id, { id: D.id, name: D.name, region: D.region, N: D.N, ext: D.ext, craters: D.craters,
+    b: { sun: f32ToB64(D.sun), earth: f32ToB64(D.earth), ice: f32ToB64(D.ice), hz: f32ToB64(D.hz), hzs: D.hzs ? f32ToB64(D.hzs) : null } });
+  if (!ids.includes(D.id)) { ids.push(D.id); await LocalVault.set("datasets", ids); }
+}
+async function loadStoredDatasets() {
+  for (let i = COVERAGE.length - 1; i >= 0; i--) if (COVERAGE[i].source === "import") { DATASETS.delete(COVERAGE[i].id); COVERAGE.splice(i, 1); }
+  const ids = (await LocalVault.get("datasets")) || [];
+  for (const id of ids) {
+    try {
+      const s = await LocalVault.get("dataset:" + id);
+      if (!s) continue;
+      const D = { id: s.id, name: s.name, region: s.region, N: s.N, ext: s.ext, craters: s.craters || CRATERS, demo: false, source: "import",
+        sun: b64ToF32(s.b.sun), earth: b64ToF32(s.b.earth), ice: b64ToF32(s.b.ice), hz: b64ToF32(s.b.hz), hzs: s.b.hzs ? b64ToF32(s.b.hzs) : null };
+      DATASETS.set(D.id, D); COVERAGE.push(covFromDataset(D));
+    } catch (e) {}
+  }
+}
+let serverTried = false;
+async function loadServerDatasets() {     // facoltativo: data/areas/index.json → { "areas": ["polo_sud.json", ...] }
+  if (serverTried || !location.protocol.startsWith("http")) return;
+  serverTried = true;
+  try {
+    const r = await fetch("data/areas/index.json", { cache: "no-store" });
+    if (!r.ok) return;
+    const idx = await r.json();
+    for (const f of (idx.areas || []).slice(0, 50)) {
+      try {
+        const rr = await fetch("data/areas/" + encodeURIComponent(f), { cache: "no-store" });
+        const D = parseDataset(await rr.json(), "server");
+        DATASETS.set(D.id, D); COVERAGE.push(covFromDataset(D));
+      } catch (e) {}
+    }
+  } catch (e) {}
+}
+function getDataset(cov) {
+  if (!DATASETS.has(cov.id) && cov.source === "demo") DATASETS.set(cov.id, generateDemoData(cov));
+  return DATASETS.get(cov.id);
+}
+const covById = id => COVERAGE.find(c => c.id === id);
+function coverageFor(lat, lon) {      // zona con dati che contiene il punto, con più margine
+  const u = unit(lat, lon); let best = null;
+  for (const c of COVERAGE) {
+    const d = angDeg(u, unit(c.lat, c.lon));
+    if (d <= c.r && (!best || c.r - d > best.room)) best = { cov: c, room: c.r - d };
+  }
+  return best;
+}
+const maxRadiusAt = (lat, lon) => { const b = coverageFor(lat, lon); return b ? Math.min(AREA_LIMITS.maxDeg, b.room) : 0; };
+
+let MAPDATA = null;
+async function ensureMapData() {
+  if (MAPDATA) return MAPDATA;
+  const cov = covById(WS.coverageId) || (coverageFor(REGION.lat, REGION.lon) || {}).cov;
+  MAPDATA = cov ? getDataset(cov) : null;
+  document.getElementById("demoBadge").hidden = !(MAPDATA && MAPDATA.demo);
+  return MAPDATA;
+}
+
+/* ---------- Palette ---------- */
+const PALETTES = {
+  score: ["#440154", "#46327e", "#365c8d", "#277f8e", "#1fa187", "#4ac16d", "#a0da39", "#fde725"],
+  sun:   ["#0b0b1a", "#3b0f4f", "#8a1c3c", "#d1401f", "#f58b0b", "#fcd34d", "#fff7c2"],
+  earth: ["#06121f", "#0b2d4a", "#0e5577", "#11829a", "#2fb5b0", "#7fe0c6", "#e6fff5"],
+  ice:   ["#070a14", "#101f4d", "#1c3f8f", "#2f6fd1", "#5aa6f0", "#a9d8ff", "#ffffff"],
+};
+const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const LUTS = Object.fromEntries(Object.entries(PALETTES).map(([k, stops]) => {
+  const cols = stops.map(hexRgb), n = cols.length, lut = new Uint8ClampedArray(256 * 3);
+  for (let i = 0; i < 256; i++) {
+    const t = i / 255 * (n - 1), a = Math.min(n - 2, Math.floor(t)), f = t - a;
+    for (let ch = 0; ch < 3; ch++) lut[i * 3 + ch] = cols[a][ch] + (cols[a + 1][ch] - cols[a][ch]) * f;
+  }
+  return [k, lut];
+}));
+const iceScore = d => d <= 2 ? 1 : Math.exp(-(d - 2) / 4);
+
+/* ---------- Stato del workspace e della missione ---------- */
+const PARAMS = [{ id: "sun", color: "#fbbf24" }, { id: "earth", color: "#2dd4bf" }, { id: "ice", color: "#93c5fd" }];
+const toLocalInput = d => new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 16);
+function nextEarthWindow(from, C = REGION) {
+  for (let h = 0; h <= 30 * 24; h += 3) {
+    const d = new Date(+from + h * 36e5);
+    if (elevation(C.lat, C.lon, earthAt(d)) >= 2) return d;
+  }
+  return from;
+}
+const MAX_OFFSET_H = 720;     // evoluzione temporale fino a 30 giorni dall'atterraggio
+const WS = { weights: { sun: 7, earth: 8, ice: 6 }, arrival: toLocalInput(nextEarthWindow(new Date())),
+             layer: "score", zoom: 1, craters: true, region: null, coverageId: null,
+             mission: { name: "Artemis-like landing", stayHours: 72, minSun: 0, minEarth: 0, maxIce: 0 },
+             horizon: "stay", offsetH: 0 };
+let PX = null, SITES = [], selectedSite = -1;
+const currentTime = () => new Date(new Date(WS.arrival).getTime() + WS.offsetH * 36e5);
+
+document.querySelectorAll("[data-sliders]").forEach(box => {
+  const pre = box.dataset.sliders;
+  box.innerHTML = PARAMS.map(p => `
+    <div class="slider-row" style="--c:${p.color}">
+      <div class="slider-head"><span class="dot"></span><label for="${pre}-${p.id}" data-i18n="p_${p.id}"></label><output id="${pre}-${p.id}-out"></output></div>
+      <input type="range" min="1" max="10" step="1" id="${pre}-${p.id}" data-param="${p.id}">
+      <p class="slider-desc" data-i18n="p_${p.id}_d"></p>
+    </div>`).join("");
+});
+
+function syncControls() {
+  document.querySelectorAll("input[data-param]").forEach(el => {
+    const v = WS.weights[el.dataset.param];
+    el.value = v;
+    el.style.setProperty("--p", ((v - 1) / 9 * 100) + "%");
+    document.getElementById(el.id + "-out").textContent = v;
+  });
+  document.querySelectorAll("input[data-arrival]").forEach(el => { if (document.activeElement !== el) el.value = WS.arrival; });
+  document.querySelectorAll("input[data-m]").forEach(el => { if (document.activeElement !== el) el.value = WS.mission[el.dataset.m]; });
+  document.querySelectorAll("#layerTabs button").forEach(b => b.classList.toggle("active", b.dataset.layer === WS.layer));
+  document.querySelectorAll("#horizonMode button").forEach(b => b.classList.toggle("active", b.dataset.h === WS.horizon));
+  document.getElementById("zoomSel").value = String(WS.zoom);
+  document.getElementById("cratersChk").checked = WS.craters;
+  updateLegend(); updateEphem(); updateTimeUI();
+}
+
+let paramSaveTimer = null;
+function saveParams() {
+  clearTimeout(paramSaveTimer);
+  paramSaveTimer = setTimeout(() => { if (LocalVault.unlocked) LocalVault.set("missionParams", WS).catch(() => {}); }, 500);
+}
+
+let recolorQueued = false, dynQueued = false;
+function queueRecolor(dyn = false) {
+  if (!PX) return;
+  dynQueued = dynQueued || dyn;
+  if (recolorQueued) return;
+  recolorQueued = true;
+  requestAnimationFrame(() => { recolorQueued = false; if (dynQueued) { dynQueued = false; computeDynamic(); } recolor(); });
+}
+
+document.addEventListener("input", e => {
+  const el = e.target;
+  if (el.dataset.param) {
+    WS.weights[el.dataset.param] = +el.value;
+    syncControls(); queueRecolor(); saveParams();
+  } else if (el.hasAttribute("data-arrival") && el.value) {
+    WS.arrival = el.value;
+    syncControls(); queueRecolor(true); saveParams();
+  } else if (el.dataset.m) {
+    const k = el.dataset.m;
+    if (k === "name") WS.mission.name = el.value.slice(0, 60);
+    else {
+      const v = parseFloat(el.value);
+      const lim = { stayHours: [1, 720], minSun: [0, 100], minEarth: [0, 100], maxIce: [0, 500] }[k];
+      if (isFinite(v)) WS.mission[k] = Math.max(lim[0], Math.min(lim[1], v));
+    }
+    updateLegend(); queueRecolor(true); saveParams();
+  } else if (el.id === "timeSlider") {
+    WS.offsetH = +el.value; updateTimeUI(); queueRecolor(true); saveParams();
+  }
+});
+document.getElementById("layerTabs").addEventListener("click", e => {
+  const b = e.target.closest("button[data-layer]"); if (!b) return;
+  WS.layer = b.dataset.layer; syncControls(); queueRecolor(); saveParams();
+});
+document.getElementById("horizonMode").addEventListener("click", e => {
+  const b = e.target.closest("button[data-h]"); if (!b) return;
+  WS.horizon = b.dataset.h; syncControls(); queueRecolor(true); saveParams();
+});
+document.getElementById("zoomSel").addEventListener("change", e => { WS.zoom = +e.target.value; selectedSite = -1; layoutMap(); saveParams(); });
+document.getElementById("cratersChk").addEventListener("change", e => { WS.craters = e.target.checked; drawOverlays(); saveParams(); });
+
+function updateLegend() {
+  const L = WS.layer, stay = WS.horizon === "stay";
+  document.getElementById("legendBar").style.background = `linear-gradient(90deg, ${PALETTES[L].join(",")})`;
+  document.getElementById("legendTitle").textContent =
+    stay && (L === "sun" || L === "earth") ? t(`lg_${L}_stay`, { h: WS.mission.stayHours }) : t("lg_" + L);
+  const sr = PX && PX.scoreRange;
+  const [lo, hi] = L === "ice" ? [t("far"), t("near")]
+    : L === "score" ? (sr ? [`${Math.round(sr[0] * 100)} · ${t("lo")}`, `${t("hi")} · ${Math.round(sr[1] * 100)}`] : [t("lo"), t("hi")])
+    : ["0%", "100%"];
+  document.getElementById("legendLo").textContent = lo;
+  document.getElementById("legendHi").textContent = hi;
+  document.getElementById("legendMask").hidden = L === "ice" || L === "sun";
+}
+function updateEphem() {
+  const d = currentTime(), s = sunAt(d), e = earthAt(d), C = REGION;
+  const sg = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(1) + "°";
+  const ee = elevation(C.lat, C.lon, e);
+  document.getElementById("ephem").innerHTML = t("ephem", {
+      se: sg(elevation(C.lat, C.lon, s)), sa: bearing(C.lat, C.lon, s.lat, s.lon).toFixed(0) + "°",
+      ee: sg(ee), ea: bearing(C.lat, C.lon, e.lat, e.lon).toFixed(0) + "°" })
+    + (ee < 0 ? `<br><span style="color:#ffd38a">${t("earthBelow")}</span>` : "");
+}
+
+/* ---------- Evoluzione temporale ---------- */
+const timeSlider = document.getElementById("timeSlider");
+timeSlider.max = MAX_OFFSET_H;
+function updateTimeUI() {
+  timeSlider.value = WS.offsetH;
+  timeSlider.style.setProperty("--p", (WS.offsetH / MAX_OFFSET_H * 100) + "%");
+  const d = Math.floor(WS.offsetH / 24), h = WS.offsetH % 24, ds = t("dayShort");
+  document.getElementById("timeLabel").innerHTML =
+    `T+ ${d}${ds} ${String(h).padStart(2, "0")}h<small>${currentTime().toLocaleString(lang, { dateStyle: "medium", timeStyle: "short" })}</small>`;
+  document.querySelectorAll(".timebar .tb[data-step]").forEach(b => {
+    const s = +b.dataset.step;
+    b.textContent = (s < 0 ? "−" : "+") + (Math.abs(s) >= 24 ? Math.abs(s) / 24 + ds : Math.abs(s) + "h");
+  });
+}
+function stepTime(h) {
+  WS.offsetH = Math.max(0, Math.min(MAX_OFFSET_H, WS.offsetH + h));
+  updateTimeUI(); updateEphem(); queueRecolor(true); saveParams();
+}
+document.getElementById("timebar").addEventListener("click", e => {
+  const b = e.target.closest(".tb[data-step]"); if (b) stepTime(+b.dataset.step);
+});
+let playTimer = null;
+const btnPlay = document.getElementById("btnPlay");
+function stopPlay() { clearInterval(playTimer); playTimer = null; btnPlay.textContent = "▶"; }
+btnPlay.addEventListener("click", () => {
+  if (playTimer) return stopPlay();
+  if (WS.offsetH >= MAX_OFFSET_H) WS.offsetH = 0;
+  btnPlay.textContent = "❚❚";
+  playTimer = setInterval(() => {
+    if (current !== "workspace" || wsView.dataset.stage !== "map") return stopPlay();
+    stepTime(+document.getElementById("playStep").value);
+    if (WS.offsetH >= MAX_OFFSET_H) stopPlay();
+  }, 450);
+});
+
+/* ---------- Rendering mappa 2D ---------- */
+const mapCanvas = document.getElementById("mapCanvas");
+const mctx = mapCanvas.getContext("2d");
+const mapWrap = document.getElementById("mapWrap");
+const mapTip = document.getElementById("mapTip");
+
+function sampleDS(arr, D, x, y) {
+  const cell = 2 * D.ext / D.N;
+  let gx = (x + D.ext) / cell - .5, gy = (D.ext - y) / cell - .5;
+  gx = Math.max(0, Math.min(D.N - 1.001, gx)); gy = Math.max(0, Math.min(D.N - 1.001, gy));
+  const j = gx | 0, i = gy | 0, fx = gx - j, fy = gy - i, N = D.N;
+  const a = arr[i * N + j], b = arr[i * N + j + 1], c = arr[(i + 1) * N + j], d = arr[(i + 1) * N + j + 1];
+  return (a * (1 - fx) + b * fx) * (1 - fy) + (c * (1 - fx) + d * fx) * fy;
+}
+
+function layoutMap() {
+  if (!MAPDATA) return;
+  const css = Math.max(260, Math.min(mapWrap.clientWidth, mapWrap.clientHeight - 64) - 20);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const S = Math.min(1000, Math.round(css * dpr)), k = S / css;
+  mapCanvas.width = mapCanvas.height = S;
+  mapCanvas.style.width = mapCanvas.style.height = css + "px";
+  mapCanvas.style.marginBottom = "56px";
+  const viewDeg = REGION.r * WS.zoom;
+  const margin = 62 * k, R = S / 2 - margin, scale = R / rForDeg(viewDeg);
+  const n = S * S, D = MAPDATA, F = () => new Float32Array(n);
+  const P = { S, k, R, scale, viewDeg, cx: S / 2, cy: S / 2, css, inside: new Uint8Array(n),
+    sunF: F(), earthF: F(), ice: F(), sHzE: F(), sHzS: F(), sphi: F(), cphi: F(), clam: F(), slam: F(), lat: F(), lon: F(),
+    sunV: F(), earthV: F(), mask: new Uint8Array(n), score: F(), img: mctx.createImageData(S, S) };
+  const R2 = R * R;
+  for (let py = 0; py < S; py++) for (let px = 0; px < S; px++) {
+    const dx = px + .5 - S / 2, dy = S / 2 - (py + .5);
+    if (dx * dx + dy * dy > R2) continue;
+    const i = py * S + px, [lat, lon] = projInv(dx / scale, dy / scale), [x, y] = projFwd(lat, lon, D.region);
+    P.inside[i] = 1; P.lat[i] = lat; P.lon[i] = lon;
+    const sf = sampleDS(D.sun, D, x, y);
+    P.sunF[i] = sf; P.earthF[i] = sampleDS(D.earth, D, x, y); P.ice[i] = sampleDS(D.ice, D, x, y);
+    const cp = Math.cos(lat * DEG);
+    P.sphi[i] = Math.sin(lat * DEG); P.cphi[i] = cp; P.clam[i] = Math.cos(lon * DEG); P.slam[i] = Math.sin(lon * DEG);
+    P.sHzE[i] = Math.sin(sampleDS(D.hz, D, x, y) * DEG);
+    // orizzonte verso il Sole: dal dato se presente, altrimenti ricavato dalla frazione di illuminazione
+    P.sHzS[i] = D.hzs ? Math.sin(sampleDS(D.hzs, D, x, y) * DEG) : Math.cos(Math.PI * sf) * cp;
+  }
+  PX = P;
+  computeDynamic(); recolor();
+}
+
+const bodyVec = b => { const sb = Math.sin(b.lat * DEG), cb = Math.cos(b.lat * DEG); return [sb, cb * Math.cos(b.lon * DEG), cb * Math.sin(b.lon * DEG)]; };
+// condizioni all'istante corrente e lungo la permanenza → Sole/Terra, esclusioni
+function computeDynamic() {
+  const P = PX; if (!P) return;
+  const t0 = currentTime(), m = WS.mission, stay = WS.horizon === "stay";
+  const E0 = bodyVec(earthAt(t0));
+  let K = 0, SV = [], EV = [];
+  if (stay) {
+    K = Math.max(6, Math.min(48, Math.ceil(m.stayHours / 2)));
+    for (let k = 0; k < K; k++) {
+      const d = new Date(+t0 + (k + .5) / K * m.stayHours * 36e5);
+      SV.push(bodyVec(sunAt(d))); EV.push(bodyVec(earthAt(d)));
+    }
+  }
+  const minS = m.minSun / 100, minE = m.minEarth / 100, maxI = m.maxIce;
+  for (let i = 0; i < P.inside.length; i++) {
+    if (!P.inside[i]) continue;
+    const sp = P.sphi[i], cp = P.cphi[i], cl = P.clam[i], sl = P.slam[i];
+    let sv, ev;
+    if (stay) {
+      let ns = 0, ne = 0; const hs = P.sHzS[i], he = P.sHzE[i];
+      for (let k = 0; k < K; k++) {
+        const s = SV[k], e = EV[k];
+        if (sp * s[0] + cp * (s[1] * cl + s[2] * sl) > hs) ns++;
+        if (sp * e[0] + cp * (e[1] * cl + e[2] * sl) > he) ne++;
+      }
+      sv = ns / K; ev = ne / K;
+    } else { sv = P.sunF[i]; ev = P.earthF[i]; }
+    P.sunV[i] = sv; P.earthV[i] = ev;
+    const earthNow = sp * E0[0] + cp * (E0[1] * cl + E0[2] * sl) > P.sHzE[i];
+    P.mask[i] = !earthNow ? 1 : (sv < minS || ev < minE || (maxI > 0 && P.ice[i] > maxI)) ? 2 : 0;
+  }
+  updateEphem();
+}
+
+function recolor() {
+  const P = PX; if (!P) return;
+  const d = P.img.data, w = WS.weights, ws = w.sun + w.earth + w.ice, lut = LUTS[WS.layer], L = WS.layer;
+  const hatch = Math.max(6, 7 * P.k) | 0, hw = Math.max(2, 2.5 * P.k);
+  let lo = 1, hi = 0;
+  for (let i = 0; i < P.inside.length; i++) if (P.inside[i]) {
+    const sc = P.score[i] = (w.sun * P.sunV[i] + w.earth * P.earthV[i] + w.ice * iceScore(P.ice[i])) / ws;
+    if (!P.mask[i]) { if (sc < lo) lo = sc; if (sc > hi) hi = sc; }
+  }
+  if (hi <= lo) { lo = 0; hi = 1; }
+  if (hi - lo < .2) { const mm = (hi + lo) / 2; lo = Math.max(0, mm - .1); hi = Math.min(1, lo + .2); }
+  P.scoreRange = [lo, hi];
+  updateLegend();
+  for (let py = 0; py < P.S; py++) for (let px = 0; px < P.S; px++) {
+    const i = py * P.S + px, o = i * 4;
+    if (!P.inside[i]) { d[o + 3] = 0; continue; }
+    const v = L === "score" ? (P.score[i] - lo) / (hi - lo) : L === "sun" ? P.sunV[i] : L === "earth" ? P.earthV[i] : iceScore(P.ice[i]);
+    const li = Math.max(0, Math.min(255, v * 255 | 0)) * 3;
+    const masked = P.mask[i] && (L === "score" || (L === "earth" && P.mask[i] === 1));
+    if (masked) {
+      const g = (lut[li] + lut[li + 1] + lut[li + 2]) / 3, on = (px + py) % hatch < hw;
+      const f = on ? .55 : .22, base = on ? 70 : 14;
+      d[o] = base + g * f; d[o + 1] = base + 4 + g * f; d[o + 2] = base + 14 + g * f;
+    } else { d[o] = lut[li]; d[o + 1] = lut[li + 1]; d[o + 2] = lut[li + 2]; }
+    d[o + 3] = 255;
+  }
+  computeSites(); drawOverlays(); renderSites();
+}
+
+function computeSites() {
+  const P = PX, step = Math.max(2, (P.S / 220) | 0), cand = [];
+  for (let py = 0; py < P.S; py += step) for (let px = 0; px < P.S; px += step) {
+    const i = py * P.S + px;
+    if (P.inside[i] && !P.mask[i]) cand.push(i);
+  }
+  // a parità di punteggio, preferisci i punti migliori sul lungo periodo (ciclo lunare)
+  const w = WS.weights, ws = w.sun + w.earth + w.ice;
+  const key = i => P.score[i] + .01 * (w.sun * P.sunF[i] + w.earth * P.earthF[i] + w.ice * iceScore(P.ice[i])) / ws;
+  const keys = new Map(cand.map(i => [i, key(i)]));
+  cand.sort((a, b) => keys.get(b) - keys.get(a));
+  const minPx = Math.max(5, degToKm(P.viewDeg) * .05) * P.scale, picks = [];
+  for (const i of cand) {
+    const px = i % P.S, py = (i / P.S) | 0;
+    if (picks.every(p => Math.hypot(p.px - px, p.py - py) > minPx)) {
+      picks.push({ px, py, lat: P.lat[i], lon: P.lon[i], score: P.score[i], sun: P.sunV[i], earth: P.earthV[i], ice: P.ice[i] });
+      if (picks.length === 5) break;
+    }
+  }
+  SITES = picks;
+  if (selectedSite >= SITES.length) selectedSite = -1;
+}
+
+function niceStep(raw) { return [.25, .5, 1, 2, 5, 10, 15, 30, 45].find(s => s >= raw) || 45; }
+
+function drawOverlays() {
+  if (!PX) return;
+  const P = PX, c = mctx, k = P.k, cen = unit(REGION.lat, REGION.lon);
+  const toPx = (lat, lon) => { const [x, y] = projFwd(lat, lon); return [P.cx + x * P.scale, P.cy - y * P.scale]; };
+  const inView = (lat, lon, pad = 1.15) => angDeg(cen, unit(lat, lon)) <= P.viewDeg * pad;
+  c.putImageData(P.img, 0, 0);
+  c.save();
+  c.beginPath(); c.arc(P.cx, P.cy, P.R, 0, 2 * Math.PI); c.clip();
+  const latStep = niceStep(P.viewDeg / 5);
+  const lonStep = niceStep(latStep / Math.max(.08, Math.cos(REGION.lat * DEG)));
+  c.lineWidth = 1 * k; c.strokeStyle = "rgba(255,255,255,.2)";
+  c.font = `${10 * k}px Inter, sans-serif`; c.textBaseline = "middle";
+  const labels = [];
+  const drawLine = (pts, label) => {
+    let pen = false, best = null;
+    c.beginPath();
+    for (const [la, lo] of pts) {
+      if (!inView(la, lo)) { pen = false; continue; }
+      const [x, y] = toPx(la, lo);
+      pen ? c.lineTo(x, y) : c.moveTo(x, y); pen = true;
+      const rr = Math.hypot(x - P.cx, y - P.cy);
+      if (rr < P.R - 18 * k && (!best || rr > best[2])) best = [x, y, rr];
+    }
+    c.stroke();
+    if (best && label) labels.push([label, best[0], best[1]]);
+  };
+  const latFrom = Math.ceil((Math.max(-89.999, REGION.lat - P.viewDeg * 1.2)) / latStep) * latStep;
+  const latTo = Math.min(89.999, REGION.lat + P.viewDeg * 1.2);
+  for (let la = latFrom; la <= latTo; la += latStep) {
+    if (Math.abs(la) >= 90) continue;
+    const pts = []; for (let lo = -180; lo <= 180; lo += .25) pts.push([la, lo]);
+    drawLine(pts, `${Math.abs(la).toFixed(latStep < 1 ? 2 : 0)}°${la >= 0 ? "N" : "S"}`);
+  }
+  for (let lo = -180; lo < 180; lo += lonStep) {
+    const pts = []; for (let la = -89.99; la <= 89.99; la += .1) pts.push([la, lo]);
+    drawLine(pts, lo === 0 ? "0°" : Math.abs(lo) === 180 ? "180°" : `${Math.abs(lo)}°${lo > 0 ? "E" : "W"}`);
+  }
+  c.textAlign = "center";
+  for (const [txt, x, y] of labels) {
+    const tw = c.measureText(txt).width;
+    c.fillStyle = "rgba(17,18,20,.6)"; c.fillRect(x - tw / 2 - 3 * k, y - 7 * k, tw + 6 * k, 14 * k);
+    c.fillStyle = "rgba(240,242,248,.85)"; c.fillText(txt, x, y);
+  }
+  if (WS.craters) {
+    c.setLineDash([4 * k, 3 * k]); c.lineWidth = 1.2 * k; c.font = `600 ${10.5 * k}px Inter, sans-serif`;
+    for (const cr of MAPDATA.craters) {
+      if (angDeg(cen, unit(cr.lat, cr.lon)) > P.viewDeg + cr.d / 2 / MOON_R / DEG) continue;
+      const [x, y] = toPx(cr.lat, cr.lon), r = cr.d / 2 * P.scale;
+      c.strokeStyle = cr.ice ? "rgba(169,216,255,.8)" : "rgba(255,255,255,.55)";
+      c.beginPath(); c.arc(x, y, r, 0, 2 * Math.PI); c.stroke();
+      const tw = c.measureText(cr.name).width;
+      c.fillStyle = "rgba(17,18,20,.6)"; c.fillRect(x - tw / 2 - 3 * k, y - 7 * k, tw + 6 * k, 14 * k);
+      c.fillStyle = cr.ice ? "#cfe9ff" : "#fff"; c.fillText(cr.name, x, y);
+    }
+    c.setLineDash([]);
+  }
+  c.strokeStyle = "#fff"; c.lineWidth = 1.5 * k;
+  c.beginPath(); c.moveTo(P.cx - 5 * k, P.cy); c.lineTo(P.cx + 5 * k, P.cy); c.moveTo(P.cx, P.cy - 5 * k); c.lineTo(P.cx, P.cy + 5 * k); c.stroke();
+  SITES.forEach((s, n) => {
+    const sel = n === selectedSite, r = (sel ? 12 : 9) * k;
+    if (sel) { c.beginPath(); c.arc(s.px, s.py, r + 6 * k, 0, 2 * Math.PI); c.fillStyle = "rgba(255,255,255,.18)"; c.fill(); }
+    c.beginPath(); c.arc(s.px, s.py, r, 0, 2 * Math.PI);
+    c.fillStyle = "#fff"; c.fill(); c.lineWidth = 2 * k; c.strokeStyle = "#111214"; c.stroke();
+    c.fillStyle = "#111214"; c.font = `700 ${(sel ? 12 : 10) * k}px Orbitron, Inter, sans-serif`;
+    c.fillText(n + 1, s.px, s.py + .5 * k);
+  });
+  c.restore();
+  c.lineWidth = 1.5 * k; c.strokeStyle = "rgba(127,211,255,.6)";
+  c.beginPath(); c.arc(P.cx, P.cy, P.R, 0, 2 * Math.PI); c.stroke();
+  const d = currentTime();
+  drawBody(sunAt(d), "sun"); drawBody(earthAt(d), "earth");
+}
+
+function screenAngle(body) {
+  const a = unit(REGION.lat, REGION.lon), b = unit(body.lat, body.lon), dd = angDeg(a, b) * DEG;
+  if (dd < 1e-6) return 0;
+  const tt = Math.min(dd, PX.viewDeg * DEG * .5) / dd, s = Math.sin(dd);
+  const w1 = Math.sin((1 - tt) * dd) / s, w2 = Math.sin(tt * dd) / s;
+  const v = [a[0] * w1 + b[0] * w2, a[1] * w1 + b[1] * w2, a[2] * w1 + b[2] * w2];
+  const [x, y] = projFwd(Math.asin(v[2]) / DEG, Math.atan2(v[1], v[0]) / DEG);
+  return Math.atan2(x, y);
+}
+
+function drawBody(body, kind) {
+  const P = PX, c = mctx, k = P.k, a = screenAngle(body), rr = P.R + 26 * k;
+  const x = P.cx + rr * Math.sin(a), y = P.cy - rr * Math.cos(a), r = 13 * k;
+  const up = elevation(REGION.lat, REGION.lon, body) > 0;
+  c.save(); c.globalAlpha = up ? 1 : .45;
+  c.strokeStyle = kind === "sun" ? "#fbbf24" : "#38bdf8"; c.lineWidth = 2.5 * k;
+  c.beginPath(); c.moveTo(P.cx + (P.R - 6 * k) * Math.sin(a), P.cy - (P.R - 6 * k) * Math.cos(a));
+  c.lineTo(P.cx + (P.R + 9 * k) * Math.sin(a), P.cy - (P.R + 9 * k) * Math.cos(a)); c.stroke();
+  if (kind === "sun") {
+    c.strokeStyle = "#fbbf24"; c.lineWidth = 2 * k;
+    for (let i = 0; i < 8; i++) {
+      const b = i * Math.PI / 4;
+      c.beginPath(); c.moveTo(x + Math.cos(b) * (r + 3 * k), y + Math.sin(b) * (r + 3 * k));
+      c.lineTo(x + Math.cos(b) * (r + 8 * k), y + Math.sin(b) * (r + 8 * k)); c.stroke();
+    }
+    const g = c.createRadialGradient(x - 3 * k, y - 3 * k, 1, x, y, r);
+    g.addColorStop(0, "#fffbe6"); g.addColorStop(.5, "#fcd34d"); g.addColorStop(1, "#f59e0b");
+    c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 2 * Math.PI); c.fill();
+  } else {
+    c.fillStyle = "rgba(56,189,248,.28)"; c.beginPath(); c.arc(x, y, r + 5 * k, 0, 2 * Math.PI); c.fill();
+    const g = c.createRadialGradient(x - 4 * k, y - 4 * k, 1, x, y, r);
+    g.addColorStop(0, "#7dd3fc"); g.addColorStop(1, "#1d4ed8");
+    c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, 2 * Math.PI); c.fill();
+    c.save(); c.beginPath(); c.arc(x, y, r, 0, 2 * Math.PI); c.clip();
+    c.fillStyle = "#4ade80";
+    c.beginPath(); c.ellipse(x - 4 * k, y - 2 * k, 5.5 * k, 3.8 * k, .6, 0, 2 * Math.PI); c.fill();
+    c.beginPath(); c.ellipse(x + 5 * k, y + 5 * k, 4.4 * k, 2.8 * k, -.4, 0, 2 * Math.PI); c.fill();
+    c.restore();
+    c.strokeStyle = "rgba(255,255,255,.85)"; c.lineWidth = 1.5 * k;
+    c.beginPath(); c.arc(x, y, r, 0, 2 * Math.PI); c.stroke();
+  }
+  c.font = `600 ${10.5 * k}px Inter, sans-serif`; c.fillStyle = kind === "sun" ? "#fde68a" : "#bae6fd";
+  c.textAlign = "center"; c.textBaseline = "middle";
+  const lr = rr + 26 * k;
+  c.fillText(t(kind === "sun" ? "sunLbl" : "earthLbl"), P.cx + lr * Math.sin(a), P.cy - lr * Math.cos(a));
+  c.restore();
+}
+
+function renderSites() {
+  const ol = document.getElementById("sitesList");
+  if (!SITES.length) { ol.innerHTML = `<li class="empty">${t("noSites")}</li>`; return; }
+  ol.innerHTML = SITES.map((s, n) => `
+    <li><button data-site="${n}" class="${n === selectedSite ? "sel" : ""}">
+      <span class="n">${n + 1}</span>
+      <span>${fmtLL(s.lat, s.lon)}</span>
+      <span class="sc">${Math.round(s.score * 100)}</span>
+      <span class="vals">
+        <span><i style="background:#fbbf24"></i>${Math.round(s.sun * 100)}%</span>
+        <span><i style="background:#2dd4bf"></i>${Math.round(s.earth * 100)}%</span>
+        <span><i style="background:#93c5fd"></i>${s.ice > 999 ? "—" : s.ice.toFixed(1) + " km"}</span>
+      </span>
+    </button></li>`).join("");
+}
+document.getElementById("sitesList").addEventListener("click", e => {
+  const b = e.target.closest("button[data-site]"); if (!b) return;
+  selectedSite = +b.dataset.site === selectedSite ? -1 : +b.dataset.site;
+  drawOverlays(); renderSites();
+});
+
+mapCanvas.addEventListener("mousemove", e => {
+  if (!PX) return;
+  const rect = mapCanvas.getBoundingClientRect(), P = PX;
+  const px = (e.clientX - rect.left) * P.k, py = (e.clientY - rect.top) * P.k;
+  const i = (py | 0) * P.S + (px | 0);
+  if (!P.inside[i]) { mapTip.style.display = "none"; return; }
+  const now = currentTime(), sNow = elevation(P.lat[i], P.lon[i], sunAt(now)), eNow = elevation(P.lat[i], P.lon[i], earthAt(now));
+  const litNow = Math.sin(sNow * DEG) > P.sHzS[i], earthNow = Math.sin(eNow * DEG) > P.sHzE[i];
+  mapTip.innerHTML = `<b>${fmtLL(P.lat[i], P.lon[i])}</b>
+    <div class="row"><span>${t("tNow")}</span><span>${t(litNow ? "sunUp" : "sunDown")} · ${t(earthNow ? "earthUp" : "earthDown")}</span></div>
+    <div class="row"><span>${t("tipSun")}</span><span>${Math.round(P.sunV[i] * 100)}%</span></div>
+    <div class="row"><span>${t("tipEarth")}</span><span>${Math.round(P.earthV[i] * 100)}%</span></div>
+    <div class="row"><span>${t("tipIce")}</span><span>${P.ice[i] > 999 ? "—" : P.ice[i].toFixed(1) + " km"}</span></div>
+    ${P.mask[i] ? `<div class="warn">${t(P.mask[i] === 1 ? "maskEarth" : "maskCons")}</div>` : `<div class="row"><span>${t("tipScore")}</span><span>${Math.round(P.score[i] * 100)}</span></div>`}`;
+  const wr = mapWrap.getBoundingClientRect();
+  let tx = e.clientX - wr.left + 16, ty = e.clientY - wr.top + 16;
+  mapTip.style.display = "block";
+  if (tx + mapTip.offsetWidth > wr.width - 8) tx -= mapTip.offsetWidth + 32;
+  if (ty + mapTip.offsetHeight > wr.height - 8) ty -= mapTip.offsetHeight + 32;
+  mapTip.style.left = tx + "px"; mapTip.style.top = ty + "px";
+});
+mapCanvas.addEventListener("mouseleave", () => { mapTip.style.display = "none"; });
+
+/* =====================================================================
+   GLOBO 3D
+   ===================================================================== */
+const globeCanvas = document.getElementById("globeCanvas");
+const gctx = globeCanvas.getContext("2d");
+const globeWrap = document.getElementById("globeWrap");
+const GLOBE = { lat: -55, lon: 10, zoom: 1, mode: "rotate", sel: null };
+const TW = 1024, TH = 512;
+let TEX = null;
+
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+function buildMoonTexture() {
+  const tex = new Float32Array(TW * TH), rnd = mulberry32(7);
+  const MARIA_U = MARIA.map(([la, lo, r]) => ({ lat: la, u: unit(la, lo), r, reach: r * 1.25 + 3 }));
+  for (let y = 0; y < TH; y++) {
+    const lat = 90 - (y + .5) * 180 / TH;
+    for (let x = 0; x < TW; x++) {
+      const lon = (x + .5) * 360 / TW - 180, u = unit(lat, lon);
+      let a = .66 + .06 * noise3(u[0] * 900, u[1] * 900, u[2] * 900) + .03 * noise3(u[0] * 3000, u[1] * 3000, u[2] * 3000);
+      let edge = null;
+      for (const m of MARIA_U) {
+        if (Math.abs(lat - m.lat) > m.reach) continue;
+        if (edge === null) edge = 2.2 * noise3(u[0] * 400, u[1] * 400, u[2] * 400);
+        const d = angDeg(u, m.u) + edge;
+        if (d < m.r * 1.25) a -= .3 * Math.min(1, Math.max(0, (m.r * 1.25 - d) / (m.r * .45)));
+      }
+      tex[y * TW + x] = a;
+    }
+  }
+  const stamp = (clat, clon, rDeg, depth) => {
+    const rows = Math.ceil(rDeg * 1.4 / 180 * TH), cy = Math.round((90 - clat) / 180 * TH);
+    const cu = unit(clat, clon);
+    for (let y = Math.max(0, cy - rows); y <= Math.min(TH - 1, cy + rows); y++) {
+      const lat = 90 - (y + .5) * 180 / TH, cl = Math.max(.05, Math.cos(lat * DEG));
+      const cols = Math.min(TW / 2, Math.ceil(rDeg * 1.4 / cl / 360 * TW)), cx = Math.round((clon + 180) / 360 * TW);
+      for (let xx = cx - cols; xx <= cx + cols; xx++) {
+        const x = ((xx % TW) + TW) % TW, lon = (x + .5) * 360 / TW - 180, u = unit(lat, lon);
+        const ang = angDeg(u, cu), q = ang / rDeg;
+        if (q > 1.35) continue;
+        const side = Math.sin((lon - clon) * DEG) * Math.cos(lat * DEG) / Math.max(1e-6, Math.sin(ang * DEG));
+        tex[y * TW + x] += q < 1 ? -depth * (1 - q * q) * .6 - depth * .35 * side * q
+          : depth * .5 * Math.exp(-(((q - 1) / .15) ** 2)) + depth * .25 * side * Math.exp(-(((q - 1) / .2) ** 2));
+      }
+    }
+  };
+  for (let i = 0; i < 1400; i++) {
+    const lat = Math.asin(rnd() * 2 - 1) / DEG, lon = rnd() * 360 - 180, r = .25 + Math.pow(rnd(), 3.2) * 4.5;
+    stamp(lat, lon, r, .12 + rnd() * .1);
+  }
+  for (const c of CRATERS) stamp(c.lat, c.lon, Math.min(5, c.d / 2 / MOON_R / DEG), .18);
+  for (const [la, lo, r] of [[-43.3, -11.2, 12], [9.6, -20.1, 8]]) {
+    const cu = unit(la, lo), y0 = Math.max(0, Math.floor((90 - la - r * 2.5) / 180 * TH)), y1 = Math.min(TH, Math.ceil((90 - la + r * 2.5) / 180 * TH));
+    for (let y = y0; y < y1; y++) for (let x = 0; x < TW; x++) {
+      const lat = 90 - (y + .5) * 180 / TH, lon = (x + .5) * 360 / TW - 180, d = angDeg(unit(lat, lon), cu);
+      if (d < r * 2.5) tex[y * TW + x] += .1 * Math.exp(-d / r) * (.6 + .4 * Math.sin(Math.atan2(lat - la, lon - lo) * 14) ** 2);
+    }
+  }
+  const out = new Uint8ClampedArray(TW * TH);
+  for (let i = 0; i < out.length; i++) out[i] = Math.max(0, Math.min(1, tex[i])) * 255;
+  return out;
+}
+
+let globeGeom = null, globeQueued = false, globeLow = false;
+function queueGlobe(low = false) {
+  globeLow = low;
+  if (globeQueued) return;
+  globeQueued = true;
+  requestAnimationFrame(() => { globeQueued = false; renderGlobe(globeLow); });
+}
+
+function renderGlobe(low) {
+  if (!TEX) return;
+  const css = Math.max(260, Math.min(globeWrap.clientWidth, globeWrap.clientHeight) - 20);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2), res = low ? .5 : 1;
+  const S = Math.round(css * dpr * res), k = S / css;
+  if (globeCanvas.width !== S) { globeCanvas.width = globeCanvas.height = S; }
+  globeCanvas.style.width = globeCanvas.style.height = css + "px";
+  const Rd = S / 2 * .86 * GLOBE.zoom, cx = S / 2, cy = S / 2;
+  globeGeom = { S, k, Rd, cx, cy, css };
+  const img = gctx.createImageData(S, S), d = img.data;
+  const sp = Math.sin(GLOBE.lat * DEG), cp = Math.cos(GLOBE.lat * DEG);
+  const L = [-.45, .35, .82], Ln = Math.hypot(...L);
+  const sel = GLOBE.sel, su = sel && unit(sel.lat, sel.lon), cosR = sel && Math.cos(sel.r * DEG), bad = sel && !selCheck(sel).ok;
+  const covs = COVERAGE.map(c => ({ u: unit(c.lat, c.lon), cr: Math.cos(c.r * DEG), edge: Math.cos((c.r - .35) * DEG) }));
+  for (let py = 0; py < S; py++) {
+    const ny = (cy - py - .5) / Rd;
+    for (let px = 0; px < S; px++) {
+      const nx = (px + .5 - cx) / Rd, r2 = nx * nx + ny * ny, o = (py * S + px) * 4;
+      if (r2 > 1) { d[o + 3] = 0; continue; }
+      const nz = Math.sqrt(1 - r2);
+      const lat = Math.asin(nz * sp + ny * cp) / DEG;
+      const lon = GLOBE.lon + Math.atan2(nx, nz * cp - ny * sp) / DEG;
+      const tx = Math.floor(((lon + 180) / 360 % 1 + 1) % 1 * TW), ty = Math.min(TH - 1, Math.floor((90 - lat) / 180 * TH));
+      const alb = TEX[ty * TW + tx] / 255;
+      const lam = Math.max(0, (nx * L[0] + ny * L[1] + nz * L[2]) / Ln);
+      const v = alb * (.22 + .95 * lam) * (.75 + .25 * nz) * 255;
+      let r = v * .97, g = v * .97, b = v * .97;
+      const pl = lat * DEG, ll = lon * DEG, cpl = Math.cos(pl);
+      const ux = cpl * Math.cos(ll), uy = cpl * Math.sin(ll), uz = Math.sin(pl);
+      // zone con dati: verde (bordo più marcato); il resto leggermente desaturato
+      let inCov = false, onEdge = false;
+      for (const c of covs) {
+        const dot = ux * c.u[0] + uy * c.u[1] + uz * c.u[2];
+        if (dot > c.cr) { inCov = true; if (dot < c.edge) onEdge = true; }
+      }
+      if (inCov) {
+        const a = onEdge ? .75 : .2;
+        r = r * (1 - a) + 74 * a; g = g * (1 - a) + 222 * a; b = b * (1 - a) + 128 * a;
+      } else { r *= .8; g *= .8; b *= .82; }
+      if (sel && ux * su[0] + uy * su[1] + uz * su[2] > cosR) {
+        const [tr, tg, tb] = bad ? [255, 90, 110] : [127, 211, 255];
+        r = r * .55 + tr * .45; g = g * .55 + tg * .45; b = b * .55 + tb * .45;
+      }
+      d[o] = r; d[o + 1] = g; d[o + 2] = b; d[o + 3] = 255;
+    }
+  }
+  gctx.putImageData(img, 0, 0);
+  drawGlobeOverlays();
+}
+
+function globeToScreen(lat, lon) {
+  const G = globeGeom, p = lat * DEG, d = (lon - GLOBE.lon) * DEG, p0 = GLOBE.lat * DEG;
+  const z = Math.sin(p0) * Math.sin(p) + Math.cos(p0) * Math.cos(p) * Math.cos(d);
+  const x = Math.cos(p) * Math.sin(d), y = Math.cos(p0) * Math.sin(p) - Math.sin(p0) * Math.cos(p) * Math.cos(d);
+  return { x: G.cx + x * G.Rd, y: G.cy - y * G.Rd, vis: z > 0 };
+}
+function screenToGlobe(clientX, clientY) {
+  const G = globeGeom, rect = globeCanvas.getBoundingClientRect();
+  const px = (clientX - rect.left) * G.k, py = (clientY - rect.top) * G.k;
+  const nx = (px - G.cx) / G.Rd, ny = (G.cy - py) / G.Rd, r2 = nx * nx + ny * ny;
+  if (r2 > 1) return null;
+  const nz = Math.sqrt(1 - r2), sp = Math.sin(GLOBE.lat * DEG), cp = Math.cos(GLOBE.lat * DEG);
+  return [Math.asin(nz * sp + ny * cp) / DEG, wrap180(GLOBE.lon + Math.atan2(nx, nz * cp - ny * sp) / DEG)];
+}
+
+function drawGlobeOverlays() {
+  const G = globeGeom, c = gctx, k = G.k;
+  c.save();
+  c.lineWidth = 1 * k; c.strokeStyle = "rgba(255,255,255,.12)";
+  const poly = pts => {
+    let pen = false; c.beginPath();
+    for (const [la, lo] of pts) { const s = globeToScreen(la, lo); if (!s.vis) { pen = false; continue; } pen ? c.lineTo(s.x, s.y) : c.moveTo(s.x, s.y); pen = true; }
+    c.stroke();
+  };
+  for (let la = -60; la <= 60; la += 30) { const p = []; for (let lo = -180; lo <= 180; lo += 2) p.push([la, lo]); poly(p); }
+  for (let lo = -180; lo < 180; lo += 30) { const p = []; for (let la = -90; la <= 90; la += 2) p.push([la, lo]); poly(p); }
+  c.font = `600 ${11 * k}px Inter, sans-serif`; c.textAlign = "center"; c.textBaseline = "middle";
+  for (const [la, txt] of [[90, "N"], [-90, "S"]]) {
+    const s = globeToScreen(la, 0);
+    if (s.vis) { c.fillStyle = "rgba(17,18,20,.7)"; c.beginPath(); c.arc(s.x, s.y, 9 * k, 0, 2 * Math.PI); c.fill(); c.fillStyle = "#fff"; c.fillText(txt, s.x, s.y + .5 * k); }
+  }
+  { const s = globeToScreen(0, 0);
+    if (s.vis) { c.fillStyle = "#38bdf8"; c.beginPath(); c.arc(s.x, s.y, 4 * k, 0, 2 * Math.PI); c.fill();
+      c.fillStyle = "#bae6fd"; c.fillText("⊕", s.x, s.y - 12 * k); } }
+  // etichette delle zone con dati
+  c.font = `600 ${10.5 * k}px Inter, sans-serif`;
+  for (const cov of COVERAGE) {
+    const s = globeToScreen(cov.lat, cov.lon);
+    if (!s.vis) continue;
+    const tw = c.measureText(cov.name).width;
+    c.fillStyle = "rgba(17,18,20,.72)"; c.fillRect(s.x - tw / 2 - 5 * k, s.y - 8 * k, tw + 10 * k, 16 * k);
+    c.fillStyle = "#86efac"; c.fillText(cov.name, s.x, s.y);
+  }
+  const sel = GLOBE.sel;
+  if (sel) {
+    const bad = !selCheck(sel).ok;
+    c.strokeStyle = bad ? "#ff7a8a" : "#7fd3ff"; c.lineWidth = 2 * k;
+    const p = []; for (let b = 0; b <= 360; b += 3) p.push(destination(sel.lat, sel.lon, b, Math.min(sel.r, 179)));
+    poly(p);
+    const s = globeToScreen(sel.lat, sel.lon);
+    if (s.vis) { c.fillStyle = "#fff"; c.beginPath(); c.arc(s.x, s.y, 4 * k, 0, 2 * Math.PI); c.fill(); }
+  }
+  c.strokeStyle = "rgba(255,255,255,.18)"; c.lineWidth = 1 * k;
+  c.beginPath(); c.arc(G.cx, G.cy, G.Rd, 0, 2 * Math.PI); c.stroke();
+  c.restore();
+}
+
+/* --- lista zone con dati --- */
+function renderCoverageList() {
+  const ul = document.getElementById("covList");
+  ul.innerHTML = COVERAGE.map(c => `
+    <li><button class="go ${WS.coverageId === c.id ? "sel" : ""}" data-cov="${esc(c.id)}">${esc(c.name)}
+      <span class="tag ${c.source === "demo" ? "demo" : ""}">${t(c.source === "demo" ? "covDemo" : c.source === "server" ? "covServer" : "covImport")}</span>
+      <small>${fmtLL(c.lat, c.lon)} · r ${c.r}°</small></button>
+      ${c.source === "import" ? `<button class="rm" data-rm="${esc(c.id)}" title="${t("removeData")}">✕</button>` : ""}</li>`).join("");
+}
+document.getElementById("covList").addEventListener("click", async e => {
+  const rm = e.target.closest("[data-rm]");
+  if (rm) {
+    const id = rm.dataset.rm, i = COVERAGE.findIndex(c => c.id === id);
+    if (i >= 0) COVERAGE.splice(i, 1);
+    DATASETS.delete(id);
+    try {
+      const ids = ((await LocalVault.get("datasets")) || []).filter(x => x !== id);
+      await LocalVault.set("datasets", ids); await LocalVault.set("dataset:" + id, null);
+    } catch (err) {}
+    renderCoverageList(); updateSelUI(); queueGlobe();
+    return;
+  }
+  const b = e.target.closest("[data-cov]"); if (!b) return;
+  const c = covById(b.dataset.cov); if (!c) return;
+  setSelection({ lat: c.lat, lon: c.lon, r: Math.min(AREA_LIMITS.maxDeg, c.r) }, true);
+});
+const dataFile = document.getElementById("dataFile"), dataMsg = document.getElementById("dataMsg");
+document.getElementById("btnImportData").addEventListener("click", () => dataFile.click());
+dataFile.addEventListener("change", async () => {
+  const f = dataFile.files[0]; dataFile.value = "";
+  if (!f) return;
+  dataMsg.style.color = "";
+  try {
+    const D = parseDataset(JSON.parse(await f.text()), "import");
+    DATASETS.set(D.id, D); COVERAGE.push(covFromDataset(D));
+    await storeDataset(D);
+    dataMsg.style.color = "var(--ok)"; dataMsg.textContent = t("dataImported", { n: D.name });
+    audit("data_import", { n: D.name });
+    renderCoverageList();
+    setSelection({ lat: D.region.lat, lon: D.region.lon, r: Math.min(AREA_LIMITS.maxDeg, D.region.r) }, true);
+  } catch (err) {
+    dataMsg.style.color = "var(--danger)"; dataMsg.textContent = t("dataErr", { e: err.message || "?" });
+  }
+});
+
+/* --- selezione e validazione (dimensione + copertura dati) --- */
+function selCheck(s) {
+  if (!s) return { ok: false };
+  const b = coverageFor(s.lat, s.lon), eps = 1e-6;
+  if (!b) return { ok: false, code: "noData" };
+  if (s.r > AREA_LIMITS.maxDeg + eps) return { ok: false, code: "tooBig", fit: Math.min(AREA_LIMITS.maxDeg, b.room), cov: b.cov };
+  if (s.r > b.room + eps) return { ok: false, code: b.room < AREA_LIMITS.minDeg ? "edge" : "outside", fit: b.room, cov: b.cov };
+  if (s.r < AREA_LIMITS.minDeg - eps) return { ok: false, code: "tooSmall", fit: AREA_LIMITS.minDeg, cov: b.cov };
+  return { ok: true, cov: b.cov };
+}
+const selValid = s => selCheck(s).ok;
+function sideHint(s) {
+  const d = angDeg(unit(s.lat, s.lon), unit(0, 0));
+  const parts = [d < 80 ? t("nearSide") : d > 98 ? t("farSide") : t("limb")];
+  if (Math.abs(s.lat) > 78) parts.push(t("polar"));
+  return parts.map(p => `<span class="hint">${p}</span>`).join("");
+}
+function updateSelUI() {
+  const s = GLOBE.sel, info = document.getElementById("selInfo"), st = document.getElementById("selStatus");
+  const btnOk = document.getElementById("btnConfirmArea"), btnFit = document.getElementById("btnShrink");
+  const rIn = document.getElementById("selRadius");
+  if (!s) { info.textContent = t("selNone"); st.textContent = ""; btnOk.disabled = true; btnFit.hidden = true; return; }
+  const km = degToKm(s.r), area = 2 * Math.PI * MOON_R ** 2 * (1 - Math.cos(s.r * DEG));
+  info.innerHTML = `${t("selCenter")}: <b>${fmtLL(s.lat, s.lon)}</b><br>${t("selRadius")}: <b>${s.r.toFixed(2)}°</b> (≈ ${km.toFixed(0)} km)<br>`
+    + `${t("selArea")}: <b>${Math.round(area).toLocaleString(lang)} km²</b>${sideHint(s)}`;
+  if (document.activeElement !== rIn) rIn.value = s.r.toFixed(2);
+  const chk = selCheck(s);
+  st.className = "sel-status " + (chk.ok ? "ok" : "bad");
+  st.textContent = chk.ok ? t("okSize", { n: chk.cov.name })
+    : chk.code === "noData" ? t("noData")
+    : chk.code === "tooBig" ? t("tooBig", { m: AREA_LIMITS.maxDeg, km: degToKm(AREA_LIMITS.maxDeg).toFixed(0) })
+    : chk.code === "outside" ? t("outside", { m: chk.fit.toFixed(2) })
+    : chk.code === "edge" ? t("edge") : t("tooSmall", { m: AREA_LIMITS.minDeg });
+  btnOk.disabled = !chk.ok;
+  btnFit.hidden = chk.ok || !chk.fit || chk.fit < AREA_LIMITS.minDeg;
+  btnFit.dataset.fit = chk.fit || "";
+}
+function setSelection(sel, recenter) {
+  GLOBE.sel = sel;
+  if (recenter) { GLOBE.lat = Math.max(-90, Math.min(90, sel.lat)); GLOBE.lon = sel.lon; }
+  updateSelUI(); queueGlobe();
+}
+const maxSelAt = (lat, lon) => { const m = maxRadiusAt(lat, lon); return m >= AREA_LIMITS.minDeg ? m : AREA_LIMITS.maxDeg; };
+
+document.getElementById("globeMode").addEventListener("click", e => {
+  const b = e.target.closest("button[data-mode]"); if (!b) return;
+  GLOBE.mode = b.dataset.mode;
+  document.querySelectorAll("#globeMode button").forEach(x => x.classList.toggle("active", x === b));
+  globeCanvas.classList.toggle("select", GLOBE.mode === "select");
+});
+
+let gDrag = null;
+globeCanvas.addEventListener("pointerdown", e => {
+  if (!globeGeom) return;
+  globeCanvas.setPointerCapture(e.pointerId);
+  if (GLOBE.mode === "select") {
+    const ll = screenToGlobe(e.clientX, e.clientY);
+    if (!ll) return;
+    gDrag = { type: "select", moved: false };
+    setSelection({ lat: ll[0], lon: ll[1], r: maxSelAt(ll[0], ll[1]) }, false);
+  } else {
+    gDrag = { type: "rotate", x: e.clientX, y: e.clientY };
+    globeCanvas.classList.add("dragging");
+  }
+});
+globeCanvas.addEventListener("pointermove", e => {
+  if (globeGeom) {
+    const ll = screenToGlobe(e.clientX, e.clientY);
+    document.getElementById("globeHover").textContent = ll ? fmtLL(ll[0], ll[1]) : " ";
+  }
+  if (!gDrag) return;
+  if (gDrag.type === "rotate") {
+    const RdCss = globeGeom.Rd / globeGeom.k;
+    GLOBE.lon = wrap180(GLOBE.lon - (e.clientX - gDrag.x) / RdCss / DEG);
+    GLOBE.lat = Math.max(-90, Math.min(90, GLOBE.lat + (e.clientY - gDrag.y) / RdCss / DEG));
+    gDrag.x = e.clientX; gDrag.y = e.clientY;
+    queueGlobe(true);
+  } else {
+    const ll = screenToGlobe(e.clientX, e.clientY);
+    if (!ll) return;
+    const r = angDeg(unit(GLOBE.sel.lat, GLOBE.sel.lon), unit(ll[0], ll[1]));
+    if (r > .2) { gDrag.moved = true; GLOBE.sel.r = r; updateSelUI(); queueGlobe(true); }
+  }
+});
+const endDrag = () => {
+  if (!gDrag) return;
+  if (gDrag.type === "select" && !gDrag.moved) GLOBE.sel.r = maxSelAt(GLOBE.sel.lat, GLOBE.sel.lon);
+  gDrag = null; globeCanvas.classList.remove("dragging");
+  updateSelUI(); queueGlobe(false);
+};
+globeCanvas.addEventListener("pointerup", endDrag);
+globeCanvas.addEventListener("pointercancel", endDrag);
+globeCanvas.addEventListener("wheel", e => {
+  e.preventDefault();
+  GLOBE.zoom = Math.max(.7, Math.min(4, GLOBE.zoom * Math.exp(-e.deltaY * .0012)));
+  queueGlobe(true); clearTimeout(globeCanvas._t); globeCanvas._t = setTimeout(() => queueGlobe(false), 160);
+}, { passive: false });
+
+document.getElementById("btnCenter").addEventListener("click", () => {
+  const la = parseFloat(document.getElementById("inLat").value), lo = parseFloat(document.getElementById("inLon").value);
+  const err = document.getElementById("coordErr");
+  if (!isFinite(la) || !isFinite(lo) || Math.abs(la) > 90 || Math.abs(lo) > 180) { err.textContent = t("invalidCoords"); return; }
+  err.textContent = "";
+  setSelection({ lat: la, lon: lo, r: maxSelAt(la, lo) }, true);   // area massima possibile centrata lì
+});
+["inLat", "inLon"].forEach(id => document.getElementById(id).addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("btnCenter").click();
+}));
+document.getElementById("selRadius").addEventListener("change", e => {
+  const v = parseFloat(e.target.value);
+  if (GLOBE.sel && isFinite(v) && v > 0) { GLOBE.sel.r = Math.min(90, v); updateSelUI(); queueGlobe(); }
+});
+document.getElementById("btnShrink").addEventListener("click", e => {
+  const f = parseFloat(e.currentTarget.dataset.fit);
+  if (GLOBE.sel && f >= AREA_LIMITS.minDeg) { GLOBE.sel.r = Math.floor(f * 100) / 100; updateSelUI(); queueGlobe(); }
+});
+
+const confirmBox = document.getElementById("confirmBox");
+document.getElementById("btnConfirmArea").addEventListener("click", () => {
+  const s = GLOBE.sel, chk = selCheck(s);
+  if (!chk.ok) return updateSelUI();
+  document.getElementById("confirmText").textContent =
+    t("confirmText", { c: fmtLL(s.lat, s.lon), r: s.r.toFixed(2), km: degToKm(s.r).toFixed(0), n: chk.cov.name });
+  confirmBox.classList.add("show");
+});
+document.getElementById("btnConfirmNo").addEventListener("click", () => confirmBox.classList.remove("show"));
+document.getElementById("btnConfirmYes").addEventListener("click", () => {
+  confirmBox.classList.remove("show");
+  const s = GLOBE.sel, chk = selCheck(s);
+  if (!chk.ok) return;
+  applyRegion({ lat: s.lat, lon: s.lon, r: s.r }, chk.cov.id);
+  audit("area", { c: fmtLL(s.lat, s.lon), r: s.r.toFixed(1) });
+  showStage("map");
+  openSetup();
+});
+function applyRegion(region, covId) {
+  const changed = !WS.region || WS.coverageId !== covId || ["lat", "lon", "r"].some(k => WS.region[k] !== region[k]);
+  WS.region = { ...region }; WS.coverageId = covId; REGION = { ...region };
+  if (changed) { MAPDATA = null; PX = null; selectedSite = -1; }
+  if (elevation(REGION.lat, REGION.lon, earthAt(new Date(WS.arrival))) < 0)
+    WS.arrival = toLocalInput(nextEarthWindow(new Date(WS.arrival)));
+  saveParams();
+}
+
+/* ---------- Stadi ---------- */
+const wsView = document.getElementById("view-workspace");
+function showStage(stage) {
+  wsView.dataset.stage = stage;
+  if (stage !== "map") stopPlay();
+  document.getElementById("stageGlobe").classList.toggle("on", stage === "globe");
+  document.getElementById("stageMap").classList.toggle("on", stage === "map");
+  updateStageSub();
+  if (stage === "globe") {
+    setupEl.classList.remove("show");
+    renderCoverageList();
+    if (!TEX) {
+      const busy = document.getElementById("globeBusy");
+      busy.classList.add("show");
+      setTimeout(() => { TEX = buildMoonTexture(); busy.classList.remove("show"); queueGlobe(); }, 30);
+    } else queueGlobe();
+  } else if (PX) requestAnimationFrame(layoutMap);
+}
+function updateStageSub() {
+  const el = document.getElementById("stageSub"), cov = covById(WS.coverageId);
+  el.textContent = wsView.dataset.stage === "map" && WS.region
+    ? t("areaSub", { n: cov ? cov.name : "", c: fmtLL(WS.region.lat, WS.region.lon), r: WS.region.r.toFixed(1) })
+    : t("stepArea");
+  if (session) document.getElementById("wsUser").innerHTML = `${esc(session.name)} · <strong>${esc(session.institution)}</strong>`;
+}
+document.getElementById("btnChangeArea").addEventListener("click", () => showStage("globe"));
+
+let resizeTimer = null;
+new ResizeObserver(() => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (current !== "workspace") return;
+    if (wsView.dataset.stage === "map" && PX) layoutMap();
+    if (wsView.dataset.stage === "globe") queueGlobe();
+  }, 150);
+}).observe(document.getElementById("view-workspace"));
+
+/* =====================================================================
+   PASSO 2: PERSONALIZZA MISSIONE (import / export)
+   ===================================================================== */
+const setupEl = document.getElementById("setup");
+const mapBusy = document.getElementById("mapBusy");
+const missionMsg = document.getElementById("missionMsg");
+function setMissionMsg(text, bad) { missionMsg.textContent = text || ""; missionMsg.classList.toggle("bad", !!bad); }
+function openSetup() { syncControls(); setMissionMsg(""); setupEl.classList.add("show"); }
+document.getElementById("btnParams").addEventListener("click", openSetup);
+document.getElementById("btnGenerate").addEventListener("click", async () => {
+  setupEl.classList.remove("show");
+  saveParams();
+  if (!MAPDATA) {
+    mapBusy.classList.add("show");
+    await new Promise(r => setTimeout(r, 30));
+    await ensureMapData();
+    mapBusy.classList.remove("show");
+  }
+  layoutMap();
+});
+
+function download(obj, filename) {
+  const blob = new Blob([JSON.stringify(obj, null, 1)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const slug = s => String(s || "mission").toLowerCase().replace(/[^\w]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "mission";
+
+// Esporta missione + risultati correnti (in chiaro: è pensata per lo scambio con Python / colleghi)
+document.getElementById("btnExportMission").addEventListener("click", () => {
+  const cov = covById(WS.coverageId), m = WS.mission;
+  download({
+    format: "mlsn-mission", version: 1, name: m.name, exportedAt: new Date().toISOString(),
+    exportedBy: session ? { name: session.name, institution: session.institution } : undefined,
+    region: WS.region ? { lat: WS.region.lat, lon: WS.region.lon, radiusDeg: WS.region.r } : null,
+    dataset: cov ? { id: cov.id, name: cov.name, source: cov.source } : null,
+    weights: { ...WS.weights },
+    landing: new Date(WS.arrival).toISOString(), stayHours: m.stayHours, evaluateOn: WS.horizon,
+    constraints: { minSunPct: m.minSun, minEarthPct: m.minEarth, maxIceKm: m.maxIce },
+    results: PX ? {
+      time: currentTime().toISOString(), offsetHours: WS.offsetH,
+      sites: SITES.map((s, i) => ({ rank: i + 1, lat: +s.lat.toFixed(4), lon: +s.lon.toFixed(4), score: +(s.score * 100).toFixed(1),
+        sunPct: +(s.sun * 100).toFixed(1), earthPct: +(s.earth * 100).toFixed(1), iceKm: s.ice > 999 ? null : +s.ice.toFixed(2) })),
+    } : null,
+    note: "Demo ephemerides and, for demo areas, synthetic data — not for operational use.",
+  }, `mlsn-mission-${slug(m.name)}.json`);
+  audit("mission_export", { n: m.name });
+});
+
+// Importa missione
+const missionFile = document.getElementById("missionFile");
+document.getElementById("btnImportMission").addEventListener("click", () => missionFile.click());
+missionFile.addEventListener("change", async () => {
+  const f = missionFile.files[0]; missionFile.value = "";
+  if (!f) return;
+  try {
+    const j = JSON.parse(await f.text());
+    if (!j || j.format !== "mlsn-mission") throw 0;
+    const num = (v, lo, hi, def) => (isFinite(+v) ? Math.max(lo, Math.min(hi, +v)) : def);
+    const m = WS.mission;
+    m.name = String(j.name || m.name).slice(0, 60);
+    if (j.weights) for (const k of ["sun", "earth", "ice"]) WS.weights[k] = Math.round(num(j.weights[k], 1, 10, WS.weights[k]));
+    m.stayHours = num(j.stayHours, 1, 720, m.stayHours);
+    if (j.constraints) {
+      m.minSun = num(j.constraints.minSunPct, 0, 100, 0);
+      m.minEarth = num(j.constraints.minEarthPct, 0, 100, 0);
+      m.maxIce = num(j.constraints.maxIceKm, 0, 500, 0);
+    }
+    if (j.landing && !isNaN(new Date(j.landing))) WS.arrival = toLocalInput(new Date(j.landing));
+    if (j.evaluateOn === "stay" || j.evaluateOn === "cycle") WS.horizon = j.evaluateOn;
+    let msg = t("missionImported", { n: m.name });
+    if (j.region) {
+      const reg = { lat: +j.region.lat, lon: +j.region.lon, r: +(j.region.radiusDeg ?? j.region.r) };
+      const chk = selCheck(reg);
+      if (chk.ok) { applyRegion(reg, chk.cov.id); GLOBE.sel = { ...reg }; updateStageSub(); }
+      else msg += " · " + t("missionRegionOut");
+    }
+    WS.offsetH = 0;
+    syncControls(); saveParams();
+    setMissionMsg(msg, false);
+    audit("mission_import", { n: m.name });
+  } catch (e) { setMissionMsg(t("missionErr"), true); }
+});
+
+// Esporta i dati dell'area corrente (stesso formato dell'import: utile come modello per Python)
+document.getElementById("btnExportData").addEventListener("click", async () => {
+  if (!MAPDATA) await ensureMapData();
+  if (!MAPDATA) return;
+  download(datasetToJSON(MAPDATA), `mlsn-area-${slug(MAPDATA.name)}.json`);
+});
+
+async function loadMissionParams() {
+  try {
+    const saved = await LocalVault.get("missionParams");
+    if (saved) {
+      Object.assign(WS, saved, { weights: { ...WS.weights, ...saved.weights }, mission: { ...WS.mission, ...(saved.mission || {}) } });
+      if (typeof WS.zoom !== "number" || WS.zoom > 1) WS.zoom = 1;
+      if (!(WS.offsetH >= 0)) WS.offsetH = 0;
+      if (WS.horizon !== "cycle") WS.horizon = "stay";
+    }
+  } catch (e) {}
+  await loadStoredDatasets();
+  await loadServerDatasets();
+  if (WS.region) {
+    if (!covById(WS.coverageId)) WS.coverageId = (coverageFor(WS.region.lat, WS.region.lon) || { cov: {} }).cov.id || null;
+    if (!REGION || REGION.lat !== WS.region.lat || REGION.lon !== WS.region.lon || REGION.r !== WS.region.r) { MAPDATA = null; PX = null; }
+    REGION = { ...WS.region };
+    GLOBE.sel = { ...WS.region };
+    GLOBE.lat = WS.region.lat; GLOBE.lon = WS.region.lon;
+  }
+  syncControls(); updateSelUI(); renderCoverageList();
+}
+
+function onLangChange() {
+  updateLegend(); updateEphem(); updateSelUI(); updateStageSub(); updateTimeUI(); renderCoverageList();
+  if (PX) { drawOverlays(); renderSites(); }
+  if (TEX && globeGeom) queueGlobe();
+}
+
+/* ================= Salto interstellare (solo verso il Workspace) ================= */
 const warpText = document.getElementById("warpText");
 const flash = document.getElementById("flash");
 const skipHint = document.getElementById("skipHint");
-const views = { workspace: document.getElementById("viewWorkspace"), tutorial: document.getElementById("viewTutorial") };
-
 const WARP_DURATION = 2000; // ms, massimo richiesto
 let warping = false;
 let warpTimers = [];
 
-function showView(name) {
-  home.classList.add("hidden");
-  Object.values(views).forEach(v => v.classList.remove("active"));
-  if (views[name]) views[name].classList.add("active");
-}
-function goHome() {
-  Object.values(views).forEach(v => v.classList.remove("active"));
-  home.classList.remove("hidden");
-  targetSpeed = 0.4;
-}
-
 function startWarp() {
-  if (warping) return;
+  if (warping || !session) return;
   warping = true;
-  home.classList.add("hidden");
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
   skipHint.classList.add("show");
-  targetSpeed = 80;                                   // accelerazione salto
+  targetSpeed = 80;
   warpText.classList.remove("show"); void warpText.offsetWidth; warpText.classList.add("show");
-
-  warpTimers.push(setTimeout(() => { flash.classList.add("show"); }, WARP_DURATION - 350));
-  warpTimers.push(setTimeout(endWarp, WARP_DURATION));
+  warpTimers.push(setTimeout(() => flash.classList.add("show"), WARP_DURATION - 350));
+  warpTimers.push(setTimeout(() => endWarp(), WARP_DURATION));
 }
-
-function endWarp() {
+function endWarp(silent) {
   if (!warping) return;
   warping = false;
   warpTimers.forEach(clearTimeout); warpTimers = [];
   warpText.classList.remove("show");
   flash.classList.remove("show");
   skipHint.classList.remove("show");
-  targetSpeed = 1.2;  // crociera dopo il salto
+  if (silent) return;
   speed = 1.2;
   showView("workspace");
+  targetSpeed = 1.2; // crociera nel workspace
 }
-
 document.getElementById("btnWorkspace").addEventListener("click", startWarp);
-document.getElementById("btnTutorial").addEventListener("click", () => showView("tutorial"));
-document.querySelectorAll("[data-back]").forEach(b => b.addEventListener("click", goHome));
 
-// Tasto sinistro (e Esc) per saltare l'animazione.
-// Uso mousedown: il click che avvia il salto è già passato, quindi non lo salta subito.
+// Tasto sinistro (o tocco / Esc) per saltare. mousedown: il click che avvia il salto è già passato.
 document.addEventListener("mousedown", e => { if (warping && e.button === 0) { e.preventDefault(); endWarp(); } });
 document.addEventListener("touchstart", () => { if (warping) endWarp(); }, { passive: true });
 document.addEventListener("keydown", e => { if (warping && e.key === "Escape") endWarp(); });
+
+applyLang(lang);
 </script>
 </body>
 </html>
