@@ -689,9 +689,125 @@
     background: linear-gradient(135deg, #38bdf8, #818cf8); color: #0a0b0d; font: 800 1.05rem "Inter", sans-serif; letter-spacing: .06em; }
   .edu-intro button:hover { filter: brightness(1.1); }
   .edu-intro .hint { margin-top: .6rem; font-size: .8rem; color: #8b91a3; }
+
+  /* parametri della missione: alto contrasto (sfondo nero, testo verde) */
+  select, .opt-add, #optList input { color-scheme: dark; }
+  select option, select optgroup { background-color: #0a0b0d; color: #4ade80; }
+  .opt-add { background: #0a0b0d !important; color: #4ade80 !important; border: 1px solid rgba(74,222,128,.55) !important; font-weight: 600; }
+  .opt-row { background: #0a0b0d !important; border-color: rgba(74,222,128,.35) !important; }
+  .opt-row .opt-head span { color: #4ade80; font-size: .9rem; }
+  .opt-row .opt-fields label { color: #a7f3d0 !important; font-size: .78rem !important; }
+  .opt-row input[type=number] { background: #000 !important; color: #4ade80 !important; border: 1px solid rgba(74,222,128,.45) !important; font-weight: 600; }
+  .opt-add-row { display: flex; gap: .5rem; align-items: center; }
+  .opt-add-row .opt-add { flex: 1; margin: .3rem 0 .6rem; }
+  .q-btn { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid #4ade80; background: #0a0b0d; color: #4ade80;
+    font: 800 .95rem "Inter", sans-serif; cursor: pointer; display: grid; place-items: center; line-height: 1; }
+  .q-btn:hover, .q-btn.on { background: #4ade80; color: #0a0b0d; }
+  .opt-row .opt-head .q-btn { width: 24px; height: 24px; font-size: .8rem; margin-left: auto; margin-right: .4rem; }
+  .opt-help, .opt-help-all { background: rgba(74,222,128,.07); border: 1px solid rgba(74,222,128,.3); border-radius: 10px; padding: .65rem .8rem;
+    font-size: .84rem; line-height: 1.55; color: #e6e8ef; margin: .2rem 0 .5rem; }
+  .opt-help b, .opt-help-all b { color: #4ade80; }
+  .opt-help-all dl { display: flex; flex-direction: column; gap: .55rem; }
+  .opt-help-all dt { font-weight: 700; color: #4ade80; } .opt-help-all dd { margin: 0; }
+  .opt-help .eff, .opt-help-all .eff { display: block; margin-top: .2rem; color: #fde68a; }
+  /* legenda della mappa più leggibile */
+  .map-legend { width: 200px !important; padding: .9rem 1rem !important; background: rgba(8,9,12,.92) !important; border: 1px solid rgba(127,211,255,.35) !important; gap: .7rem !important; }
+  .map-legend .legend-title { font-size: .88rem !important; font-weight: 700; line-height: 1.4; }
+  .lg-body { height: 230px !important; gap: .7rem !important; }
+  .map-legend .legend-bar { width: 20px !important; border: 1px solid rgba(255,255,255,.25); }
+  .lg-labels { font-size: .82rem !important; color: #e5e7eb !important; font-weight: 600; white-space: nowrap; }
+  .map-legend { top: 64px !important; transform: none !important; max-height: calc(100% - 140px); overflow-y: auto; }
+  .lg-labels span { position: relative; padding-left: .55rem; }
+  .lg-labels span::before { content: ""; position: absolute; left: -.55rem; top: 50%; width: .8rem; height: 1.5px; background: rgba(255,255,255,.5); }
+  .map-legend .legend-mask { font-size: .8rem !important; color: #cbd5e1 !important; }
+  .map-legend .lg-hint { font-size: .76rem; color: #9ca3af; line-height: 1.4; border-top: 1px solid rgba(255,255,255,.1); padding-top: .5rem; }
+
+  /* ===================== TELEFONO / TOUCH ===================== */
+  .m-chips { position: absolute; left: .5rem; bottom: .5rem; z-index: 8; display: none; gap: .35rem; flex-wrap: wrap; }
+  .m-chip { padding: .45rem .7rem; border-radius: 999px; border: 1px solid rgba(127,211,255,.5); background: rgba(8,9,12,.9); color: #bae6fd;
+    font: 700 .78rem "Inter", sans-serif; cursor: pointer; }
+  .m-chip.on { background: #7fd3ff; color: #0a0b0d; }
+  .zoom-ctl { position: absolute; right: .6rem; bottom: .6rem; z-index: 7; display: none; flex-direction: column; gap: .35rem; }
+  .zoom-ctl button { width: 46px; height: 46px; border-radius: 12px; border: 1px solid rgba(255,255,255,.25); background: rgba(8,9,12,.85);
+    color: #fff; font: 700 1.5rem "Inter", sans-serif; line-height: 1; cursor: pointer; touch-action: manipulation; }
+  body.touch .zoom-ctl { display: flex; }
+  body.phone.portrait .view.ws-view { overflow-y: auto; height: auto; min-height: 100dvh; }
+  body.phone.portrait .ws-top { flex-wrap: wrap; }
+  body.phone.portrait .ws-body { grid-template-columns: 1fr !important; grid-template-rows: 62vh auto; }
+  body.phone.portrait .map-wrap { order: -1 !important; }
+  body.phone.portrait .h-detail, body.phone.portrait #pane-reason .r-explain { width: auto !important; left: .4rem; top: auto; height: 45%; }
+  #hWrap .zoom-ctl { right: auto; left: .6rem; bottom: 3.2rem; }
+  body.phone.portrait #hWrap .zoom-ctl { top: .6rem; bottom: auto; }
+  .m-chips, .zoom-ctl { z-index: 4 !important; }
+  #gWrap.landing .m-chips, #gWrap.patch .m-chips { display: none !important; }
+  .rotate-hint { position: fixed; inset: 0; z-index: 60; display: none; place-items: center; text-align: center; padding: 2rem;
+    background: rgba(5,6,10,.96); color: #e6e8ef; }
+  .rotate-hint.show { display: grid; }
+  .rotate-hint .ph { font-size: 4rem; animation: rot 2.2s ease-in-out infinite; display: inline-block; }
+  @keyframes rot { 0%, 30% { transform: rotate(0); } 60%, 100% { transform: rotate(-90deg); } }
+  .rotate-hint h3 { font: 800 1.3rem "Orbitron", sans-serif; margin: 1rem 0 .6rem; }
+  .rotate-hint p { font-size: 1rem; line-height: 1.5; color: #c9cede; max-width: 340px; margin: 0 auto; }
+  .rotate-hint .rb { display: flex; flex-direction: column; gap: .6rem; margin-top: 1.4rem; align-items: center; }
+  .rotate-hint button { padding: .85rem 1.4rem; border-radius: 12px; border: 0; font: 700 1rem "Inter", sans-serif; cursor: pointer; }
+  .rotate-hint .go { background: linear-gradient(135deg, #38bdf8, #818cf8); color: #0a0b0d; }
+  .rotate-hint .skip { background: transparent; color: #9ca3af; border: 1px solid rgba(255,255,255,.2); }
+
+  body.phone .view.ws-view { padding: .4rem .55rem .45rem; gap: .4rem; height: 100dvh; overflow: hidden; }
+  body.phone .ws-top { padding: 0 74px 0 0 !important; gap: .4rem; flex-wrap: nowrap; }
+  body.phone .ws-title { gap: .4rem; flex-wrap: nowrap; min-width: 0; overflow-x: auto; }
+  body.phone .view.ws-view h2 { font-size: .85rem; letter-spacing: .04em; white-space: nowrap; }
+  body.phone .private-badge, body.phone .user-chip, body.phone .stage-sub, body.phone .demo-badge { display: none !important; }
+  body.phone .ws-top .btn.small, body.phone .edu-tabs button { padding: .4rem .6rem; font-size: .68rem; letter-spacing: .04em; white-space: nowrap; }
+  body.phone .ws-top-actions { flex-wrap: nowrap; gap: .3rem; }
+  body.phone .lang { top: .35rem; right: .4rem; }
+  body.phone .lang-toggle { padding: .35rem .55rem; font-size: .72rem; }
+  body.phone .ws-body { grid-template-columns: minmax(200px, 30%) 1fr !important; gap: .45rem; }
+  body.phone .ws-side { gap: .5rem; font-size: .85rem; }
+  body.phone .side-card { padding: .65rem .7rem; }
+  body.phone .map-wrap { min-height: 0 !important; order: 0 !important; border-radius: 12px; }
+  body.phone .m-chips { display: flex; }
+  body.phone .m-closed { display: none !important; }
+  /* pannelli sopra la mappa: più compatti */
+  body.phone #pane-history { --hz: 1 !important; }
+  body.phone .h-detail { width: 55% !important; top: .4rem; bottom: .4rem; right: .4rem; padding: .7rem .8rem; }
+  body.phone .h-head { grid-template-columns: 64px 1fr; gap: .6rem; } body.phone .h-patch { width: 64px; }
+  body.phone .h-detail h4 { font-size: 1.1rem; } body.phone .h-detail p, body.phone .h-detail ul { font-size: .86rem; }
+  body.phone #pane-reason .r-explain { width: 52% !important; top: .4rem; bottom: .4rem; right: .4rem; font-size: .86rem; padding: .7rem .8rem; }
+  body.phone .g-compass { right: .4rem; bottom: auto; top: .4rem; width: 170px; padding: .5rem .6rem; }
+  body.phone .g-compass svg { width: 100px; height: 104px; } body.phone .g-compass p { font-size: .76rem !important; }
+  body.phone .map-legend { top: .4rem !important; right: .4rem; width: 170px !important; max-height: calc(100% - 4rem); padding: .6rem .7rem !important; }
+  body.phone .lg-body { height: 140px !important; }
+  body.phone #globeCmp { width: 160px; left: .4rem; top: .4rem; padding: .45rem .55rem; }
+  body.phone #globeCmp .lg { display: none; }
+  body.phone .mc-panel { max-width: 46% !important; font-size: .8rem; }
+  body.phone .timebar { left: .4rem; right: .4rem; bottom: .4rem; padding: .3rem .4rem; gap: .25rem; }
+  body.phone .timebar .tb { padding: .3rem .4rem; font-size: .72rem; }
+  body.phone .timebar .tb-label { display: none; }
+  body.phone .view-toggle { top: .4rem; right: .4rem; padding: .4rem .6rem; font-size: .72rem; }
+  body.phone .edu-intro { padding: .5rem; align-items: start; overflow-y: auto; }
+  body.phone .edu-intro .card { padding: 1rem 1.2rem; max-width: 92%; }
+  body.phone .edu-intro .ico { font-size: 2rem; } body.phone .edu-intro h3 { font-size: 1.15rem; margin: .2rem 0 .4rem; }
+  body.phone .edu-intro p, body.phone .edu-intro ol, body.phone .edu-intro .mis { font-size: .88rem; }
+  body.phone .edu-intro button { margin-top: .8rem; padding: .7rem 1.6rem; }
+  body.phone .setup-card { max-height: 94dvh; overflow-y: auto; padding: 1rem 1.1rem; }
+  body.phone .login-card { padding: 1.1rem 1.3rem; gap: .7rem; max-height: 96dvh; overflow-y: auto; }
+  body.phone .demo-users { max-height: 140px; }
+  /* gioco: comandi touch a due mani */
+  body.touch .g-pad { left: 0; right: 0; transform: none; bottom: .6rem; justify-content: space-between; padding: 0 .8rem; pointer-events: none; }
+  body.touch .g-pad button { pointer-events: auto; width: 74px; height: 74px; border-radius: 50%; font-size: 1.8rem; background: rgba(10,11,13,.6); border: 2px solid rgba(127,211,255,.6); }
+  body.touch .g-pad .lr { display: flex; gap: .7rem; }
+  body.touch .g-pad button[data-k="up"] { width: 92px; height: 92px; border-color: #fbbf24; color: #fde047; }
+  body.touch .g-pad button:active { background: rgba(127,211,255,.35); }
+  body.phone #gSide2 .g-tele { grid-template-columns: 1fr 1fr; font-size: .78rem; }
+  body.phone #gSide2 .slider-desc { display: none; }
 </style>
 </head>
 <body>
+<div class="rotate-hint" id="rotateHint" role="dialog" aria-modal="true">
+  <div><span class="ph">📱</span><h3 data-i18n="rotTitle">Turn your phone</h3><p data-i18n="rotText"></p>
+    <div class="rb"><button class="go" id="rotGo" data-i18n="rotGo">Full screen, landscape</button><button class="skip" id="rotSkip" data-i18n="rotSkip">Continue anyway</button></div></div>
+</div>
+
 
 <canvas id="stars"></canvas>
 <div class="watermark" id="watermark"></div>
@@ -852,7 +968,7 @@
       <canvas id="gMap"></canvas>
       <canvas id="gLander" tabindex="0"></canvas>
       <div class="g-pad" id="gPadCtl" hidden>
-        <button data-k="left">◀</button><button data-k="up">▲</button><button data-k="right">▶</button>
+        <span class="lr"><button data-k="left" aria-label="◀">◀</button><button data-k="right" aria-label="▶">▶</button></span><button data-k="up" aria-label="▲">▲</button>
       </div>
       <div class="g-patch" id="gPatch"></div>
       <div class="g-compass" id="gCompass" hidden>
@@ -1093,6 +1209,7 @@
         </div>
         <div class="legend-mask" id="legendMask"><i></i><span data-i18n="masked">Excluded</span></div>
         <div class="legend-mask energy" id="legendEnergy"><i></i><span data-i18n="maskEnergyLg">Battery below reserve</span></div>
+        <div class="lg-hint" data-i18n="lgHint">Brighter colour = higher value. Hover the map to read the exact value.</div>
       </div>
       <div class="mc-panel" id="mcPanel" aria-live="polite"></div>
       <div class="timebar" id="timebar">
@@ -1144,7 +1261,9 @@
       <details class="m-sec" open>
         <summary data-i18n="optTitle">Optional parameters</summary>
         <p class="field-hint" data-i18n="optHelp"></p>
-        <select id="optAdd" class="opt-add"></select>
+        <div class="opt-add-row"><select id="optAdd" class="opt-add"></select>
+          <button type="button" class="q-btn" id="optHelpAll" aria-expanded="false" title="?">?</button></div>
+        <div class="opt-help-all" id="optHelpPanel" hidden></div>
         <div class="opt-list" id="optList"></div>
       </details>
       <button class="btn primary" id="btnGenerate" data-i18n="generate">Compute map</button>
@@ -1625,6 +1744,7 @@ function showView(name) {
   if (PROTECTED.includes(name) && !(session && LocalVault.unlocked)) name = "login";
   document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + name));
   current = name;
+  try { mobileFlags(); } catch (e) {}
   document.body.classList.toggle("ws-on", name === "workspace");
   document.body.classList.toggle("edu-on", name === "educational");
   if (name === "educational") openEducational();
@@ -2035,6 +2155,17 @@ const I18N_GLOBE = {
         missionTitle: "Personalizza missione", missionSub: "Imposta i parametri o importa un file missione: la mappa 2D verrà calcolata su questi.",
         importMission: "Importa missione", exportMission: "Esporta missione + risultati", exportData: "Esporta dati area",
         mName: "Nome missione", timeTitle: "Tempi", mStay: "Permanenza (ore)", constraintsTitle: "Vincoli rigidi (facoltativi)",
+        lgHint: "Colore più chiaro = valore più alto. Passa il mouse sulla mappa per leggere il valore esatto. Le lettere N S E W indicano le direzioni al centro dell'area.",
+        ohIntro: "Ogni parametro facoltativo è un vincolo: le zone che non lo rispettano vengono escluse (tratteggio) e non possono essere tra i siti migliori. Aggiungine solo quelli che contano per la tua missione.",
+        oh_energy: "Simula pannelli solari e batteria nel tempo: il pannello carica quando il sito è al Sole, il consumo scarica sempre.", oe_energy: "Con l'opzione attiva vengono esclusi i siti in cui la batteria scende sotto la riserva minima durante la permanenza.",
+        oh_minSun: "Percentuale minima di tempo in cui il sito deve essere illuminato dal Sole.", oe_minSun: "Valori alti lasciano solo creste e picchi molto illuminati: meno siti, ma più energia.",
+        oh_minEarth: "Percentuale minima di tempo con la Terra sopra l'orizzonte, cioè con comunicazione diretta.", oe_minEarth: "Valori alti escludono i versanti nascosti alla Terra: meglio per comandi e dati, ma l'area utile si restringe.",
+        oh_maxIce: "Distanza massima dal deposito di ghiaccio più vicino (crateri in ombra permanente).", oe_maxIce: "Valori bassi tengono solo i siti vicini all'acqua: utile per ISRU e campioni, ma spesso sono zone più buie.",
+        oh_landable: "Tiene solo le celle in cui almeno metà dell'area ha pendenza ≤ 10°, il limite tipico per un lander.", oe_landable: "Elimina i pendii ripidi: più sicurezza all'atterraggio, meno libertà di scelta.",
+        oh_maxSlope: "Pendenza media massima ammessa nella cella, in gradi.", oe_maxSlope: "Più è bassa, più il terreno è piatto e sicuro; con valori molto bassi restano pochissimi siti.",
+        oh_quota: "Intervallo di altitudine accettato, in metri rispetto al riferimento lunare.", oe_quota: "Quote alte vedono più Sole e Terra; quote basse sono più vicine al ghiaccio ma più in ombra.",
+        oh_maxDark: "Durata massima accettata del buio continuo (notte più lunga) nel periodo dei dati.", oe_maxDark: "Valori bassi proteggono batterie e strumenti dal freddo, ma escludono molte zone polari.",
+        oh_maxNoCom: "Durata massima accettata senza la Terra in vista (blackout delle comunicazioni).", oe_maxNoCom: "Valori bassi garantiscono contatto quasi continuo con il controllo missione.",
         cSun: "Sole min %", cEarth: "Terra min %", cIce: "Ghiaccio max km",
         constraintsHint: "0 = nessun vincolo. Le zone che non li rispettano vengono escluse dalla mappa.",
         generate: "Calcola mappa", editParams: "Personalizza missione",
@@ -2068,6 +2199,17 @@ const I18N_GLOBE = {
         missionTitle: "Customize mission", missionSub: "Set the parameters or import a mission file: the 2D map will be computed from them.",
         importMission: "Import mission", exportMission: "Export mission + results", exportData: "Export area data",
         mName: "Mission name", timeTitle: "Timing", mStay: "Stay (hours)", constraintsTitle: "Hard constraints (optional)",
+        lgHint: "Brighter colour = higher value. Hover the map to read the exact value. The letters N S E W show the directions at the centre of the area.",
+        ohIntro: "Each optional parameter is a constraint: the zones that do not meet it are excluded (hatched) and cannot be among the best sites. Add only the ones that matter for your mission.",
+        oh_energy: "Simulates solar panels and battery over time: the panel charges when the site is sunlit, the load always drains.", oe_energy: "With the option on, sites where the battery falls below the minimum reserve during the stay are excluded.",
+        oh_minSun: "Minimum share of time the site must be lit by the Sun.", oe_minSun: "High values leave only very sunlit ridges and peaks: fewer sites, but more energy.",
+        oh_minEarth: "Minimum share of time with Earth above the horizon, i.e. direct communication.", oe_minEarth: "High values exclude slopes hidden from Earth: better for commands and data, but the usable area shrinks.",
+        oh_maxIce: "Maximum distance from the nearest ice deposit (permanently shadowed craters).", oe_maxIce: "Low values keep only sites close to water: useful for ISRU and samples, but these are often darker zones.",
+        oh_landable: "Keeps only cells where at least half of the area has slope ≤ 10°, the typical limit for a lander.", oe_landable: "Removes steep slopes: safer landing, less freedom of choice.",
+        oh_maxSlope: "Maximum mean slope allowed in the cell, in degrees.", oe_maxSlope: "The lower it is, the flatter and safer the ground; very low values leave very few sites.",
+        oh_quota: "Accepted elevation range, in metres relative to the lunar datum.", oe_quota: "High ground sees more Sun and Earth; low ground is closer to ice but more shadowed.",
+        oh_maxDark: "Maximum accepted duration of continuous darkness (longest night) in the data period.", oe_maxDark: "Low values protect batteries and instruments from the cold, but exclude many polar zones.",
+        oh_maxNoCom: "Maximum accepted time without Earth in view (communication blackout).", oe_maxNoCom: "Low values guarantee almost continuous contact with mission control.",
         cSun: "Min Sun %", cEarth: "Min Earth %", cIce: "Max ice km",
         constraintsHint: "0 = no constraint. Areas that fail them are excluded from the map.",
         generate: "Compute map", editParams: "Customize mission",
@@ -2807,12 +2949,24 @@ const OPT_DEFS = [
   { id: "landable", f: [] }, { id: "maxSlope", f: [["maxSlope", "oSlope", 1]] }, { id: "quota", f: [["minQuota", "oQmin", 50], ["maxQuota", "oQmax", 50]] },
   { id: "maxDark", f: [["maxDark", "oDark", 6]] }, { id: "maxNoCom", f: [["maxNoCom", "oNoCom", 6]] },
 ];
+const OPT_HELP_OPEN = new Set();
+const optHelpHtml = id => `${esc(t("oh_" + id))}<span class="eff">→ ${esc(t("oe_" + id))}</span>`;
+function renderOptHelpAll() {
+  const p = document.getElementById("optHelpPanel"); if (!p) return;
+  p.innerHTML = `<p style="margin-bottom:.6rem">${esc(t("ohIntro"))}</p><dl>${OPT_DEFS.map(d => `<div><dt>${esc(t("opt_" + d.id))}</dt><dd>${optHelpHtml(d.id)}</dd></div>`).join("")}</dl>`;
+}
+document.getElementById("optHelpAll").addEventListener("click", e => {
+  const p = document.getElementById("optHelpPanel"), open = p.hidden;
+  p.hidden = !open; e.currentTarget.classList.toggle("on", open); e.currentTarget.setAttribute("aria-expanded", open);
+  if (open) renderOptHelpAll();
+});
 function renderOptParams() {
   const o = WS.mission.opt || (WS.mission.opt = {}), sel = document.getElementById("optAdd"), list = document.getElementById("optList");
   if (!sel) return;
   sel.innerHTML = `<option value="">＋ ${esc(t("optAdd"))}</option>` + OPT_DEFS.filter(d => !o[d.id]).map(d => `<option value="${d.id}">${esc(t("opt_" + d.id))}</option>`).join("");
   const act = OPT_DEFS.filter(d => o[d.id]);
-  list.innerHTML = act.length ? act.map(d => `<div class="opt-row"><div class="opt-head"><span>${esc(t("opt_" + d.id))}</span><button type="button" data-optrm="${d.id}" title="${esc(t("removeData"))}">✕</button></div>
+  list.innerHTML = act.length ? act.map(d => `<div class="opt-row"><div class="opt-head"><span>${esc(t("opt_" + d.id))}</span><button type="button" class="q-btn${OPT_HELP_OPEN.has(d.id) ? " on" : ""}" data-opthelp="${d.id}" title="?">?</button><button type="button" data-optrm="${d.id}" title="${esc(t("removeData"))}">✕</button></div>
+    ${OPT_HELP_OPEN.has(d.id) ? `<div class="opt-help">${optHelpHtml(d.id)}</div>` : ""}
     ${d.f.length ? `<div class="opt-fields">${d.f.map(([k, lb, st]) => `<label>${esc(t(lb))}<input type="number" step="${st}" data-m="${k}" value="${WS.mission[k]}"></label>`).join("")}</div>` : `<p class="opt-empty">${esc(t("opt_" + d.id + "_d"))}</p>`}
     ${d.chk ? `<label class="chk m-chk"><input type="checkbox" data-m="${d.chk}" ${WS.mission[d.chk] ? "checked" : ""}> <span>${esc(t("eHard"))}</span></label>` : ""}</div>`).join("")
     : `<p class="opt-empty">${esc(t("optNone"))}</p>`;
@@ -2822,6 +2976,8 @@ document.getElementById("optAdd").addEventListener("change", e => {
   WS.mission.opt[id] = true; renderOptParams(); syncControls(); queueRecolor(true); saveParams();
 });
 document.getElementById("optList").addEventListener("click", e => {
+  const h = e.target.closest("[data-opthelp]");
+  if (h) { const id = h.dataset.opthelp; OPT_HELP_OPEN.has(id) ? OPT_HELP_OPEN.delete(id) : OPT_HELP_OPEN.add(id); renderOptParams(); return; }
   const b = e.target.closest("[data-optrm]"); if (!b) return;
   delete WS.mission.opt[b.dataset.optrm]; renderOptParams(); updateLegend(); queueRecolor(true); saveParams();
 });
@@ -2897,7 +3053,8 @@ function updateLegend() {
     document.getElementById("legendEnergy").hidden = true;
     return;
   }
-  document.getElementById("legendMid").textContent = L === "temp" ? "0 °C" : "";
+  { const sr0 = PX && PX.scoreRange;
+    document.getElementById("legendMid").textContent = L === "temp" ? "−55 °C" : L === "score" ? (sr0 ? String(Math.round((sr0[0] + sr0[1]) * 50)) : "") : L === "ice" ? "" : "50%"; }
   document.getElementById("legendTitle").textContent =
     stay && (L === "sun" || L === "earth") ? t(`lg_${L}_stay`, { h: WS.mission.stayHours })
     : (L === "sun" || L === "earth") && dataPeriod() ? `${t("lg_" + L)} · ${t("hYear").toLowerCase()} ${new Date(dataPeriod().start).getUTCFullYear()}` : t("lg_" + L);
@@ -3030,19 +3187,19 @@ function sampleDS(arr, D, x, y) {        // bilineare; x, y in km nella proiezio
 
 function layoutMap() {
   if (!MAPDATA) return;
-  const css = Math.max(260, Math.min(mapWrap.clientWidth, mapWrap.clientHeight - 64) - 20);
+  const css = Math.max(260, Math.min(mapWrap.clientWidth - 40, mapWrap.clientHeight - 58) - 6);
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const S = Math.min(1000, Math.round(css * dpr)), k = S / css;
+  const S = Math.min(1400, Math.round(css * dpr)), k = S / css;
   mapCanvas.width = mapCanvas.height = S;
   mapCanvas.style.width = mapCanvas.style.height = css + "px";
   mapCanvas.style.marginBottom = "56px";
   // il pannello Mission Control usa solo lo spazio libero a sinistra della mappa (non copre Sole e Terra)
   const side = Math.max(150, (mapWrap.clientWidth - css) / 2 - 24);
   document.getElementById("mcPanel").style.maxWidth = side + "px";
-  document.getElementById("mapLegend").style.width = Math.min(180, side) + "px";
+  document.getElementById("mapLegend").style.setProperty("width", Math.min(210, side) + "px", "important");
   ORBIT.dirty = true;
   const viewDeg = REGION.r * WS.zoom;
-  const margin = 62 * k, R = S / 2 - margin, scale = R / rForDeg(viewDeg);
+  const margin = 50 * k, R = S / 2 - margin, scale = R / rForDeg(viewDeg);
   const n = S * S, D = MAPDATA, F = () => new Float32Array(n);
   const P = { S, k, R, scale, viewDeg, cx: S / 2, cy: S / 2, css, inside: new Uint8Array(n),
     sunF: F(), earthF: F(), ice: F(), sHzE: F(), sHzS: F(), sphi: F(), cphi: F(), clam: F(), slam: F(), lat: F(), lon: F(),
@@ -3329,7 +3486,39 @@ function computeSites() {
 
 function niceStep(raw) { return [.01, .02, .05, .1, .25, .5, 1, 2, 5, 10, 15, 30, 45].find(s => s >= raw) || 45; }
 
-function drawOverlays() {
+
+// assi cardinali sulla mappa 2D: direzioni N-S-E-W valide al centro dell'area
+function drawCardinals() {
+  const P = PX; if (!P) return;
+  const c = mctx, k = P.k, d = .01 * Math.max(.05, P.viewDeg);
+  const [x0, y0] = projFwd(REGION.lat, REGION.lon), [x1, y1] = projFwd(Math.min(89.99, REGION.lat + d), REGION.lon);
+  let ang = Math.atan2(x1 - x0, y1 - y0);               // 0 = nord in alto
+  if (!isFinite(ang)) ang = 0;
+  const dirs = [["N", 0, "#fde047"], ["E", Math.PI / 2, "#e5e7eb"], ["S", Math.PI, "#e5e7eb"], ["W", -Math.PI / 2, "#e5e7eb"]];
+  c.save();
+  c.beginPath(); c.arc(P.cx, P.cy, P.R, 0, 2 * Math.PI); c.clip();
+  c.setLineDash([6 * k, 6 * k]); c.lineWidth = 1.2 * k; c.strokeStyle = "rgba(253,224,71,.35)";
+  for (const a of [ang, ang + Math.PI / 2]) {
+    c.beginPath(); c.moveTo(P.cx - Math.sin(a) * P.R, P.cy + Math.cos(a) * P.R); c.lineTo(P.cx + Math.sin(a) * P.R, P.cy - Math.cos(a) * P.R); c.stroke();
+  }
+  c.restore(); c.save();
+  for (const [lab, off, col] of dirs) {
+    const a = ang + off, r = P.R - 17 * k, x = P.cx + Math.sin(a) * r, y = P.cy - Math.cos(a) * r;
+    // freccia sul bordo
+    const r1 = P.R - 32 * k, r2 = P.R - 4 * k;
+    c.fillStyle = col; c.beginPath();
+    c.moveTo(P.cx + Math.sin(a) * (P.R + 4 * k), P.cy - Math.cos(a) * (P.R + 4 * k));
+    c.lineTo(P.cx + Math.sin(a) * r2 + Math.cos(a) * 6 * k, P.cy - Math.cos(a) * r2 + Math.sin(a) * 6 * k);
+    c.lineTo(P.cx + Math.sin(a) * r2 - Math.cos(a) * 6 * k, P.cy - Math.cos(a) * r2 - Math.sin(a) * 6 * k); c.fill();
+    c.fillStyle = "rgba(8,9,12,.92)"; c.strokeStyle = col; c.lineWidth = 2 * k;
+    c.beginPath(); c.arc(x, y, 12 * k, 0, 2 * Math.PI); c.fill(); c.stroke();
+    c.fillStyle = col; c.font = `800 ${13 * k}px Inter, sans-serif`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(lab, x, y + .5 * k);
+    void r1;
+  }
+  c.restore();
+}
+function drawOverlays() { drawOverlays0(); try { drawCardinals(); } catch (e) {} }
+function drawOverlays0() {
   if (!PX) return;
   const P = PX, c = mctx, k = P.k, cen = unit(REGION.lat, REGION.lon);
   const toPx = (lat, lon) => { const [x, y] = projFwd(lat, lon); return [P.cx + x * P.scale, P.cy - y * P.scale]; };
@@ -3461,8 +3650,9 @@ function drawBody(body, kind) {
   }
   c.font = `600 ${10.5 * k}px Inter, sans-serif`; c.fillStyle = kind === "sun" ? "#fde68a" : "#bae6fd";
   c.textAlign = "center"; c.textBaseline = "middle";
-  const lr = rr + 26 * k;
-  c.fillText(t(kind === "sun" ? "sunLbl" : "earthLbl"), P.cx + lr * Math.sin(a), P.cy - lr * Math.cos(a));
+  const lbl = t(kind === "sun" ? "sunLbl" : "earthLbl"), tw = c.measureText(lbl).width;
+  const lx = Math.max(tw / 2 + 3 * k, Math.min(P.S - tw / 2 - 3 * k, x)), ly = Math.max(8 * k, Math.min(P.S - 8 * k, y + r + 13 * k));
+  c.lineWidth = 3 * k; c.strokeStyle = "rgba(10,11,13,.85)"; c.strokeText(lbl, lx, ly); c.fillText(lbl, lx, ly);
   c.restore();
 }
 
@@ -3949,7 +4139,7 @@ document.getElementById("btnOrbit").addEventListener("click", () => setOrbit(!OR
 let oDrag = null;
 orbitCanvas.addEventListener("pointerdown", e => { orbitCanvas.setPointerCapture(e.pointerId); oDrag = { x: e.clientX, y: e.clientY }; orbitCanvas.style.cursor = "grabbing"; });
 orbitCanvas.addEventListener("pointermove", e => {
-  if (!oDrag) return;
+  if (!oDrag || orbitCanvas._pinch) return;
   const Rm = orbitLayout().Rm;
   ORBIT.lon = wrap180(ORBIT.lon - (e.clientX - oDrag.x) / Rm / DEG);
   ORBIT.lat = Math.max(-90, Math.min(90, ORBIT.lat + (e.clientY - oDrag.y) / Rm / DEG));
@@ -3984,14 +4174,117 @@ function moonShade(nx, ny, nz, sp, cp, tx, ty) {
   const en = Math.hypot(ex, ey, ez) || 1; ex /= en; ey /= en; ez /= en;
   const Nx = ny * ez - nz * ey, Ny = nz * ex - nx * ez, Nz = nx * ey - ny * ex;
   const bs = bumpK * Math.min(1, en * 3);
-  let mx = nx - bs * (gx * ex + gy * Nx), my = ny - bs * (gx * ey + gy * Ny), mz = nz - bs * (gx * ez + gy * Nz);
+  return moonLight(nx, ny, nz, ex, ey, ez, Nx, Ny, Nz, bs * gx, bs * gy, Math.pow(TEX[row + tx] / 255, REAL_TEX ? 1.1 : 1.25));
+}
+// illuminazione con pendenza locale (gE verso est, gN verso nord, già in unità di pendenza)
+function moonLight(nx, ny, nz, ex, ey, ez, Nx, Ny, Nz, gE, gN, alb) {
+  let mx = nx - (gE * ex + gN * Nx), my = ny - (gE * ey + gN * Ny), mz = nz - (gE * ez + gN * Nz);
   const mn = Math.hypot(mx, my, mz); mx /= mn; my /= mn; mz /= mn;
   const RL = MOON_RL, mu0 = mx * RL[0] + my * RL[1] + mz * RL[2], mu0g = nx * RL[0] + ny * RL[1] + nz * RL[2];
   const term = Math.min(1, Math.max(0, (mu0g + .06) / .16));
   const ls = mu0 > 0 ? 2 * mu0 / (mu0 + nz) : 0;
   const lit = (.55 * Math.min(1.25, ls) + .5 * Math.max(0, mu0)) * term;
-  const alb = Math.pow(TEX[row + tx] / 255, REAL_TEX ? 1.1 : 1.25);
   return Math.min(255, (alb * lit * 1.05 + alb * .05) * 255);
+}
+
+/* ===== Modello di dettaglio del Polo Sud (sotto 80°S) =====
+   Griglia in stereografica polare (stessa proiezione dei siti), ~300 m per pixel:
+   rilievo generato (crateri reali del catalogo + crateri minori + rugosità) e, dentro i siti integrati,
+   la QUOTA REALE del DEM letta direttamente dalla griglia del sito alla sua risoluzione piena. */
+const POLE = { ready: false, building: false, N: 2048, ext: 0, gx: null, gy: null, sites: [] };
+function buildPoleDetail() {
+  if (POLE.ready || POLE.building) return;
+  POLE.building = true;
+  const N = POLE.N, ext = POLE.ext = rForDeg(10.5), px = 2 * ext / N, H = new Float32Array(N * N), rnd = mulberry32(2026);
+  const C0 = { lat: -90, lon: 0, r: 90 };
+  // rugosità frattale (value noise, 5 ottave)
+  const vn = (g, seed) => { const a = new Float32Array((g + 1) * (g + 1)), r = mulberry32(seed); for (let i = 0; i < a.length; i++) a[i] = r() * 2 - 1; return a; };
+  const OCT = [[16, .9], [40, .45], [100, .22], [256, .1], [640, .045]].map(([g, amp], i) => ({ g, amp, a: vn(g, 77 + i) }));
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    let h = 0;
+    for (const o of OCT) {
+      const u = j / N * o.g, v = i / N * o.g, u0 = u | 0, v0 = v | 0, fu = u - u0, fv = v - v0, su = fu * fu * (3 - 2 * fu), sv = fv * fv * (3 - 2 * fv), G = o.g + 1;
+      const a = o.a[v0 * G + u0], b = o.a[v0 * G + u0 + 1], c = o.a[(v0 + 1) * G + u0], d = o.a[(v0 + 1) * G + u0 + 1];
+      h += o.amp * ((a * (1 - su) + b * su) * (1 - sv) + (c * (1 - su) + d * su) * sv);
+    }
+    H[i * N + j] = h;
+  }
+  const toPix = (lat, lon) => { const [x, y] = projFwd(lat, lon, C0); return [(x + ext) / px, (ext - y) / px]; };
+  const crater = (cj, ci, rKm, depth) => {
+    const rp = rKm / px, R2 = rp * 1.6;
+    for (let i = Math.max(0, ci - R2 | 0); i <= Math.min(N - 1, ci + R2 | 0); i++)
+      for (let j = Math.max(0, cj - R2 | 0); j <= Math.min(N - 1, cj + R2 | 0); j++) {
+        const q = Math.hypot(j - cj, i - ci) / rp;
+        if (q > 1.6) continue;
+        H[i * N + j] += q < 1 ? depth * (q * q - 1) + .18 * depth : .18 * depth * Math.exp(-((q - 1) / .22) * ((q - 1) / .22));
+      }
+  };
+  // crateri minori (distribuzione a legge di potenza)
+  for (let n = 0; n < 2600; n++) {
+    const rKm = .5 + 9 * Math.pow(rnd(), 3.2);
+    crater(rnd() * N, rnd() * N, rKm, Math.min(3, rKm * .38));
+  }
+  // crateri reali e massicci del catalogo
+  for (const c of CRATERS) if (c.lat < -79) { const [cj, ci] = toPix(c.lat, c.lon); crater(cj, ci, c.d / 2, Math.min(4.2, c.d * .09)); }
+  for (const m of MASSIFS) for (const [la, lo] of m.p) {
+    const [cj, ci] = toPix(la, lo), rp = m.r / px;
+    for (let i = Math.max(0, ci - 3 * rp | 0); i <= Math.min(N - 1, ci + 3 * rp | 0); i++)
+      for (let j = Math.max(0, cj - 3 * rp | 0); j <= Math.min(N - 1, cj + 3 * rp | 0); j++)
+        H[i * N + j] += m.h * 4 * Math.exp(-((j - cj) * (j - cj) + (i - ci) * (i - ci)) / (rp * rp));
+  }
+  // pendenze (km/km) con differenze centrali
+  const gx = new Float32Array(N * N), gy = new Float32Array(N * N);
+  for (let i = 1; i < N - 1; i++) for (let j = 1; j < N - 1; j++) {
+    const k = i * N + j;
+    gx[k] = (H[k + 1] - H[k - 1]) / (2 * px);                 // verso +x
+    gy[k] = (H[k - N] - H[k + N]) / (2 * px);                 // verso +y (riga sopra)
+  }
+  POLE.gx = gx; POLE.gy = gy; POLE.px = px;
+  { let sum = 0, n = 0; for (let y = Math.floor(TH * .93); y < TH; y++) for (let x = 0; x < TW; x++) { sum += TEX[y * TW + x] / 255; n++; }
+    POLE.alb = Math.pow(sum / n, REAL_TEX ? 1.1 : 1.25) || .5; }
+  poleSitesRefresh();
+  POLE.ready = true; POLE.building = false;
+}
+// siti integrati con quota reale: pendenze precalcolate alla risoluzione del sito
+function poleSitesRefresh() {
+  POLE.sites = [];
+  for (const D of DATASETS.values()) {
+    const q = D.extra && D.extra.quota; if (!q || !D.nx || !D.step || D.gx0 == null) continue;
+    const nx = D.nx, ny = D.ny, st = D.step, sx = new Float32Array(nx * ny), sy = new Float32Array(nx * ny);
+    for (let i = 0; i < ny; i++) for (let c = 0; c < nx; c++) {
+      const k = i * nx + c, v = q[k]; if (!isFinite(v)) continue;
+      const l = c > 0 && isFinite(q[k - 1]) ? q[k - 1] : v, r = c < nx - 1 && isFinite(q[k + 1]) ? q[k + 1] : v;
+      const u = i > 0 && isFinite(q[k - nx]) ? q[k - nx] : v, d = i < ny - 1 && isFinite(q[k + nx]) ? q[k + nx] : v;
+      sx[k] = (r - l) / 2000 / st; sy[k] = (u - d) / 2000 / st;           // quota in m, passo in km
+    }
+    POLE.sites.push({ x0: D.gx0, y0: D.gy0, x1: D.gx0 + (nx - 1) * st, y1: D.gy0 - (ny - 1) * st, nx, ny, st, sx, sy });
+  }
+}
+// pendenza (verso +x, +y in stereografica polare) nel punto: sito reale se c'è, altrimenti il modello generato
+function poleSlope(x, y, out) {
+  let sxS = 0, syS = 0, wS = 0;
+  for (const S of POLE.sites) {
+    if (x < S.x0 || x > S.x1 || y > S.y0 || y < S.y1) continue;
+    const hx = (S.x1 - S.x0) / 2, hy = (S.y0 - S.y1) / 2, q = Math.hypot((x - S.x0 - hx) / hx, (S.y0 - y - hy) / hy);
+    const w = Math.max(0, Math.min(1, (1 - q) / .25)); if (w <= 0) continue;      // bordo sfumato e rotondo
+    const fc = (x - S.x0) / S.st, fi = (S.y0 - y) / S.st, c0 = Math.min(S.nx - 2, fc | 0), i0 = Math.min(S.ny - 2, fi | 0), u = fc - c0, v = fi - i0;
+    const k = i0 * S.nx + c0, w00 = (1 - u) * (1 - v), w01 = u * (1 - v), w10 = (1 - u) * v, w11 = u * v;
+    sxS += w * (S.sx[k] * w00 + S.sx[k + 1] * w01 + S.sx[k + S.nx] * w10 + S.sx[k + S.nx + 1] * w11);
+    syS += w * (S.sy[k] * w00 + S.sy[k + 1] * w01 + S.sy[k + S.nx] * w10 + S.sy[k + S.nx + 1] * w11);
+    wS += w;
+  }
+  poleProcSlope(x, y, out);
+  if (wS > 0) { const a = Math.min(1, wS); out[0] = out[0] * (1 - a) + sxS / wS * a; out[1] = out[1] * (1 - a) + syS / wS * a; out[2] = a; }
+  return out;
+}
+function poleProcSlope(x, y, out) {
+  const N = POLE.N, fj = (x + POLE.ext) / POLE.px - .5, fi = (POLE.ext - y) / POLE.px - .5;
+  if (fj < 1 || fi < 1 || fj >= N - 2 || fi >= N - 2) { out[0] = out[1] = out[2] = 0; return out; }
+  const j0 = fj | 0, i0 = fi | 0, u = fj - j0, v = fi - i0, k = i0 * N + j0, G = POLE.gx, Y = POLE.gy;
+  const w00 = (1 - u) * (1 - v), w01 = u * (1 - v), w10 = (1 - u) * v, w11 = u * v;
+  out[0] = G[k] * w00 + G[k + 1] * w01 + G[k + N] * w10 + G[k + N + 1] * w11;
+  out[1] = Y[k] * w00 + Y[k + 1] * w01 + Y[k + N] * w10 + Y[k + N + 1] * w11;
+  out[2] = 0; return out;
 }
 function starPixel(d, o, px, py, k) {            // cielo stellato deterministico
   const hsh = Math.imul((px / k | 0) * 73856093 ^ (py / k | 0) * 19349663, 2654435761) >>> 0;
@@ -4100,7 +4393,9 @@ function renderGlobe(low) {
   const sp = Math.sin(GLOBE.lat * DEG), cp = Math.cos(GLOBE.lat * DEG);
   const L = [-.45, .35, .82], Ln = Math.hypot(...L);
   const sel = GLOBE.sel, su = sel && unit(sel.lat, sel.lon), cosR = sel && Math.cos(sel.r * DEG), bad = sel && !selCheck(sel).ok;
-  const covs = COVERAGE.map(c => ({ u: unit(c.lat, c.lon), cr: Math.cos(c.r * DEG), edge: Math.cos((c.r - .35) * DEG) }));
+  const covs = COVERAGE.map(c => ({ u: unit(c.lat, c.lon), cr: Math.cos(c.r * DEG), edge: Math.cos((c.r - Math.min(.35, c.r * .06 + .4 / GLOBE.zoom)) * DEG) }));
+  const poleOn = POLE.ready && GLOBE.lat < -55 && GLOBE.zoom > 1.2, PSL = [0, 0, 0];
+  if (!POLE.ready && GLOBE.lat < -55 && GLOBE.zoom > 1.2) setTimeout(() => { buildPoleDetail(); queueGlobe(); }, 30);
   for (let py = 0; py < S; py++) {
     const ny = (cy - py - .5) / Rd;
     for (let px = 0; px < S; px++) {
@@ -4110,7 +4405,19 @@ function renderGlobe(low) {
       const lat = Math.asin(nz * sp + ny * cp) / DEG;
       const lon = GLOBE.lon + Math.atan2(nx, nz * cp - ny * sp) / DEG;
       const tx = Math.floor(((lon + 180) / 360 % 1 + 1) % 1 * TW), ty = Math.min(TH - 1, Math.floor((90 - lat) / 180 * TH));
-      const v = moonShade(nx, ny, nz, sp, cp, tx, ty);
+      let v = moonShade(nx, ny, nz, sp, cp, tx, ty);
+      if (poleOn && lat < -79.5) {                     // modello di dettaglio del Polo Sud
+        const pl_ = lat * DEG, kk = 2 * MOON_R * Math.cos(pl_) / (1 - Math.sin(pl_)), lr = lon * DEG, sl = Math.sin(lr), cl = Math.cos(lr);
+        poleSlope(kk * sl, kk * cl, PSL);
+        // da (x, y) a est/nord locali: est = (cos λ, −sin λ), nord = (sin λ, cos λ) (allontanarsi dal polo è nord)
+        const gE = PSL[0] * cl - PSL[1] * sl, gN = PSL[0] * sl + PSL[1] * cl, ex_ = 2.6 + 1.4 * PSL[2];
+        let ex = cp * nz - sp * ny, ey = sp * nx, ez = -cp * nx; const en = Math.hypot(ex, ey, ez) || 1; ex /= en; ey /= en; ez /= en;
+        const Nx = ny * ez - nz * ey, Ny = nz * ex - nx * ez, Nz = nx * ey - ny * ex;
+        const alb = POLE.alb;                         // albedo uniforme: la texture globale al polo ha pixel troppo grandi
+        const vd = moonLight(nx, ny, nz, ex, ey, ez, Nx, Ny, Nz, gE * ex_, gN * ex_, alb);
+        const w = Math.min(1, (-79.5 - lat) / 1.5);
+        v = v * (1 - w) + vd * w;
+      }
       let r = Math.min(255, v * 1.03), g = v * .98, b = v * .9 + 3;
       const pl = lat * DEG, ll = lon * DEG, cpl = Math.cos(pl);
       const ux = cpl * Math.cos(ll), uy = cpl * Math.sin(ll), uz = Math.sin(pl);
@@ -4160,6 +4467,16 @@ function drawGlobeOverlays() {
     c.stroke();
   };
   for (let la = -60; la <= 60; la += 30) { const p = []; for (let lo = -180; lo <= 180; lo += 2) p.push([la, lo]); poly(p); }
+  if (GLOBE.zoom > 5) {                         // reticolo fine quando si ingrandisce
+    const stepLa = GLOBE.zoom > 40 ? .25 : GLOBE.zoom > 15 ? .5 : 1;
+    c.strokeStyle = "rgba(127,211,255,.16)";
+    for (let la = Math.ceil((GLOBE.lat - 8) / stepLa) * stepLa; la <= GLOBE.lat + 8; la += stepLa) {
+      if (Math.abs(la) >= 90 || Math.abs(la % 30) < 1e-9) continue;
+      const p = []; for (let lo = -180; lo <= 180; lo += .5) p.push([la, lo]); poly(p);
+    }
+    for (let lo = -180; lo < 180; lo += 10) { if (lo % 30 === 0) continue; const p = []; for (let la = -90; la <= 90; la += .1) p.push([la, lo]); poly(p); }
+    c.strokeStyle = "rgba(255,255,255,.12)";
+  }
   for (let lo = -180; lo < 180; lo += 30) { const p = []; for (let la = -90; la <= 90; la += 2) p.push([la, lo]); poly(p); }
   c.font = `600 ${11 * k}px Inter, sans-serif`; c.textAlign = "center"; c.textBaseline = "middle";
   drawPolarAxis(c, G, k);
@@ -4393,9 +4710,9 @@ globeCanvas.addEventListener("pointermove", e => {
     document.getElementById("globeHover").textContent = cov ? "▶ " + cov.name : ll ? fmtLL(ll[0], ll[1]) : " ";
     globeCanvas.style.cursor = cov ? "pointer" : "";
   }
-  if (!gDrag) return;
+  if (!gDrag || globeCanvas._pinch) return;
   const RdCss = globeGeom.Rd / globeGeom.k;
-  GLOBE.lon = wrap180(GLOBE.lon - (e.clientX - gDrag.x) / RdCss / DEG);
+  GLOBE.lon = wrap180(GLOBE.lon - (e.clientX - gDrag.x) / RdCss / DEG / Math.max(.25, Math.cos(GLOBE.lat * DEG) * (GLOBE.zoom > 3 ? 1 : 0) + (GLOBE.zoom > 3 ? 0 : 1)));
   GLOBE.lat = Math.max(-90, Math.min(90, GLOBE.lat + (e.clientY - gDrag.y) / RdCss / DEG));
   gDrag.x = e.clientX; gDrag.y = e.clientY;
   queueGlobe(true);
@@ -4411,7 +4728,7 @@ globeCanvas.addEventListener("pointerup", endDrag);
 globeCanvas.addEventListener("pointercancel", endDrag);
 globeCanvas.addEventListener("wheel", e => {
   e.preventDefault();
-  GLOBE.zoom = Math.max(.7, Math.min(4, GLOBE.zoom * Math.exp(-e.deltaY * .0012)));
+  GLOBE.zoom = Math.max(.7, Math.min(160, GLOBE.zoom * Math.exp(-e.deltaY * .0016)));
   queueGlobe(true); clearTimeout(globeCanvas._t); globeCanvas._t = setTimeout(() => queueGlobe(false), 160);
 }, { passive: false });
 
@@ -4680,7 +4997,10 @@ const I18N_EDU = {
     gLit: "al Sole", gDark: "al buio", gReady: "THRUSTERS READY, CAPTAIN", gContact: "CONTACT LIGHT", gCrash: "IMPATTO",
     gLandOk: "Atterraggio riuscito: {p} punti", gLandHard: "Atterraggio duro: {p} punti", gLandCrash: "Il lander si è schiantato: 0 punti",
     gLandWhy: "Morbidezza {a}/40 · pendenza {b}/30 · luce {c}/30", gRetry: "Riprova l'allunaggio", gToPatch: "Crea la toppa di missione",
-    gEast: "verso Est", gPoleS: "POLO SUD", gCompassT: "Dove è il Nord?", gCompassNote: "Siamo al Polo Sud: ogni direzione che si allontana dal centro della mappa porta verso NORD (frecce gialle). Girando attorno al polo in senso orario si va verso EST, in senso antiorario verso OVEST.", gHowTitle: "Comandi", gHowSpace: "Avvia la discesa, poi tienilo premuto: motore", gHowUp: "Motore principale: frena la caduta", gHowLR: "Sposta il lander a sinistra / destra", gHowLR2: "Anche con A e D", gHowL: "Autoland (punteggio dimezzato)", gHowGoal: "Atterra tra le luci blu: velocità verticale < 2 m/s, laterale < 1 m/s", introGo: "Iniziamo!", introHint: "Premi Invio o clicca il pulsante", introMission: "La tua missione",
+    gEast: "verso Est", gPoleS: "POLO SUD", gCompassT: "Dove è il Nord?", gCompassNote: "Siamo al Polo Sud: ogni direzione che si allontana dal centro della mappa porta verso NORD (frecce gialle). Girando attorno al polo in senso orario si va verso EST, in senso antiorario verso OVEST.", gHowTitle: "Comandi", gHowSpace: "Avvia la discesa, poi tienilo premuto: motore", gHowUp: "Motore principale: frena la caduta", gHowLR: "Sposta il lander a sinistra / destra", gHowLR2: "Anche con A e D", gHowL: "Autoland (punteggio dimezzato)", gHowGoal: "Atterra tra le luci blu: velocità verticale < 2 m/s, laterale < 1 m/s", rotTitle: "Gira il telefono", rotText: "I giochi e le mappe funzionano meglio in orizzontale: ruota il telefono oppure usa lo schermo intero.", rotGo: "Schermo intero orizzontale", rotSkip: "Continua così",
+    chipCard: "Scheda", chipExplain: "Spiegazione", chipNorth: "Nord?", chipLegend: "Legenda", chipInfo: "Info", chipCompass: "Bussola", introHintT: "Tocca il pulsante per iniziare",
+    gHowTouchT: "Comandi touch", gHowT1: "Tocca un pulsante per avviare la discesa", gHowT2: "Tieni premuto ▲ (a destra) per accendere il motore e frenare", gHowT3: "Usa ◀ ▶ (a sinistra) per spostare il lander", gHowT4: "Autoland: pulsante a sinistra (punteggio dimezzato)", gTapStart: "TOCCA ▲ PER INIZIARE LA DISCESA",
+    introGo: "Iniziamo!", introHint: "Premi Invio o clicca il pulsante", introMission: "La tua missione",
     introRKick: "Ragionamento", introRTitle: "Aiuta gli esperti a mettersi d'accordo!", introRText: "Il consiglio di missione deve scegliere dove atterrare al Polo Sud, ma i tre esperti non sono d'accordo: ognuno tira dalla sua parte. Guarda le condizioni della missione e decidi tu il sito migliore.",
     introR1: "Leggi la missione e la situazione a sinistra", introR2: "Esplora le mappe: Sole, Terra, ghiaccio e le loro intersezioni", introR3: "Ascolta i consigli dei tre esperti", introR4: "Clicca sulla mappa il punto migliore e conferma",
     introG0Kick: "Missione", introG0Title: "Comandante, tocca a te!", introG0Text: "Sei al comando di una missione Artemis verso il Polo Sud della Luna. Scegli la difficoltà, trova il sito di atterraggio giusto, fai atterrare il lander e crea la toppa della tua missione.",
@@ -4733,7 +5053,10 @@ const I18N_EDU = {
     gLit: "sunlit", gDark: "dark", gReady: "THRUSTERS READY, CAPTAIN", gContact: "CONTACT LIGHT", gCrash: "IMPACT",
     gLandOk: "Landing successful: {p} points", gLandHard: "Hard landing: {p} points", gLandCrash: "The lander crashed: 0 points",
     gLandWhy: "Softness {a}/40 · slope {b}/30 · light {c}/30", gRetry: "Retry the landing", gToPatch: "Create the mission patch",
-    gEast: "towards East", gPoleS: "SOUTH POLE", gCompassT: "Where is North?", gCompassNote: "We are at the South Pole: every direction away from the centre of the map leads NORTH (yellow arrows). Circling the pole clockwise takes you EAST, anticlockwise WEST.", gHowTitle: "Controls", gHowSpace: "Start the descent, then hold it: engine", gHowUp: "Main engine: slows your fall", gHowLR: "Move the lander left / right", gHowLR2: "Also with A and D", gHowL: "Autoland (score halved)", gHowGoal: "Land between the blue lights: vertical speed < 2 m/s, lateral < 1 m/s", introGo: "Let's go!", introHint: "Press Enter or click the button", introMission: "Your mission",
+    gEast: "towards East", gPoleS: "SOUTH POLE", gCompassT: "Where is North?", gCompassNote: "We are at the South Pole: every direction away from the centre of the map leads NORTH (yellow arrows). Circling the pole clockwise takes you EAST, anticlockwise WEST.", gHowTitle: "Controls", gHowSpace: "Start the descent, then hold it: engine", gHowUp: "Main engine: slows your fall", gHowLR: "Move the lander left / right", gHowLR2: "Also with A and D", gHowL: "Autoland (score halved)", gHowGoal: "Land between the blue lights: vertical speed < 2 m/s, lateral < 1 m/s", rotTitle: "Turn your phone", rotText: "The games and the maps work best in landscape: rotate your phone or use full screen.", rotGo: "Full screen, landscape", rotSkip: "Continue like this",
+    chipCard: "Card", chipExplain: "Explanation", chipNorth: "North?", chipLegend: "Legend", chipInfo: "Info", chipCompass: "Compass", introHintT: "Tap the button to start",
+    gHowTouchT: "Touch controls", gHowT1: "Tap any button to start the descent", gHowT2: "Hold ▲ (right) to fire the engine and slow down", gHowT3: "Use ◀ ▶ (left) to move the lander", gHowT4: "Autoland: button on the left (score halved)", gTapStart: "TAP ▲ TO START THE DESCENT",
+    introGo: "Let's go!", introHint: "Press Enter or click the button", introMission: "Your mission",
     introRKick: "Reasoning", introRTitle: "Help the experts agree!", introRText: "The mission council must choose where to land at the South Pole, but the three experts disagree: each one pulls their own way. Look at the mission conditions and pick the best site yourself.",
     introR1: "Read the mission and the situation on the left", introR2: "Explore the maps: Sun, Earth, ice and their intersections", introR3: "Listen to the three experts' advice", introR4: "Click the best point on the map and confirm",
     introG0Kick: "Mission", introG0Title: "Commander, it's your turn!", introG0Text: "You are in command of an Artemis mission to the Moon's South Pole. Choose the difficulty, find the right landing site, land the lander and create your mission patch.",
@@ -4817,7 +5140,7 @@ function sphereControls(cv, st, redraw, onClick) {
   let drag = null;
   cv.addEventListener("pointerdown", e => { cv.setPointerCapture(e.pointerId); drag = { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY }; });
   cv.addEventListener("pointermove", e => {
-    if (!drag || !st.geom) return;
+    if (!drag || !st.geom || cv._pinch) { if (drag) { drag.x = e.clientX; drag.y = e.clientY; drag.x0 = -1e9; } return; }
     const R = st.geom.Rd / st.geom.k;
     st.lon = wrap180(st.lon - (e.clientX - drag.x) / R / DEG);
     st.lat = Math.max(-90, Math.min(90, st.lat + (e.clientY - drag.y) / R / DEG));
@@ -5490,6 +5813,74 @@ document.getElementById("rMap").addEventListener("mousemove", e => {
 });
 document.getElementById("rMap").addEventListener("mouseleave", () => { document.getElementById("rTip").style.display = "none"; });
 
+
+/* ===================== TELEFONO / TOUCH ===================== */
+const MOB = { skipRotate: false };
+function mobileFlags() {
+  const w = innerWidth, h = innerHeight, coarse = matchMedia("(pointer: coarse)").matches || "ontouchstart" in window;
+  document.body.classList.toggle("touch", coarse);
+  document.body.classList.toggle("phone", Math.min(w, h) <= 540 && Math.max(w, h) <= 1100);
+  document.body.classList.toggle("portrait", h > w);
+  const heavy = ["educational", "workspace"].includes(typeof current !== "undefined" ? current : "");
+  document.getElementById("rotateHint").classList.toggle("show", heavy && h > w && w <= 600 && !MOB.skipRotate);
+}
+addEventListener("resize", () => { mobileFlags(); });
+addEventListener("orientationchange", () => setTimeout(mobileFlags, 200));
+document.getElementById("rotGo").addEventListener("click", async () => {
+  try { await document.documentElement.requestFullscreen({ navigationUI: "hide" }); } catch (e) {}
+  try { await screen.orientation.lock("landscape"); } catch (e) {}
+  setTimeout(mobileFlags, 300);
+});
+document.getElementById("rotSkip").addEventListener("click", () => { MOB.skipRotate = true; mobileFlags(); });
+// pannelli richiudibili sul telefono: un "chip" li mostra o nasconde
+function mChip(panelId, key, openDefault) {
+  const el = document.getElementById(panelId); if (!el) return;
+  const wrap = el.closest(".map-wrap"); if (!wrap) return;
+  let box = wrap.querySelector(":scope > .m-chips");
+  if (!box) { box = document.createElement("div"); box.className = "m-chips"; wrap.appendChild(box); }
+  const b = document.createElement("button"); b.type = "button"; b.className = "m-chip"; b.dataset.i18n = key; b.textContent = t(key);
+  const set = open => { el.classList.toggle("m-closed", !open); b.classList.toggle("on", open); };
+  set(openDefault);
+  b.addEventListener("click", () => set(el.classList.contains("m-closed")));
+  box.appendChild(b);
+}
+// pulsanti + / − e pizzico (due dita) per lo zoom
+function zoomCtl(wrapId, apply) {
+  const wrap = document.getElementById(wrapId); if (!wrap) return;
+  const z = document.createElement("div"); z.className = "zoom-ctl";
+  z.innerHTML = `<button type="button" aria-label="Zoom +">+</button><button type="button" aria-label="Zoom −">−</button>`;
+  z.children[0].addEventListener("click", () => apply(1.4)); z.children[1].addEventListener("click", () => apply(1 / 1.4));
+  wrap.appendChild(z);
+}
+function pinch(cv, apply) {
+  if (!cv) return;
+  let d0 = 0;
+  const dist = e => Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+  cv.addEventListener("touchstart", e => { if (e.touches.length === 2) { d0 = dist(e); cv._pinch = true; e.preventDefault(); } }, { passive: false });
+  cv.addEventListener("touchmove", e => {
+    if (e.touches.length !== 2 || !d0) return;
+    e.preventDefault(); const d = dist(e); if (Math.abs(d / d0 - 1) < .04) return;
+    apply(d / d0, true); d0 = d;
+  }, { passive: false });
+  cv.addEventListener("touchend", e => { if (e.touches.length < 2) { d0 = 0; apply(1, false); setTimeout(() => { cv._pinch = false; }, 60); } });
+}
+const zGlobe = (f, live) => { GLOBE.zoom = Math.max(.7, Math.min(160, GLOBE.zoom * f)); queueGlobe(!!live); if (!live) setTimeout(() => queueGlobe(false), 50); };
+const zHist = (f, live) => { HG.zoom = Math.max(.8, Math.min(4, (HG.zoom || 1) * f)); HG.low = !!live; hRender(); };
+const zMap = (f, live) => {
+  if (ORBIT.on) { ORBIT.zoom = Math.max(.6, Math.min(2.2, ORBIT.zoom * f)); ORBIT.dirty = true; return; }
+  if (live || f === 1) return;
+  const steps = [1, .6, .3], i = steps.indexOf(WS.zoom), sel = document.getElementById("zoomSel");
+  const ni = Math.max(0, Math.min(2, (i < 0 ? 0 : i) + (f > 1 ? 1 : -1)));
+  if (steps[ni] !== WS.zoom) { sel.value = String(steps[ni]); sel.dispatchEvent(new Event("change", { bubbles: true })); }
+};
+let zMapAcc = 1;
+const zMapPinch = (f, live) => { if (ORBIT.on) return zMap(f, live); if (live) { zMapAcc *= f; return; } if (Math.abs(Math.log(zMapAcc)) > .25) zMap(zMapAcc, false); zMapAcc = 1; };
+zoomCtl("globeWrap", zGlobe); zoomCtl("hWrap", zHist); zoomCtl("mapWrap", zMap);
+pinch(globeCanvas, zGlobe); pinch(hCanvas, zHist); pinch(document.getElementById("mapCanvas"), zMapPinch); pinch(orbitCanvas, (f, live) => { ORBIT.zoom = Math.max(.6, Math.min(2.2, ORBIT.zoom * f)); ORBIT.dirty = true; });
+mChip("hDetail", "chipCard", true); mChip("rExplain", "chipExplain", true); mChip("gCompass", "chipNorth", false);
+mChip("mapLegend", "chipLegend", false); mChip("mcPanel", "chipInfo", false); mChip("globeCmp", "chipCompass", false);
+mobileFlags();
+
 /* ---------- Schermate di contesto: coinvolgono il giocatore all'inizio di ogni gioco o fase ---------- */
 function showIntro(wrapId, o) {
   const wrap = document.getElementById(wrapId); if (!wrap) return;
@@ -5497,7 +5888,7 @@ function showIntro(wrapId, o) {
   const d = document.createElement("div"); d.className = "edu-intro"; d.setAttribute("role", "dialog");
   d.innerHTML = `<div class="card"><div class="ico">${o.ico}</div><div class="kick">${esc(o.kick)}</div><h3>${esc(o.title)}</h3><p>${o.text}</p>
     ${o.mission ? `<div class="mis">${o.mission}</div>` : ""}${o.steps ? `<ol>${o.steps.map(x => `<li>${x}</li>`).join("")}</ol>` : ""}
-    <button type="button">${esc(o.btn || t("introGo"))}</button><div class="hint">${esc(t("introHint"))}</div></div>`;
+    <button type="button">${esc(o.btn || t("introGo"))}</button><div class="hint">${esc(t(document.body.classList.contains("touch") ? "introHintT" : "introHint"))}</div></div>`;
   const close = () => { d.remove(); document.removeEventListener("keydown", onKey, true); if (o.onClose) o.onClose(); };
   const onKey = e => { if (!document.body.contains(d)) return document.removeEventListener("keydown", onKey, true);
     if (e.key === "Enter" || e.key === " " || e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); } };
@@ -6048,8 +6439,21 @@ function gDrawLander() {
     .map(([a, b, w]) => `<div class="${w ? "warn" : ""}"><span>${a}</span>${b}</div>`).join("");
 }
 
+function gDrawHowToTouch(c, W, H, blink) {
+  const lines = [t("gHowT1"), t("gHowT2"), t("gHowT3"), t("gHowT4")];
+  const fs = Math.max(12, Math.min(15, W / 48)), bw = Math.min(W - 24, 520), bh = 50 + lines.length * (fs + 10) + 34, bx = (W - bw) / 2, by = Math.max(8, H * .06);
+  c.save(); c.fillStyle = "rgba(8,10,18,.88)"; c.strokeStyle = "rgba(127,211,255,.55)"; c.lineWidth = 1.5;
+  c.beginPath(); c.roundRect ? c.roundRect(bx, by, bw, bh, 14) : c.rect(bx, by, bw, bh); c.fill(); c.stroke();
+  c.textAlign = "center"; c.textBaseline = "middle";
+  c.font = `800 ${fs + 3}px Orbitron, Inter, sans-serif`; c.fillStyle = "#e8ecff"; c.fillText(t("gHowTouchT").toUpperCase(), W / 2, by + 24);
+  c.font = `500 ${fs}px Inter, sans-serif`; c.fillStyle = "#e5e7eb";
+  lines.forEach((l, i) => c.fillText(l, W / 2, by + 52 + i * (fs + 10)));
+  c.font = `800 ${fs}px Inter, sans-serif`; c.fillStyle = `rgba(253,224,71,${.55 + .45 * blink})`; c.fillText(t("gTapStart"), W / 2, by + bh - 16);
+  c.restore();
+}
 // schermata di istruzioni prima della discesa
 function gDrawHowTo(c, W, H, blink) {
+  if (document.body.classList.contains("touch")) return gDrawHowToTouch(c, W, H, blink);
   const rows = [[["SPAZIO|SPACE"], "gHowSpace"], [["▲", "W"], "gHowUp"], [["◀", "▶"], "gHowLR"], [["A", "D"], "gHowLR2"], [["L"], "gHowL"]];
   const bw = Math.min(560, W - 40), rh = 40, bh = 96 + rows.length * rh + 50, bx = (W - bw) / 2, by = Math.max(12, H * .14);
   c.save();
