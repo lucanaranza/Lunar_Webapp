@@ -431,7 +431,14 @@
   .mc-panel .los .dot { background: #ef4444; box-shadow: 0 0 8px #ef4444; animation: mcBlink 1s steps(2) infinite; }
   .mc-panel .los { color: #fca5a5; }
   .mc-panel .big { font-size: .95rem; color: var(--fg); font-weight: 700; margin: .1rem 0 .25rem; }
-  .mc-panel .for { color: #6b7280; }
+  .mc-panel .for { color: #9ca3af; font-size: .74rem; }
+  .mc-panel { font-family: "Inter", sans-serif !important; font-size: .82rem !important; line-height: 1.45; max-width: 290px; background: rgba(8,9,12,.92) !important; border: 1px solid rgba(127,211,255,.3) !important; }
+  .mc-panel .sec { padding-bottom: .5rem; margin-bottom: .5rem; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .mc-panel .st { font-size: .8rem; }
+  .mc-panel .exp { color: #cbd5e1; font-size: .78rem; margin-top: .15rem; }
+  .mc-panel .area { color: #a7f3d0; font-size: .78rem; } .mc-panel .area .bad { color: #fca5a5; font-weight: 700; }
+  .mc-panel .sun .dot { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; } .mc-panel .dark .dot { background: #475569; }
+  .mc-panel .dark { color: #cbd5e1; }
   @keyframes mcBlink { 50% { opacity: .25; } }
 
   /* Barra del tempo */
@@ -622,6 +629,13 @@
   .opt-row .opt-head button:hover { color: #fca5a5; }
   .opt-row .opt-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: .5rem; }
   .opt-row .opt-fields label { font-size: .72rem; color: var(--muted); display: flex; flex-direction: column; gap: .2rem; }
+  .opt-row .opt-fields label.wide { grid-column: 1 / -1; }
+  .mean-lbl { display: block; margin-top: .8rem; font-size: .75rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
+  .cross-row.linked label { color: #bae6fd; } .cross-row .lk { font-size: .75rem; margin-right: .25rem; }
+  .cross-note { font-size: .74rem; color: #9ca3af; margin-top: .3rem; line-height: 1.4; }
+  .opt-row .opt-fields label > input, .opt-row .opt-fields label > select { margin-top: auto; }
+  .e-stats .e-dust { color: #e3b787; }
+  .opt-row .opt-fields select { width: 100%; padding: .45rem .5rem; font-size: .78rem; background: #000; color: #4ade80; border: 1px solid rgba(74,222,128,.45); border-radius: 8px; }
   .opt-empty { font-size: .78rem; color: var(--muted); }
   .g-diff { display: flex; flex-direction: column; gap: .5rem; }
   .g-diff button { text-align: left; padding: .7rem .85rem; border-radius: 12px; border: 1px solid rgba(255,255,255,.14);
@@ -647,7 +661,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .warp-text.show, .flash.show { animation-duration: .01s; }
+    .flash.show { animation-duration: .01s; }
+    .warp-text.show { animation: none; opacity: 1; }
   }
 
   /* ===== Giochi educativi: testi più grandi e leggibili ===== */
@@ -800,6 +815,63 @@
   body.touch .g-pad button:active { background: rgba(127,211,255,.35); }
   body.phone #gSide2 .g-tele { grid-template-columns: 1fr 1fr; font-size: .78rem; }
   body.phone #gSide2 .slider-desc { display: none; }
+
+  /* Approfondimento */
+  .d-lbl { display: block; font-size: .8rem; color: #b8bdcc; margin-top: .6rem; }
+  .d-meta { font-size: .85rem; color: #c9cede; line-height: 1.5; margin-top: .3rem; }
+  .d-layers { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+  .d-layers button { text-align: left; padding: .55rem .6rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.03); color: var(--fg); cursor: pointer; display: flex; flex-direction: column; gap: .1rem; }
+  .d-layers button b { font-size: .88rem; } .d-layers button small { font-size: .72rem; color: #9ca3af; }
+  .d-layers button.active { border-color: #7fd3ff; background: rgba(127,211,255,.12); }
+  .d-time { margin-top: .7rem; } .d-trow { display: flex; gap: .5rem; align-items: center; } .d-trow input { flex: 1; }
+  .d-tlbl { font: .85rem ui-monospace, Menlo, monospace; color: #bae6fd; margin-top: .3rem; }
+  .d-explain { font-size: .95rem; line-height: 1.6; color: #e6e8ef; display: flex; flex-direction: column; gap: .5rem; }
+  .d-explain b { color: #fde68a; }
+  .d-stats { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; }
+  .d-stats div { background: rgba(255,255,255,.04); border-radius: 10px; padding: .5rem .6rem; font-size: .78rem; color: #9ca3af; }
+  .d-stats div b { display: block; font: 800 1.15rem "Inter", sans-serif; color: #fff; }
+  #dMap { display: block; cursor: crosshair; touch-action: none; }
+  .d-legend { position: absolute; right: .9rem; top: .9rem; z-index: 3; width: 210px; padding: .8rem .9rem; border-radius: 12px; background: rgba(8,9,12,.92);
+    border: 1px solid rgba(127,211,255,.35); font-size: .82rem; color: #e5e7eb; display: flex; flex-direction: column; gap: .5rem; }
+  .d-legend .t { font-weight: 800; font-size: .9rem; }
+  .d-legend .bar { height: 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,.25); }
+  .d-legend .ends { display: flex; justify-content: space-between; font-weight: 600; }
+  .d-legend .sw { display: grid; grid-template-columns: 18px 1fr; gap: .35rem .5rem; align-items: center; }
+  .d-legend .sw i { width: 18px; height: 14px; border-radius: 3px; border: 1px solid rgba(255,255,255,.3); }
+  .d-legend .n { color: #9ca3af; font-size: .76rem; }
+  body.phone .d-legend { width: 170px; padding: .55rem .65rem; font-size: .76rem; right: .4rem; top: .4rem; }
+
+  /* ===== Tutorial guidato ===== */
+  .tour-block { position: fixed; inset: 0; z-index: 90; }
+  .tour-spot { position: fixed; z-index: 91; border: 2px solid #7fd3ff; border-radius: 12px; pointer-events: none;
+    box-shadow: 0 0 0 9999px rgba(3,4,8,.62), 0 0 24px rgba(127,211,255,.6); transition: all .25s ease; }
+  .tour-spot.none { border: 0; box-shadow: 0 0 0 9999px rgba(3,4,8,.62); }
+  .tour-card { position: fixed; z-index: 92; width: min(400px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto;
+    padding: 1.1rem 1.2rem 1rem; border-radius: 16px; background: #0b0d14; border: 1px solid rgba(127,211,255,.5); box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    color: #e6e8ef; font-family: "Inter", sans-serif; transition: left .25s ease, top .25s ease; }
+  .tour-card .tk { font: 800 .72rem "Inter", sans-serif; letter-spacing: .16em; color: #7fd3ff; text-transform: uppercase; }
+  .tour-card h4 { font: 800 1.15rem "Orbitron", sans-serif; margin: .3rem 0 .55rem; color: #fff; line-height: 1.3; }
+  .tour-card .tx { font-size: .94rem; line-height: 1.6; } .tour-card .tx p + p { margin-top: .5rem; } .tour-card .tx b { color: #fde68a; }
+  .tour-card .tx .tip { display: block; margin-top: .6rem; padding: .5rem .65rem; border-radius: 10px; background: rgba(74,222,128,.08); border: 1px solid rgba(74,222,128,.3); color: #bbf7d0; font-size: .86rem; }
+  .tour-card .bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,.1); margin: .9rem 0 .7rem; overflow: hidden; } .tour-card .bar i { display: block; height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8); }
+  .tour-card .nav { display: flex; gap: .5rem; align-items: center; }
+  .tour-card .nav button { padding: .6rem .95rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.2); background: transparent; color: #e6e8ef; font: 700 .85rem "Inter", sans-serif; cursor: pointer; }
+  .tour-card .nav .nx { margin-left: auto; background: linear-gradient(135deg, #38bdf8, #818cf8); color: #0a0b0d; border: 0; }
+  .tour-card .nav .cl { border: 0; color: #9ca3af; padding: .6rem .4rem; }
+  .tour-card .cnt { font-size: .78rem; color: #9ca3af; }
+  /* telefono: menu a tendina */
+  .m-menu-btn { display: none; }
+  body.phone .m-menu-btn { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 34px; border-radius: 10px; border: 1px solid rgba(255,255,255,.25); background: rgba(10,11,13,.8); color: #fff; font-size: 1.1rem; cursor: pointer; flex: none; }
+  body.phone .ws-top { position: relative; }
+  body.phone .ws-top .ws-top-actions { display: none; position: absolute; top: calc(100% + .3rem); right: 0; z-index: 40; flex-direction: column; flex-wrap: nowrap; gap: .35rem;
+    padding: .5rem; border-radius: 12px; background: rgba(8,9,12,.97); border: 1px solid rgba(127,211,255,.4); box-shadow: 0 10px 30px rgba(0,0,0,.6); min-width: 190px; }
+  body.phone .ws-top.menu-open .ws-top-actions { display: flex; }
+  body.phone .ws-top .ws-top-actions .btn.small { width: 100%; text-align: left; padding: .6rem .8rem; font-size: .78rem; }
+  body.phone .ws-side .side-card > h3:first-child, body.phone .ws-side .side-card > .step-tag:first-child { cursor: pointer; position: relative; padding-right: 1.4rem; }
+  body.phone .ws-side .side-card > h3:first-child::after, body.phone .ws-side .side-card > .step-tag:first-child::after { content: "▾"; position: absolute; right: 0; top: 0; color: #7fd3ff; font-size: .9rem; }
+  body.phone .ws-side .side-card.sc-closed > :not(:first-child) { display: none !important; }
+  body.phone .ws-side .side-card.sc-closed > h3:first-child::after, body.phone .ws-side .side-card.sc-closed > .step-tag:first-child::after { content: "▸"; }
+  #dSlider { accent-color: #7fd3ff; height: 6px; }
 </style>
 </head>
 <body>
@@ -847,6 +919,7 @@
         <button data-tab="history" class="active" data-i18n="eduHistory">History</button>
         <button data-tab="reason" data-i18n="eduReason">Reasoning</button>
         <button data-tab="game" data-i18n="eduGame">Mission</button>
+        <button data-tab="deep" data-i18n="eduDeep">Deep dive</button>
       </nav>
     </div>
     <div class="ws-top-actions"><button class="btn small" data-go="home" data-i18n="back">Back</button></div>
@@ -981,6 +1054,47 @@
       <div class="map-busy" id="gBusy" data-i18n="computing">Computing…</div>
     </div>
   </div>
+
+  <!-- 5. APPROFONDIMENTO: dati reali di un sito -->
+  <div class="ws-body edu-pane" id="pane-deep">
+    <aside class="ws-side">
+      <section class="side-card">
+        <p class="step-tag" data-i18n="dKick">Real data</p>
+        <h3 data-i18n="dTitle">A real site, up close</h3>
+        <p class="slider-desc" data-i18n="dIntro"></p>
+        <label class="d-lbl" for="dSite" data-i18n="dSiteLbl">Site</label>
+        <select id="dSite" class="opt-add"></select>
+        <p class="d-meta" id="dMeta"></p>
+      </section>
+      <section class="side-card">
+        <h3 data-i18n="dWhat">What do you want to see?</h3>
+        <div class="d-layers" id="dLayers">
+          <button data-dl="sun" class="active"><b data-i18n="dlSun">☀ Sunlight</b><small data-i18n="dlSunS">yearly average</small></button>
+          <button data-dl="earth"><b data-i18n="dlEarth">📡 Communication</b><small data-i18n="dlEarthS">yearly average</small></button>
+          <button data-dl="both"><b data-i18n="dlBoth">☀ + 📡 Together</b><small data-i18n="dlBothS">yearly average</small></button>
+          <button data-dl="now"><b data-i18n="dlNow">⏱ Moment by moment</b><small data-i18n="dlNowS">every 6 hours</small></button>
+        </div>
+        <div class="d-time" id="dTime" hidden>
+          <div class="d-trow"><button type="button" class="q-btn" id="dPlay" aria-label="Play">▶</button><input type="range" id="dSlider" min="0" max="1" value="0"></div>
+          <div class="d-tlbl" id="dTlbl"></div>
+        </div>
+      </section>
+      <section class="side-card">
+        <h3 data-i18n="dRead">How to read it</h3>
+        <div class="d-explain" id="dExplain"></div>
+      </section>
+      <section class="side-card">
+        <h3 data-i18n="dNumbers">The numbers of this site</h3>
+        <div class="d-stats" id="dStats"></div>
+      </section>
+    </aside>
+    <div class="map-wrap" id="dWrap">
+      <canvas id="dMap"></canvas>
+      <div class="map-tip" id="dTip"></div>
+      <div class="d-legend" id="dLegend"></div>
+      <div class="map-busy" id="dBusy" data-i18n="computing">Computing…</div>
+    </div>
+  </div>
 </section>
 
 <!-- LOGIN ISTITUZIONALE -->
@@ -1037,7 +1151,7 @@
       <span data-i18n="privateBadge">Private mode</span></span></p>
   </header>
   <nav class="actions">
-    <button class="btn" data-go="tutorial" data-i18n="tutorial">Tutorial</button>
+    <button class="btn" id="btnTutorial" data-i18n="tutorial">Tutorial</button>
     <button class="btn primary" id="btnWorkspace" data-i18n="workspace">Workspace</button>
   </nav>
   <div class="actions">
@@ -1069,6 +1183,7 @@
     <div class="ws-top-actions">
       <button class="btn small map-only" id="btnChangeArea" data-i18n="changeArea">Change area</button>
       <button class="btn small map-only" id="btnParams" data-i18n="editParams">Parameters</button>
+      <button class="btn small" id="btnGuide" data-i18n="guideBtn">? Guide</button>
       <button class="btn small" data-go="expert" data-i18n="back">Back</button>
       <button class="btn small" data-lock data-i18n="lockBtn">Lock</button>
     </div>
@@ -1246,6 +1361,9 @@
       <details class="m-sec" open>
         <summary data-i18n="weightsTitle">Weights</summary>
         <div class="sliders" data-sliders="setup"></div>
+        <label class="mean-lbl" for="meanMode" data-i18n="meanLbl">How to combine the weights</label>
+        <select id="meanMode" class="opt-add"><option value="arith" data-i18n="meanArith">Weighted arithmetic mean</option><option value="geo" data-i18n="meanGeo">Weighted geometric mean</option></select>
+        <p class="field-hint" id="meanHint"></p>
       </details>
       <details class="m-sec" open>
         <summary data-i18n="timeTitle">Timing</summary>
@@ -1308,7 +1426,8 @@ const I18N = {
         educational: "Educational Edition", expert: "Expert Edition",
         tutorial: "Tutorial", workspace: "Workspace", takeoff: "Si parte", skip: "Clicca per saltare",
         placeholder: "In arrivo", back: "Indietro",
-        demoLoginTab: "Accedi", demoRegTab: "Registrati", demoPick: "Scegli il tuo account: un clic e sei dentro, senza password.", demoRegHint: "Versione demo: non serve la password. I dati del workspace restano cifrati in questo browser.", demoRegBtn: "Crea l'account ed entra", demoNone: "Nessun account ancora: registrati.", demoRemove: "Rimuovi dall'elenco", demoEmpty: "Inserisci nome e istituzione.", cmpPolar: "sopra il polo", cmpLgN: "verso il Polo Nord (S = Polo Sud)", cmpLgE: "direzione della Terra", cmpTitle: "Orientamento", cmpDashed: "tratteggio = dietro la Luna", cmpEarth: "Terra", cmpCenter: "Centro vista: {c}", cmpHemiN: "emisfero Nord", cmpHemiS: "emisfero Sud", cmpHemiEq: "fascia equatoriale", cmpNear: "lato visibile", cmpFar: "lato nascosto", cmpLimb: "bordo (lembo)", loginTitle: "Accesso istituzionale", loginSub: "La Expert Edition è riservata alle istituzioni accreditate",
+        demoLoginTab: "Accedi", demoRegTab: "Registrati", demoPick: "Scegli il tuo account: un clic e sei dentro, senza password.", demoRegHint: "Versione demo: non serve la password. I dati del workspace restano cifrati in questo browser.", demoRegBtn: "Crea l'account ed entra", demoNone: "Nessun account ancora: registrati.", demoRemove: "Rimuovi dall'elenco", demoEmpty: "Inserisci nome e istituzione.", cmpPolar: "sopra il polo", cmpLgN: "verso il Polo Nord (S = Polo Sud)", cmpLgE: "direzione della Terra", cmpTitle: "Orientamento", cmpDashed: "tratteggio = dietro la Luna", cmpEarth: "Terra", cmpCenter: "Centro vista: {c}", cmpHemiN: "emisfero Nord", cmpHemiS: "emisfero Sud", cmpHemiEq: "fascia equatoriale", cmpNear: "lato visibile", cmpFar: "lato nascosto", cmpLimb: "bordo (lembo)", meanLbl: "Come combinare i pesi", meanArith: "Media aritmetica pesata (compensativa)", meanGeo: "Media geometrica pesata (severa)", meanArithD: "Σ peso × valore / Σ pesi: una risorsa alta può compensare una bassa.", meanGeoD: "exp(Σ peso × ln valore / Σ pesi): se una risorsa con peso > 0 manca quasi del tutto, il punteggio crolla. Peso 0 = risorsa ignorata.", xLinked: "Luce, Comunicazione e Ghiaccio usano i pesi di progetto (stessi cursori della personalizzazione missione).", trKick: "Guida", trNext: "Avanti", trPrev: "Indietro", trEnd: "Fine", trClose: "Chiudi", guideBtn: "? Guida", tr0t: "Benvenuto nella Expert Edition", tr0d: "Questa guida ti accompagna nell'app vera, passo per passo: per ogni parte vedrai cosa è evidenziato, a cosa serve e come si usa.\nIl percorso ha tre fasi: <b>1) scegliere l'area</b> sul globo, <b>2) personalizzare la missione</b>, <b>3) leggere la mappa</b> e trovare i siti migliori.\n💡 Puoi usare i tasti ← → della tastiera, e chiudere quando vuoi con Esc. La guida si riapre dal pulsante «? Guida» in alto.", tr1t: "Il globo lunare 3D", tr1d: "È la Luna intera. <b>Trascina</b> per ruotarla, usa la <b>rotellina</b> (o i pulsanti + / − sul telefono, o il pizzico con due dita) per ingrandire.\nVicino al <b>Polo Sud</b>, ingrandendo, si attiva un modello di dettaglio: i crateri polari reali e, dentro i siti, la quota vera del terreno (DEM).\nLe zone <b>verdi</b> sono le aree in cui abbiamo dati dettagliati. L'asse giallo/bianco indica i poli, il punto azzurro il luogo da cui la Terra si vede allo zenit.\n💡 Clicca un anello verde per selezionare direttamente quell'area.", tr2t: "La bussola di orientamento", tr2d: "Si aggiorna mentre ruoti il globo: la freccia <b>gialla</b> punta verso il Polo Nord, la <b>bianca</b> verso il Sud, l'<b>azzurra</b> verso la Terra.\nSe la freccia è <b>tratteggiata</b>, quel polo (o la Terra) si trova dietro la Luna rispetto a te.\nSotto leggi il centro della vista e l'emisfero che stai guardando.", tr3t: "Le aree con dati dettagliati", tr3d: "Qui sono elencate le aree disponibili. «<b>Integrata</b>» significa che i dati sono già nell'app; «<b>Dati reali</b>» che vengono da un modello digitale del terreno (non da una simulazione).\nAccanto trovi le coordinate del centro e il raggio dell'area (circa 8 km per i siti del Polo Sud).\n💡 Clicca un nome per selezionarlo: il globo ruota sull'area.", tr4t: "Importare altri dati", tr4d: "Se hai un file di un altro sito (formato JSON «mappa-sito-lunare», lo stesso prodotto dal team), puoi caricarlo qui. Viene salvato cifrato solo in questo browser e compare nell'elenco come «importato».\nSe il sito è già integrato, l'app ti avvisa e usa la versione integrata.", tr5t: "L'area selezionata", tr5d: "Riassume l'area scelta: <b>centro</b>, <b>raggio</b> e <b>superficie</b>.\nSotto trovi note automatiche: per esempio se la zona è sul bordo del disco visibile (Terra solo a tratti per la librazione) o se è una regione polare con possibile ghiaccio.\nIl segno ✓ conferma che l'area è valida e da quale file arrivano i dati.", tr6t: "Confermare l'area", tr6d: "Quando l'area ti va bene, premi <b>Conferma area</b>: l'app carica i dati del sito e apre la personalizzazione della missione.\n💡 Nella guida questo passaggio lo faccio io: premi Avanti.", tr7t: "Personalizza la missione", tr7d: "Questa finestra definisce <b>che cosa ti serve</b>: tutti i calcoli della mappa dipendono da qui.\nPuoi dare un <b>nome</b> alla missione e decidere quanto contano luce, comunicazione e ghiaccio, quando atterri e quanto resti, e aggiungere vincoli facoltativi.", tr8t: "I pesi di progetto", tr8d: "Tre cursori: <b>Visibilità solare</b> (energia, da 0 a 10), <b>Visibilità della Terra</b> (comunicazioni, da 1 a 10: la Terra serve sempre) e <b>Ghiaccio nelle vicinanze</b> (risorse, da 0 a 10). Con peso 0 Sole o ghiaccio vengono ignorati.\nPer ogni punto: <b>Sole</b> e <b>Terra</b> = frazione di tempo in cui sono visibili (dai dati reali del sito, ogni 6 h); <b>Ghiaccio</b> = indice di ombra permanente entro 2 km (1, 0,5 o 0).\nSotto scegli come combinarli: <b>media aritmetica pesata</b> (una risorsa alta compensa una bassa) oppure <b>media geometrica pesata</b> (se una risorsa con peso manca, il punteggio crolla). Contano solo i rapporti tra i pesi.\n💡 Gli stessi pesi valgono anche nell'«Incrocio dei dati» della media annua (righe con 🔗).", tr9t: "Data di arrivo e permanenza", tr9d: "La <b>data di atterraggio</b> e le <b>ore di permanenza</b>. Al momento dell'atterraggio la Terra deve essere visibile; Sole e Terra vengono poi valutati per tutta la permanenza.\nLa nota verde indica il periodo coperto dai dati del sito (per i siti integrati: tutto il 2027): atterraggio e permanenza devono stare lì dentro.", tr10t: "Parametri facoltativi", tr10d: "Dal menu aggiungi solo i <b>vincoli</b> che ti servono: bilancio energetico della batteria, luce o comunicazione minime, distanza dal ghiaccio, pendenza, quota, buio massimo, blackout massimo.\nOgni vincolo <b>esclude</b> (tratteggio sulla mappa) le zone che non lo rispettano.\n💡 Il pulsante <b>?</b> spiega ogni parametro e cosa comporta; anche ogni parametro aggiunto ha il suo ?.", tr11t: "Importa ed esporta", tr11d: "<b>Importa missione</b> carica un file con tutti i parametri (per esempio preparato da un collega). <b>Esporta missione + risultati</b> salva parametri e siti migliori in un file. <b>Esporta dati area</b> salva i dati del sito.\nCosì un'analisi si può ripetere e condividere.", tr12t: "Calcola la mappa", tr12d: "Premi <b>Calcola mappa</b>: l'app combina dati del sito, effemeridi reali di Sole e Terra (2026–2028) e i tuoi parametri.\n💡 Anche qui procedo io: premi Avanti.", tr13t: "La mappa 2D dell'area", tr13d: "È l'area vista dall'alto. I colori dipendono dal livello scelto. Le lettere <b>N S E W</b> indicano le direzioni al centro; sul bordo vedi dove sono <b>Sole</b> e <b>Terra</b>.\nI numeri cerchiati sono i <b>siti migliori</b>. Il tratteggio indica le zone escluse dai vincoli.\nPassa il mouse per leggere i valori di ogni punto; <b>clicca</b> per mettere una sonda e vedere i dati di quel punto nel tempo.", tr14t: "Due modi di vedere", tr14d: "<b>Media annua</b>: le mappe del file su tutto l'anno, per capire quali zone sono buone in generale.\n<b>Andamento nel tempo</b>: ogni 6 ore Sole e Terra si muovono; vedi cosa succede davvero il giorno dell'atterraggio e durante la permanenza.", tr15t: "Incrocio dei dati", tr15d: "Nella media annua scegli quali mappe <b>incrociare</b> e con che peso. La freccia ↑ significa «meglio alto» (es. luce), ↓ «meglio basso» (es. pendenza, buio massimo). Luce, Comunicazione e Ghiaccio (🔗) usano i pesi di progetto.\nIl livello «Incrocio» mostra il risultato: chiaro dove tutte le mappe scelte sono buone insieme.", tr16t: "I livelli della mappa", tr16d: "Ogni pulsante mostra una mappa diversa: incrocio, luce, comunicazione, luce+comunicazione, energia, buio massimo, tempo senza comunicazione, quota, pendenza, area atterrabile, probabilità di ghiaccio.\nNell'andamento nel tempo i livelli seguono la permanenza: punteggio, Sole, Terra, ghiaccio, energia e temperatura.\n💡 Sotto c'è lo zoom (100%, 60%, 30%) e l'opzione per mostrare i crateri.", tr17t: "La legenda", tr17d: "Spiega i colori del livello attuale: in alto il valore massimo, al centro quello intermedio, in basso il minimo.\nI riquadri tratteggiati spiegano le zone escluse (vincoli non rispettati, Terra non visibile, batteria sotto la riserva).", tr18t: "I siti migliori", tr18d: "La classifica dei punti migliori secondo i tuoi pesi e vincoli, con coordinate e valori principali.\n💡 Clicca un sito per evidenziarlo sulla mappa e leggere i suoi dati.", tr19t: "La barra del tempo", tr19d: "Nell'andamento nel tempo puoi spostarti nel periodo della missione: <b>−1g −6h +6h +1g</b>, oppure il cursore. Il pulsante ▶ fa scorrere il tempo da solo, con il passo scelto a destra (1 h, 6 h, 24 h, 7 giorni).\nOgni volta Sole, Terra e mappa si aggiornano.", tr20t: "Mission Control: segnale e luce", tr20d: "Il riquadro dice cosa succede <b>adesso</b> per il punto scelto (il sito n.1 o la sonda):\n📡 <b>Segnale acquisito</b> = la Terra è visibile; <b>LOS</b> (loss of signal) = tra quanto si perde il contatto; <b>AOS</b> = tra quanto torna.\nSotto vedi se <b>almeno un punto dell'area</b> ha segnale in questo momento e quale percentuale dell'area è coperta.\n☀ La seconda parte dice se il punto è al Sole o in ombra, tra quanto tramonta o sorge, e quanta area è illuminata ora.", tr21t: "Bilancio energetico", tr21d: "Il grafico simula la <b>batteria</b> durante la permanenza: sale quando il punto è al Sole (pannelli), scende sempre per il consumo.\nSe scende sotto la riserva minima la missione è a rischio: con il vincolo energetico attivo quelle zone vengono escluse.", tr22t: "Vista 3D", tr22d: "Il pulsante passa alla <b>vista 3D</b>: la Luna intera con Sole e Terra nella posizione reale, e l'area ingrandita (non in scala) con la sua mappa sopra.\nTrascina per ruotare, rotella o pizzico per lo zoom. Serve a capire <b>da dove</b> arriva la luce e dove si trova la Terra.", tr23t: "Note e dati cifrati", tr23d: "Qui scrivi le <b>note di missione</b>, esporti o importi il tuo archivio ed eventualmente cancelli i dati locali. Tutto è <b>cifrato</b> in questo browser.\nIl registro accessi mostra quando sei entrato, cosa hai cambiato e quando la sessione è stata bloccata.", tr24t: "I comandi in alto", tr24d: "<b>Cambia area</b> torna al globo. <b>Personalizza missione</b> riapre i parametri. <b>? Guida</b> riapre questa guida. <b>Indietro</b> torna al menu Expert. <b>Blocca</b> chiude la sessione e cifra tutto.\n💡 Sul telefono questi pulsanti sono nel menu ☰.", tr25t: "Fine della guida", tr25d: "Ora sai usare tutta la Expert Edition: scegli un'area, definisci la missione, confronta le mappe nella media annua e nel tempo, e controlla segnale, luce ed energia del sito migliore.\nBuona esplorazione del Polo Sud! 🚀",
+    loginTitle: "Accesso istituzionale", loginSub: "La Expert Edition è riservata alle istituzioni accreditate",
         nameLbl: "Nome", institution: "Istituzione", enter: "Accedi",
         loginError: "Credenziali non riconosciute", loginEmpty: "Compila tutti i campi",
         passLbl: "Passphrase del vault", passHint: "Primo accesso: questa passphrase crea il tuo archivio cifrato. Non è recuperabile.",
@@ -1328,7 +1447,8 @@ const I18N = {
         educational: "Educational Edition", expert: "Expert Edition",
         tutorial: "Tutorial", workspace: "Workspace", takeoff: "Take us out", skip: "Click to skip",
         placeholder: "Coming soon", back: "Back",
-        demoLoginTab: "Sign in", demoRegTab: "Register", demoPick: "Choose your account: one click and you are in, no password.", demoRegHint: "Demo version: no password needed. Workspace data stay encrypted in this browser.", demoRegBtn: "Create account and sign in", demoNone: "No accounts yet: register.", demoRemove: "Remove from the list", demoEmpty: "Enter a name and an institution.", cmpPolar: "above the pole", cmpLgN: "towards the North Pole (S = South Pole)", cmpLgE: "direction of Earth", cmpTitle: "Orientation", cmpDashed: "dashed = behind the Moon", cmpEarth: "Earth", cmpCenter: "View centre: {c}", cmpHemiN: "northern hemisphere", cmpHemiS: "southern hemisphere", cmpHemiEq: "equatorial belt", cmpNear: "near side", cmpFar: "far side", cmpLimb: "limb", loginTitle: "Institutional access", loginSub: "Expert Edition is reserved for accredited institutions",
+        demoLoginTab: "Sign in", demoRegTab: "Register", demoPick: "Choose your account: one click and you are in, no password.", demoRegHint: "Demo version: no password needed. Workspace data stay encrypted in this browser.", demoRegBtn: "Create account and sign in", demoNone: "No accounts yet: register.", demoRemove: "Remove from the list", demoEmpty: "Enter a name and an institution.", cmpPolar: "above the pole", cmpLgN: "towards the North Pole (S = South Pole)", cmpLgE: "direction of Earth", cmpTitle: "Orientation", cmpDashed: "dashed = behind the Moon", cmpEarth: "Earth", cmpCenter: "View centre: {c}", cmpHemiN: "northern hemisphere", cmpHemiS: "southern hemisphere", cmpHemiEq: "equatorial belt", cmpNear: "near side", cmpFar: "far side", cmpLimb: "limb", meanLbl: "How to combine the weights", meanArith: "Weighted arithmetic mean (compensatory)", meanGeo: "Weighted geometric mean (strict)", meanArithD: "Σ weight × value / Σ weights: a high resource can make up for a low one.", meanGeoD: "exp(Σ weight × ln value / Σ weights): if a resource with weight > 0 is almost missing, the score collapses. Weight 0 = resource ignored.", xLinked: "Light, Communication and Ice use the project weights (same sliders as in the mission customization).", trKick: "Guide", trNext: "Next", trPrev: "Back", trEnd: "Finish", trClose: "Close", guideBtn: "? Guide", tr0t: "Welcome to the Expert Edition", tr0d: "This guide walks you through the real app, step by step: for each part you will see what is highlighted, what it is for and how to use it.\nThe workflow has three phases: <b>1) choose the area</b> on the globe, <b>2) customize the mission</b>, <b>3) read the map</b> and find the best sites.\n💡 You can use the ← → keys and close at any time with Esc. Reopen the guide from the «? Guide» button at the top.", tr1t: "The 3D lunar globe", tr1d: "This is the whole Moon. <b>Drag</b> to rotate it and use the <b>mouse wheel</b> (or the + / − buttons on a phone, or pinch with two fingers) to zoom.\nNear the <b>South Pole</b>, when you zoom in, a detail model switches on: the real polar craters and, inside the sites, the true terrain elevation (DEM).\n<b>Green</b> zones are the areas with detailed data. The yellow/white axis shows the poles; the blue dot is the place where Earth is overhead.\n💡 Click a green ring to select that area directly.", tr2t: "The orientation compass", tr2d: "It updates while you rotate the globe: the <b>yellow</b> arrow points to the North Pole, the <b>white</b> one to the South, the <b>blue</b> one towards Earth.\nA <b>dashed</b> arrow means that pole (or Earth) is behind the Moon from your point of view.\nBelow you can read the centre of the view and the hemisphere you are looking at.", tr3t: "Areas with detailed data", tr3d: "The available areas are listed here. «<b>Built-in</b>» means the data are already inside the app; «<b>Real data</b>» means they come from a digital terrain model (not a simulation).\nNext to each you see the centre coordinates and the area radius (about 8 km for the South Pole sites).\n💡 Click a name to select it: the globe turns to the area.", tr4t: "Importing other data", tr4d: "If you have a file for another site (JSON «mappa-sito-lunare» format, the same one produced by the team), you can load it here. It is stored encrypted in this browser only and appears in the list as «imported».\nIf the site is already built in, the app tells you and uses the built-in version.", tr5t: "The selected area", tr5d: "It summarises the chosen area: <b>centre</b>, <b>radius</b> and <b>surface</b>.\nBelow you find automatic notes: for example whether the zone is on the edge of the visible disc (Earth only part of the time because of libration) or a polar region with possible ice.\nThe ✓ confirms the area is valid and which file the data come from.", tr6t: "Confirming the area", tr6d: "When you are happy with the area, press <b>Confirm area</b>: the app loads the site data and opens the mission customization.\n💡 In this guide I do this step for you: press Next.", tr7t: "Customize the mission", tr7d: "This window defines <b>what you need</b>: every map calculation depends on it.\nYou can name the mission, decide how much light, communication and ice count, when you land and how long you stay, and add optional constraints.", tr8t: "Project weights", tr8d: "Three sliders: <b>Sun visibility</b> (energy, 0 to 10), <b>Earth visibility</b> (communications, 1 to 10: Earth is always needed) and <b>Nearby ice</b> (resources, 0 to 10). With weight 0, Sun or ice are ignored.\nFor each point: <b>Sun</b> and <b>Earth</b> = share of time they are visible (from the site's real data, every 6 h); <b>Ice</b> = permanent-shadow index within 2 km (1, 0.5 or 0).\nBelow you choose how to combine them: <b>weighted arithmetic mean</b> (a high resource makes up for a low one) or <b>weighted geometric mean</b> (if a weighted resource is missing, the score collapses). Only the ratios between weights matter.\n💡 The same weights also apply to the «Data crossing» of the yearly average (rows with 🔗).", tr9t: "Arrival date and stay", tr9d: "The <b>landing date</b> and the <b>hours of stay</b>. At landing Earth must be visible; Sun and Earth are then evaluated for the whole stay.\nThe green note shows the period covered by the site data (for built-in sites: all of 2027): landing and stay must fall inside it.", tr10t: "Optional parameters", tr10d: "From the menu add only the <b>constraints</b> you need: battery energy budget, minimum light or communication, distance from ice, slope, elevation, maximum darkness, maximum blackout.\nEach constraint <b>excludes</b> (hatched on the map) the zones that do not meet it.\n💡 The <b>?</b> button explains each parameter and its effect; every added parameter has its own ? too.", tr11t: "Import and export", tr11d: "<b>Import mission</b> loads a file with all the parameters (prepared by a colleague, for example). <b>Export mission + results</b> saves parameters and best sites to a file. <b>Export area data</b> saves the site data.\nThis way an analysis can be repeated and shared.", tr12t: "Compute the map", tr12d: "Press <b>Compute map</b>: the app combines the site data, the real Sun and Earth ephemerides (2026–2028) and your parameters.\n💡 I do this step for you too: press Next.", tr13t: "The 2D map of the area", tr13d: "This is the area seen from above. Colours depend on the chosen layer. The letters <b>N S E W</b> show the directions at the centre; on the rim you see where the <b>Sun</b> and <b>Earth</b> are.\nThe circled numbers are the <b>best sites</b>. Hatching marks zones excluded by the constraints.\nHover to read the values of each point; <b>click</b> to place a probe and see that point's data over time.", tr14t: "Two ways of looking", tr14d: "<b>Yearly average</b>: the file maps over the whole year, to understand which zones are good in general.\n<b>Over time</b>: every 6 hours the Sun and Earth move; you see what really happens on landing day and during the stay.", tr15t: "Data crossing", tr15d: "In the yearly average you choose which maps to <b>cross</b> and how much each counts. The ↑ arrow means «higher is better» (e.g. light), ↓ «lower is better» (e.g. slope, maximum darkness). Light, Communication and Ice (🔗) use the project weights.\nThe «Crossing» layer shows the result: bright where all chosen maps are good together.", tr16t: "Map layers", tr16d: "Each button shows a different map: crossing, light, communication, light+communication, energy, maximum darkness, time without communication, elevation, slope, landable area, ice probability.\nIn the over-time view the layers follow the stay: score, Sun, Earth, ice, energy and temperature.\n💡 Below are the zoom (100%, 60%, 30%) and the option to show craters.", tr17t: "The legend", tr17d: "It explains the colours of the current layer: the maximum at the top, the middle value in the centre, the minimum at the bottom.\nThe hatched boxes explain excluded zones (constraints not met, Earth not visible, battery below reserve).", tr18t: "Best sites", tr18d: "The ranking of the best points according to your weights and constraints, with coordinates and main values.\n💡 Click a site to highlight it on the map and read its data.", tr19t: "The time bar", tr19d: "In the over-time view you can move through the mission period: <b>−1d −6h +6h +1d</b>, or the slider. The ▶ button plays time automatically, with the step chosen on the right (1 h, 6 h, 24 h, 7 days).\nEach time the Sun, Earth and map update.", tr20t: "Mission Control: signal and light", tr20d: "The box tells you what is happening <b>now</b> for the chosen point (site #1 or the probe):\n📡 <b>Signal acquired</b> = Earth is visible; <b>LOS</b> (loss of signal) = how long until contact is lost; <b>AOS</b> = how long until it returns.\nBelow you see whether <b>at least one point of the area</b> has signal right now and what share of the area is covered.\n☀ The second part tells you whether the point is sunlit or in shadow, when the Sun sets or rises, and how much of the area is lit now.", tr21t: "Energy budget", tr21d: "The chart simulates the <b>battery</b> during the stay: it rises when the point is sunlit (panels) and always drops because of the load.\nIf it falls below the minimum reserve the mission is at risk: with the energy constraint on, those zones are excluded.", tr22t: "3D view", tr22d: "This button switches to the <b>3D view</b>: the whole Moon with the Sun and Earth in their real positions, and the enlarged area (not to scale) with its map on top.\nDrag to rotate, wheel or pinch to zoom. It helps you understand <b>where</b> the light comes from and where Earth is.", tr23t: "Notes and encrypted data", tr23d: "Here you write <b>mission notes</b>, export or import your archive and, if needed, delete local data. Everything is <b>encrypted</b> in this browser.\nThe access log shows when you signed in, what you changed and when the session was locked.", tr24t: "The top commands", tr24d: "<b>Change area</b> goes back to the globe. <b>Customize mission</b> reopens the parameters. <b>? Guide</b> reopens this guide. <b>Back</b> returns to the Expert menu. <b>Lock</b> closes the session and encrypts everything.\n💡 On a phone these buttons are in the ☰ menu.", tr25t: "End of the guide", tr25d: "Now you know the whole Expert Edition: choose an area, define the mission, compare the maps in the yearly average and over time, and check signal, light and energy of the best site.\nEnjoy exploring the South Pole! 🚀",
+    loginTitle: "Institutional access", loginSub: "Expert Edition is reserved for accredited institutions",
         nameLbl: "Name", institution: "Institution", enter: "Sign in",
         loginError: "Credentials not recognised", loginEmpty: "Please fill in all fields",
         passLbl: "Vault passphrase", passHint: "First access: this passphrase creates your encrypted vault. It cannot be recovered.",
@@ -2325,32 +2445,32 @@ const I18N_GLOBE = {
 };
 Object.keys(I18N).forEach(c => Object.assign(I18N[c], I18N_GLOBE[c]));
 const I18N_ENERGY = {
-  it: { l_energy: "Energia", l_temp: "Temp.", lg_energy: "Carica minima della batteria durante la permanenza", lg_temp: "Temperatura superficiale in questo istante (0 °C al centro)",
+  it: { l_energy: "Energia", l_temp: "Temp.", lg_energy: "Carica minima della batteria durante la permanenza (polvere sui pannelli inclusa)", lg_temp: "Temperatura superficiale in questo istante (0 °C al centro)",
         maskEnergyLg: "✕ Batteria sotto la riserva", maskEnergy: "✕ Batteria sotto la riserva durante la permanenza",
         energyTitle: "Bilancio energetico", energySec: "Energia (pannello + batteria)", ePanel: "Pannello (W)", eBattery: "Batteria (Wh)",
-        eLoad: "Consumo (W)", eReserve: "Riserva min %", eHard: "Escludi i siti con batteria sotto la riserva", earthHiddenData: "⚠ In questo istante, secondo i dati del sito, la Terra è nascosta dal rilievo per gran parte dell'area: quelle zone sono escluse.", subEarth: "Terra allo zenit (0°, 0°)", craterRim: "bordo del cratere {n} ↗", l_m_ice: "Prob. ghiaccio", lg_m_ice: "Probabilità di ghiaccio (indice: buio prolungato × quota bassa)", x_ice: "Ghiaccio entro 2 km", maskedCons: "Escluso: parametri facoltativi non rispettati", maskNotLand: "Non atterrabile", viewTitle: "Visualizzazione", vMedia: "Media annua", vMediaD: "mappe del file, intero anno", vTime: "Andamento nel tempo", vTimeD: "ogni 6 h, Sole e Terra si muovono", crossTitle: "Incrocio dei dati", crossHelp: "Scegli quali mappe incrociare e con che peso (↑ meglio alto, ↓ meglio basso). I siti migliori sono quelli con l'incrocio più alto.", x_luce: "Luce", x_com: "Comunicazione", x_energia: "Energia", x_lc: "Luce + com.", x_land: "Area atterrabile", x_pend: "Pendenza", x_buio: "Buio max", x_nocom: "Senza com. max", x_quota: "Quota", l_cross: "Incrocio", l_m_luce: "Luce", l_m_com: "Comunic.", l_m_lc: "Luce+com", l_m_lcl: "L+C atterr.", l_m_energia: "Energia", l_m_buio: "Buio max", l_m_nocom: "Senza com.", l_m_quota: "Quota", l_m_pend: "Pendenza", l_m_land: "Atterrabile", l_sunNow: "Luce ora", l_earthNow: "Terra ora", lg_cross: "Incrocio dei dati", lg_m_luce: "Luce [% del tempo]", lg_m_com: "Comunicazione utile [%]", lg_m_lc: "Luce + comunicazione [%]", lg_m_lcl: "Luce + com. solo dove atterrabile [%]", lg_m_energia: "Energia media [% del massimo]", lg_m_buio: "Buio continuo più lungo", lg_m_nocom: "Senza comunicazione più lungo", lg_m_quota: "Quota", lg_m_pend: "Pendenza media", lg_m_land: "Area con pendenza ≤ 10° [%]", lg_sunNow: "Luce in questo istante (dati ogni 6 h)", lg_earthNow: "Terra in vista in questo istante (dati ogni 6 h)", yes: "sì", no: "no", optTitle: "Parametri facoltativi", optHelp: "Aggiungi solo i parametri che ti servono dal menu: ognuno diventa un vincolo che esclude le zone che non lo rispettano.", optAdd: "Aggiungi un parametro…", optNone: "Nessun parametro aggiunto: la mappa usa solo i dati.", opt_energy: "Bilancio energetico (batteria)", opt_minSun: "Luce minima", opt_minEarth: "Comunicazione minima", opt_maxIce: "Distanza max dal ghiaccio", opt_landable: "Solo celle atterrabili", opt_landable_d: "Esclude le celle dove meno di metà dell'area ha pendenza ≤ 10°.", opt_maxSlope: "Pendenza massima", opt_quota: "Quota (altitudine)", opt_maxDark: "Buio continuo massimo", opt_maxNoCom: "Senza comunicazione massimo", oSlope: "Pendenza max (°)", oQmin: "Quota min (m)", oQmax: "Quota max (m)", oDark: "Buio max (h)", oNoCom: "Senza com. max (h)", cLand: "Solo celle atterrabili (pendenza ≤ 10° su almeno metà della cella)", tipSlope: "Pendenza media", tipLand: "Area con pendenza ≤ 10°", tipEvo: "Sole e Terra nel tempo", tipEvoV: "dati reali ogni {h} h",
+        eLoad: "Consumo oper. (W)", eLoadSave: "Consumo risp. (W)", eSaveBelow: "Risparmio sotto %", eDustInit: "Polvere atterr. %", eDustYear: "Polvere %/anno", eOpMode: "Modalità operativa quando…", opm_sun: "c'è il Sole (al buio: risparmio)", opm_sunEarth: "c'è il Sole e la Terra è visibile", opm_always: "sempre (risparmio solo sotto la soglia di carica)", eSaveH: "In risparmio: {h}", ePanelEff: "Rendimento pannello: disco solare {d}% × polvere {p}% = {r}%", eDust: "Polvere sui pannelli: −{a}% all'atterraggio, −{y}%/anno → −{l}% a fine permanenza", eReserve: "Riserva min %", eHard: "Escludi i siti con batteria sotto la riserva", earthHiddenData: "⚠ In questo istante, secondo i dati del sito, la Terra è nascosta dal rilievo per gran parte dell'area: quelle zone sono escluse.", subEarth: "Terra allo zenit (0°, 0°)", craterRim: "bordo del cratere {n} ↗", l_m_ice: "Prob. ghiaccio", lg_m_ice: "Probabilità di ghiaccio (solo illuminazione): 100% = mai al Sole, 50% = Sole < 1% del tempo", x_ice: "Ghiaccio entro 2 km", maskedCons: "Escluso: parametri facoltativi non rispettati", maskNotLand: "Non atterrabile", viewTitle: "Visualizzazione", vMedia: "Media annua", vMediaD: "mappe del file, intero anno", vTime: "Andamento nel tempo", vTimeD: "ogni 6 h, Sole e Terra si muovono", crossTitle: "Incrocio dei dati", crossHelp: "Scegli quali mappe incrociare e con che peso (↑ meglio alto, ↓ meglio basso). I siti migliori sono quelli con l'incrocio più alto.", x_luce: "Luce", x_com: "Comunicazione", x_energia: "Energia", x_lc: "Luce + com.", x_land: "Area atterrabile", x_pend: "Pendenza", x_buio: "Buio max", x_nocom: "Senza com. max", x_quota: "Quota", l_cross: "Incrocio", l_m_luce: "Luce", l_m_com: "Comunic.", l_m_lc: "Luce+com", l_m_lcl: "L+C atterr.", l_m_energia: "Energia", l_m_buio: "Buio max", l_m_nocom: "Senza com.", l_m_quota: "Quota", l_m_pend: "Pendenza", l_m_land: "Atterrabile", l_sunNow: "Luce ora", l_earthNow: "Terra ora", lg_cross: "Incrocio dei dati", lg_m_luce: "Luce [% del tempo]", lg_m_com: "Comunicazione utile [%]", lg_m_lc: "Luce + comunicazione [%]", lg_m_lcl: "Luce + com. solo dove atterrabile [%]", lg_m_energia: "Energia media [% del massimo]", lg_m_buio: "Buio continuo più lungo", lg_m_nocom: "Senza comunicazione più lungo", lg_m_quota: "Quota", lg_m_pend: "Pendenza media", lg_m_land: "Area con pendenza ≤ 10° [%]", lg_sunNow: "Luce in questo istante (dati ogni 6 h)", lg_earthNow: "Terra in vista in questo istante (dati ogni 6 h)", yes: "sì", no: "no", optTitle: "Parametri facoltativi", optHelp: "Aggiungi solo i parametri che ti servono dal menu: ognuno diventa un vincolo che esclude le zone che non lo rispettano.", optAdd: "Aggiungi un parametro…", optNone: "Nessun parametro aggiunto: la mappa usa solo i dati.", opt_energy: "Bilancio energetico (batteria)", opt_minSun: "Luce minima", opt_minEarth: "Comunicazione minima", opt_maxIce: "Distanza max dal ghiaccio", opt_landable: "Solo celle atterrabili", opt_landable_d: "Esclude le celle dove meno di metà dell'area ha pendenza ≤ 10°.", opt_maxSlope: "Pendenza massima", opt_quota: "Quota (altitudine)", opt_maxDark: "Buio continuo massimo", opt_maxNoCom: "Senza comunicazione massimo", oSlope: "Pendenza max (°)", oQmin: "Quota min (m)", oQmax: "Quota max (m)", oDark: "Buio max (h)", oNoCom: "Senza com. max (h)", cLand: "Solo celle atterrabili (pendenza ≤ 10° su almeno metà della cella)", tipSlope: "Pendenza media", tipLand: "Area con pendenza ≤ 10°", tipEvo: "Sole e Terra nel tempo", tipEvoV: "dati reali ogni {h} h",
         energyHint: "Pannello verticale che segue il Sole: produce solo quando il sito è illuminato. La batteria parte carica.",
         sitePt: "sito #{n}", probePt: "punto scelto", centerPt: "centro dell'area", eFor: "Carica nelle {h} h di permanenza · {p} · {c}",
         eMin: "Carica minima <b>{v}%</b>", eNight: "notte più lunga <b>{h}</b>", eOk: "✓ Energia sufficiente", eFail: "✕ Sotto la riserva a T+{h}",
         eAxis: "ore dall'atterraggio", eTipSun: "al Sole", eTipShade: "in ombra", reserveLbl: "riserva",
-        mcAcq: "SEGNALE ACQUISITO", mcLos: "PERDITA DI SEGNALE", mcLosIn: "LOS tra {d}", mcAosIn: "AOS tra {d}", mcNever: "nessun cambio entro 30 g",
-        mcSunset: "☀ tramonto tra {d}", mcSunrise: "☾ alba tra {d}", mcSunNever: "☀ nessun cambio entro 30 g", mcFor: "per {p} · {c}",
+        mcComYes: "La Terra è sopra l'orizzonte: il punto può parlare con il controllo missione.", mcComNo: "La Terra è nascosta (sotto l'orizzonte o dietro il rilievo): nessun contatto radio diretto.", mcLosClear: "Perdita del segnale (LOS) tra {d}", mcAosClear: "Il segnale torna (AOS) tra {d}", mcAreaCom: "Nell'area ora: segnale in almeno un punto ✓ ({p}% dell'area)", mcAreaNoCom: "Nell'area ora: nessun punto ha segnale ✗", mcSunNow: "AL SOLE", mcDarkNow: "IN OMBRA", mcAreaSun: "Nell'area ora: illuminato il {p}%", mcAreaNoSun: "Nell'area ora: tutto in ombra", mcAcq: "SEGNALE ACQUISITO", mcLos: "PERDITA DI SEGNALE", mcLosIn: "LOS tra {d}", mcAosIn: "AOS tra {d}", mcNever: "nessun cambio entro 30 g",
+        mcSunset: "Il Sole tramonta tra {d}", mcSunrise: "Il Sole sorge tra {d}", mcSunNever: "☀ nessun cambio entro 30 g", mcFor: "Valori per {p} · {c} (clicca la mappa per un altro punto)",
         tipTemp: "Temperatura", tipBatt: "Batteria min", clickHint: "Clicca sulla mappa o su un sito per analizzarlo" },
-  en: { l_energy: "Energy", l_temp: "Temp.", lg_energy: "Minimum battery charge during the stay", lg_temp: "Surface temperature at this instant (0 °C at centre)",
+  en: { l_energy: "Energy", l_temp: "Temp.", lg_energy: "Minimum battery charge during the stay (panel dust included)", lg_temp: "Surface temperature at this instant (0 °C at centre)",
         maskEnergyLg: "✕ Battery below reserve", maskEnergy: "✕ Battery below reserve during the stay",
         energyTitle: "Energy budget", energySec: "Energy (panel + battery)", ePanel: "Panel (W)", eBattery: "Battery (Wh)",
-        eLoad: "Load (W)", eReserve: "Min reserve %", eHard: "Exclude sites below the battery reserve", earthHiddenData: "⚠ At this instant, according to the site data, Earth is hidden by the terrain for most of the area: those zones are excluded.", subEarth: "Earth overhead (0°, 0°)", craterRim: "{n} crater rim ↗", l_m_ice: "Ice prob.", lg_m_ice: "Ice probability (index: long darkness × low elevation)", x_ice: "Ice within 2 km", maskedCons: "Excluded: optional parameters not met", maskNotLand: "Not landable", viewTitle: "View", vMedia: "Yearly average", vMediaD: "file maps, whole year", vTime: "Over time", vTimeD: "every 6 h, Sun and Earth move", crossTitle: "Data crossing", crossHelp: "Choose which maps to cross and how much each counts (↑ higher is better, ↓ lower is better). The best sites have the highest crossing.", x_luce: "Light", x_com: "Communication", x_energia: "Energy", x_lc: "Light + com.", x_land: "Landable area", x_pend: "Slope", x_buio: "Max darkness", x_nocom: "Max no-com", x_quota: "Elevation", l_cross: "Crossing", l_m_luce: "Light", l_m_com: "Comms", l_m_lc: "Light+com", l_m_lcl: "L+C landable", l_m_energia: "Energy", l_m_buio: "Max dark", l_m_nocom: "No-com", l_m_quota: "Elevation", l_m_pend: "Slope", l_m_land: "Landable", l_sunNow: "Light now", l_earthNow: "Earth now", lg_cross: "Data crossing", lg_m_luce: "Light [% of time]", lg_m_com: "Useful communication [%]", lg_m_lc: "Light + communication [%]", lg_m_lcl: "Light + com. only where landable [%]", lg_m_energia: "Mean energy [% of max]", lg_m_buio: "Longest continuous darkness", lg_m_nocom: "Longest without communication", lg_m_quota: "Elevation", lg_m_pend: "Mean slope", lg_m_land: "Area with slope ≤ 10° [%]", lg_sunNow: "Light at this instant (data every 6 h)", lg_earthNow: "Earth in view at this instant (data every 6 h)", yes: "yes", no: "no", optTitle: "Optional parameters", optHelp: "Add only the parameters you need from the menu: each becomes a constraint that excludes the areas that do not meet it.", optAdd: "Add a parameter…", optNone: "No parameters added: the map uses the data only.", opt_energy: "Energy budget (battery)", opt_minSun: "Minimum light", opt_minEarth: "Minimum communication", opt_maxIce: "Max distance from ice", opt_landable: "Landable cells only", opt_landable_d: "Excludes cells where less than half of the area has slope ≤ 10°.", opt_maxSlope: "Maximum slope", opt_quota: "Elevation (altitude)", opt_maxDark: "Maximum continuous darkness", opt_maxNoCom: "Maximum time without communication", oSlope: "Max slope (°)", oQmin: "Min elevation (m)", oQmax: "Max elevation (m)", oDark: "Max darkness (h)", oNoCom: "Max no-com (h)", cLand: "Only landable cells (slope ≤ 10° on at least half of the cell)", tipSlope: "Mean slope", tipLand: "Area with slope ≤ 10°", tipEvo: "Sun and Earth over time", tipEvoV: "real data every {h} h",
+        eLoad: "Op. load (W)", eLoadSave: "Saving load (W)", eSaveBelow: "Saving below %", eDustInit: "Landing dust %", eDustYear: "Dust %/year", eOpMode: "Operational mode when…", opm_sun: "the Sun is up (dark: power saving)", opm_sunEarth: "Sun up and Earth visible", opm_always: "always (saving only below the charge threshold)", eSaveH: "In power saving: {h}", ePanelEff: "Panel efficiency: solar disk {d}% × dust {p}% = {r}%", eDust: "Panel dust: −{a}% at landing, −{y}%/year → −{l}% at end of stay", eReserve: "Min reserve %", eHard: "Exclude sites below the battery reserve", earthHiddenData: "⚠ At this instant, according to the site data, Earth is hidden by the terrain for most of the area: those zones are excluded.", subEarth: "Earth overhead (0°, 0°)", craterRim: "{n} crater rim ↗", l_m_ice: "Ice prob.", lg_m_ice: "Ice probability (illumination only): 100% = never sunlit, 50% = sunlit < 1% of the time", x_ice: "Ice within 2 km", maskedCons: "Excluded: optional parameters not met", maskNotLand: "Not landable", viewTitle: "View", vMedia: "Yearly average", vMediaD: "file maps, whole year", vTime: "Over time", vTimeD: "every 6 h, Sun and Earth move", crossTitle: "Data crossing", crossHelp: "Choose which maps to cross and how much each counts (↑ higher is better, ↓ lower is better). The best sites have the highest crossing.", x_luce: "Light", x_com: "Communication", x_energia: "Energy", x_lc: "Light + com.", x_land: "Landable area", x_pend: "Slope", x_buio: "Max darkness", x_nocom: "Max no-com", x_quota: "Elevation", l_cross: "Crossing", l_m_luce: "Light", l_m_com: "Comms", l_m_lc: "Light+com", l_m_lcl: "L+C landable", l_m_energia: "Energy", l_m_buio: "Max dark", l_m_nocom: "No-com", l_m_quota: "Elevation", l_m_pend: "Slope", l_m_land: "Landable", l_sunNow: "Light now", l_earthNow: "Earth now", lg_cross: "Data crossing", lg_m_luce: "Light [% of time]", lg_m_com: "Useful communication [%]", lg_m_lc: "Light + communication [%]", lg_m_lcl: "Light + com. only where landable [%]", lg_m_energia: "Mean energy [% of max]", lg_m_buio: "Longest continuous darkness", lg_m_nocom: "Longest without communication", lg_m_quota: "Elevation", lg_m_pend: "Mean slope", lg_m_land: "Area with slope ≤ 10° [%]", lg_sunNow: "Light at this instant (data every 6 h)", lg_earthNow: "Earth in view at this instant (data every 6 h)", yes: "yes", no: "no", optTitle: "Optional parameters", optHelp: "Add only the parameters you need from the menu: each becomes a constraint that excludes the areas that do not meet it.", optAdd: "Add a parameter…", optNone: "No parameters added: the map uses the data only.", opt_energy: "Energy budget (battery)", opt_minSun: "Minimum light", opt_minEarth: "Minimum communication", opt_maxIce: "Max distance from ice", opt_landable: "Landable cells only", opt_landable_d: "Excludes cells where less than half of the area has slope ≤ 10°.", opt_maxSlope: "Maximum slope", opt_quota: "Elevation (altitude)", opt_maxDark: "Maximum continuous darkness", opt_maxNoCom: "Maximum time without communication", oSlope: "Max slope (°)", oQmin: "Min elevation (m)", oQmax: "Max elevation (m)", oDark: "Max darkness (h)", oNoCom: "Max no-com (h)", cLand: "Only landable cells (slope ≤ 10° on at least half of the cell)", tipSlope: "Mean slope", tipLand: "Area with slope ≤ 10°", tipEvo: "Sun and Earth over time", tipEvoV: "real data every {h} h",
         energyHint: "Vertical sun-tracking panel: it produces only while the site is sunlit. The battery starts full.",
         sitePt: "site #{n}", probePt: "chosen point", centerPt: "area centre", eFor: "Charge over the {h} h stay · {p} · {c}",
         eMin: "Minimum charge <b>{v}%</b>", eNight: "longest night <b>{h}</b>", eOk: "✓ Enough energy", eFail: "✕ Below reserve at T+{h}",
         eAxis: "hours after landing", eTipSun: "sunlit", eTipShade: "shadow", reserveLbl: "reserve",
-        mcAcq: "SIGNAL ACQUIRED", mcLos: "LOSS OF SIGNAL", mcLosIn: "LOS in {d}", mcAosIn: "AOS in {d}", mcNever: "no change within 30 d",
-        mcSunset: "☀ sunset in {d}", mcSunrise: "☾ sunrise in {d}", mcSunNever: "☀ no change within 30 d", mcFor: "for {p} · {c}",
+        mcComYes: "Earth is above the horizon: the point can talk to mission control.", mcComNo: "Earth is hidden (below the horizon or behind the terrain): no direct radio contact.", mcLosClear: "Loss of signal (LOS) in {d}", mcAosClear: "Signal returns (AOS) in {d}", mcAreaCom: "In the area now: signal in at least one point ✓ ({p}% of the area)", mcAreaNoCom: "In the area now: no point has signal ✗", mcSunNow: "IN SUNLIGHT", mcDarkNow: "IN SHADOW", mcAreaSun: "In the area now: {p}% sunlit", mcAreaNoSun: "In the area now: all in shadow", mcAcq: "SIGNAL ACQUIRED", mcLos: "LOSS OF SIGNAL", mcLosIn: "LOS in {d}", mcAosIn: "AOS in {d}", mcNever: "no change within 30 d",
+        mcSunset: "The Sun sets in {d}", mcSunrise: "The Sun rises in {d}", mcSunNever: "☀ no change within 30 d", mcFor: "Values for {p} · {c} (click the map for another point)",
         tipTemp: "Temperature", tipBatt: "Battery min", clickHint: "Click the map or a site to analyse it" },
-  es: { l_energy: "Energía", l_temp: "Temp.", lg_energy: "Carga mínima de la batería durante la estancia", lg_temp: "Temperatura superficial en este instante (0 °C en el centro)",
+  es: { lg_m_ice: "Probabilidad de hielo (solo iluminación): 100% = nunca al Sol, 50% = Sol < 1% del tiempo", l_m_ice: "Prob. hielo", l_energy: "Energía", l_temp: "Temp.", lg_energy: "Carga mínima de la batería durante la estancia (polvo incluido)", lg_temp: "Temperatura superficial en este instante (0 °C en el centro)",
         maskEnergyLg: "✕ Batería bajo la reserva", maskEnergy: "✕ Batería bajo la reserva durante la estancia",
         energyTitle: "Balance energético", energySec: "Energía (panel + batería)", ePanel: "Panel (W)", eBattery: "Batería (Wh)",
-        eLoad: "Consumo (W)", eReserve: "Reserva mín %", eHard: "Excluir sitios con batería bajo la reserva", cLand: "Solo celdas aterrizables (pendiente ≤ 10° en al menos media celda)", tipSlope: "Pendiente media", tipLand: "Área con pendiente ≤ 10°", tipEvo: "Sol y Tierra en el tiempo", tipEvoV: "datos reales cada {h} h",
+        eLoad: "Consumo oper. (W)", eLoadSave: "Consumo ahorro (W)", eSaveBelow: "Ahorro bajo %", eDustInit: "Polvo aterr. %", eDustYear: "Polvo %/año", eOpMode: "Modo operativo cuando…", opm_sun: "hay Sol (de noche: ahorro)", opm_sunEarth: "hay Sol y la Tierra es visible", opm_always: "siempre (ahorro solo bajo el umbral)", eSaveH: "En ahorro: {h}", ePanelEff: "Rendimiento del panel: disco solar {d}% × polvo {p}% = {r}%", eDust: "Polvo en los paneles: −{a}% al aterrizar, −{y}%/año → −{l}% al final", eReserve: "Reserva mín %", eHard: "Excluir sitios con batería bajo la reserva", cLand: "Solo celdas aterrizables (pendiente ≤ 10° en al menos media celda)", tipSlope: "Pendiente media", tipLand: "Área con pendiente ≤ 10°", tipEvo: "Sol y Tierra en el tiempo", tipEvoV: "datos reales cada {h} h",
         energyHint: "Panel vertical que sigue al Sol: produce solo cuando el sitio está iluminado. La batería empieza llena.",
         sitePt: "sitio #{n}", probePt: "punto elegido", centerPt: "centro del área", eFor: "Carga en las {h} h de estancia · {p} · {c}",
         eMin: "Carga mínima <b>{v}%</b>", eNight: "noche más larga <b>{h}</b>", eOk: "✓ Energía suficiente", eFail: "✕ Bajo la reserva en T+{h}",
@@ -2358,10 +2478,10 @@ const I18N_ENERGY = {
         mcAcq: "SEÑAL ADQUIRIDA", mcLos: "PÉRDIDA DE SEÑAL", mcLosIn: "LOS en {d}", mcAosIn: "AOS en {d}", mcNever: "sin cambios en 30 d",
         mcSunset: "☀ ocaso en {d}", mcSunrise: "☾ amanecer en {d}", mcSunNever: "☀ sin cambios en 30 d", mcFor: "para {p} · {c}",
         tipTemp: "Temperatura", tipBatt: "Batería mín", clickHint: "Haz clic en el mapa o en un sitio para analizarlo" },
-  fr: { l_energy: "Énergie", l_temp: "Temp.", lg_energy: "Charge minimale de la batterie pendant le séjour", lg_temp: "Température de surface à cet instant (0 °C au centre)",
+  fr: { lg_m_ice: "Probabilité de glace (éclairement seul) : 100% = jamais au Soleil, 50% = Soleil < 1% du temps", l_m_ice: "Prob. glace", l_energy: "Énergie", l_temp: "Temp.", lg_energy: "Charge minimale de la batterie pendant le séjour (poussière incluse)", lg_temp: "Température de surface à cet instant (0 °C au centre)",
         maskEnergyLg: "✕ Batterie sous la réserve", maskEnergy: "✕ Batterie sous la réserve pendant le séjour",
         energyTitle: "Bilan énergétique", energySec: "Énergie (panneau + batterie)", ePanel: "Panneau (W)", eBattery: "Batterie (Wh)",
-        eLoad: "Consommation (W)", eReserve: "Réserve min %", eHard: "Exclure les sites sous la réserve", cLand: "Seulement les cellules atterrissables (pente ≤ 10° sur au moins la moitié)", tipSlope: "Pente moyenne", tipLand: "Surface avec pente ≤ 10°", tipEvo: "Soleil et Terre dans le temps", tipEvoV: "données réelles toutes les {h} h",
+        eLoad: "Conso. opér. (W)", eLoadSave: "Conso. éco. (W)", eSaveBelow: "Économie sous %", eDustInit: "Poussière atterr. %", eDustYear: "Poussière %/an", eOpMode: "Mode opérationnel quand…", opm_sun: "le Soleil est levé (nuit : économie)", opm_sunEarth: "Soleil levé et Terre visible", opm_always: "toujours (économie seulement sous le seuil)", eSaveH: "En économie : {h}", ePanelEff: "Rendement du panneau : disque solaire {d}% × poussière {p}% = {r}%", eDust: "Poussière sur les panneaux : −{a}% à l'atterrissage, −{y}%/an → −{l}% en fin de séjour", eReserve: "Réserve min %", eHard: "Exclure les sites sous la réserve", cLand: "Seulement les cellules atterrissables (pente ≤ 10° sur au moins la moitié)", tipSlope: "Pente moyenne", tipLand: "Surface avec pente ≤ 10°", tipEvo: "Soleil et Terre dans le temps", tipEvoV: "données réelles toutes les {h} h",
         energyHint: "Panneau vertical qui suit le Soleil : il produit seulement quand le site est éclairé. La batterie part pleine.",
         sitePt: "site n°{n}", probePt: "point choisi", centerPt: "centre de la zone", eFor: "Charge sur les {h} h de séjour · {p} · {c}",
         eMin: "Charge minimale <b>{v}%</b>", eNight: "nuit la plus longue <b>{h}</b>", eOk: "✓ Énergie suffisante", eFail: "✕ Sous la réserve à T+{h}",
@@ -2369,10 +2489,10 @@ const I18N_ENERGY = {
         mcAcq: "SIGNAL ACQUIS", mcLos: "PERTE DE SIGNAL", mcLosIn: "LOS dans {d}", mcAosIn: "AOS dans {d}", mcNever: "aucun changement sous 30 j",
         mcSunset: "☀ coucher dans {d}", mcSunrise: "☾ lever dans {d}", mcSunNever: "☀ aucun changement sous 30 j", mcFor: "pour {p} · {c}",
         tipTemp: "Température", tipBatt: "Batterie min", clickHint: "Cliquez sur la carte ou un site pour l'analyser" },
-  de: { l_energy: "Energie", l_temp: "Temp.", lg_energy: "Minimale Batterieladung während des Aufenthalts", lg_temp: "Oberflächentemperatur in diesem Moment (0 °C in der Mitte)",
+  de: { lg_m_ice: "Eiswahrscheinlichkeit (nur Beleuchtung): 100% = nie besonnt, 50% = Sonne < 1% der Zeit", l_m_ice: "Eis-Wahrsch.", l_energy: "Energie", l_temp: "Temp.", lg_energy: "Minimale Batterieladung während des Aufenthalts (Staub inbegriffen)", lg_temp: "Oberflächentemperatur in diesem Moment (0 °C in der Mitte)",
         maskEnergyLg: "✕ Batterie unter Reserve", maskEnergy: "✕ Batterie während des Aufenthalts unter Reserve",
         energyTitle: "Energiebilanz", energySec: "Energie (Panel + Batterie)", ePanel: "Panel (W)", eBattery: "Batterie (Wh)",
-        eLoad: "Verbrauch (W)", eReserve: "Mindestreserve %", eHard: "Orte unter der Batteriereserve ausschließen", cLand: "Nur landbare Zellen (Neigung ≤ 10° auf mindestens der halben Zelle)", tipSlope: "Mittlere Neigung", tipLand: "Fläche mit Neigung ≤ 10°", tipEvo: "Sonne und Erde im Zeitverlauf", tipEvoV: "echte Daten alle {h} h",
+        eLoad: "Betrieb (W)", eLoadSave: "Sparmodus (W)", eSaveBelow: "Sparen unter %", eDustInit: "Staub Landung %", eDustYear: "Staub %/Jahr", eOpMode: "Betriebsmodus wenn…", opm_sun: "Sonne sichtbar (Nacht: Sparmodus)", opm_sunEarth: "Sonne und Erde sichtbar", opm_always: "immer (Sparmodus nur unter der Schwelle)", eSaveH: "Im Sparmodus: {h}", ePanelEff: "Panelwirkungsgrad: Sonnenscheibe {d}% × Staub {p}% = {r}%", eDust: "Staub auf den Panels: −{a}% bei der Landung, −{y}%/Jahr → −{l}% am Ende", eReserve: "Mindestreserve %", eHard: "Orte unter der Batteriereserve ausschließen", cLand: "Nur landbare Zellen (Neigung ≤ 10° auf mindestens der halben Zelle)", tipSlope: "Mittlere Neigung", tipLand: "Fläche mit Neigung ≤ 10°", tipEvo: "Sonne und Erde im Zeitverlauf", tipEvoV: "echte Daten alle {h} h",
         energyHint: "Vertikales, der Sonne folgendes Panel: erzeugt nur bei Beleuchtung. Die Batterie startet voll.",
         sitePt: "Ort #{n}", probePt: "gewählter Punkt", centerPt: "Gebietsmitte", eFor: "Ladung über {h} h Aufenthalt · {p} · {c}",
         eMin: "Minimale Ladung <b>{v}%</b>", eNight: "längste Nacht <b>{h}</b>", eOk: "✓ Genug Energie", eFail: "✕ Unter Reserve bei T+{h}",
@@ -2442,7 +2562,7 @@ async function loadEphTable() {
   const bin = atob(el.textContent.trim()), u8 = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
   const buf = await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer();
-  const n = +el.dataset.n, I = new Int32Array(buf), cols = [1e4, 1e4, .1, 1e4, 1e4, 1].map((sc, c) => {
+  const n = +el.dataset.n, I = new Int32Array(buf), cols = [1e4, 1e4, 10, 1e4, 1e4, 1].map((sc, c) => {
     const out = new Float64Array(n); let acc = 0;
     for (let i = 0; i < n; i++) { acc += I[c * n + i]; out[i] = acc / sc; }
     return out;
@@ -2617,7 +2737,7 @@ const b64ToF32 = s => { const bin = atob(s), u8 = new Uint8Array(bin.length); fo
    Griglia in stereografica polare (stessa proiezione della webapp, verificata al cm), celle da passo_m.
    Conversione verso il modello interno:
      luce_pct → sunFraction · comunicazione_pct → earthFraction
-     ghiaccio: distanza dalle celle mai illuminate nel periodo (ombra permanente, luce ≤ 0,5%)
+     ghiaccio: indice di ombra permanente dalla sola illuminazione (luce = 0 → 1, luce < 1% → 0,5) e distanza dalle celle mai illuminate
      orizzonti efficaci verso Sole e Terra: ricavati in modo che, con le effemeridi della webapp,
      la quota di tempo visibile coincida con le percentuali reali (servono per l'evoluzione nel tempo)
      quota_m, buio_max_h, senza_com_max_h, energia_pct: mostrati nel tooltip                        */
@@ -2648,21 +2768,16 @@ function parseSiteMap(j, source) {
   // centro e raggio dell'area (cerchio inscritto nella griglia)
   const gx0 = g.x_m[0] / 1000, gy0 = g.y_m[0] / 1000, xc = gx0 + (nx - 1) * step / 2, yc = gy0 - (ny - 1) * step / 2;
   const [clat, clon] = projInv(xc, yc, pc), rDeg = Math.min(nx, ny) * step / 2 * .98 / (MOON_R * DEG);
-  // probabilità di ghiaccio (indice 0-1, non una misura diretta): incrocio di buio prolungato e quota bassa.
-  //   buio = buio continuo più lungo / 8760 h (1 = mai illuminato in tutto l'anno: ombra permanente)
-  //   quota = 1 nella zona più bassa del sito, 0 in quella più alta;  indice = buio × (0,3 + 0,7 × quota)
-  let iceProb = null;
-  if (extra.buio && extra.quota) {
-    let qlo = Infinity, qhi = -Infinity; for (const v of extra.quota) if (isFinite(v)) { qlo = Math.min(qlo, v); qhi = Math.max(qhi, v); }
-    iceProb = new Float32Array(n);
-    for (let k = 0; k < n; k++) {
-      const b = extra.buio[k], q = extra.quota[k];
-      const dk = Math.max(0, Math.min(1, b / 8760)), lowK = isFinite(q) && qhi > qlo ? 1 - (q - qlo) / (qhi - qlo) : .5;
-      iceProb[k] = isFinite(b) ? dk * (.3 + .7 * lowK) : 0;
-    }
-  }
-  // ghiaccio vicino: distanza dalla cella più vicina con indice ≥ 0,5 (senza i dati: celle quasi mai illuminate)
-  const psr = []; for (let k = 0; k < n; k++) if (iceProb ? iceProb[k] >= .5 : sun[k] <= .005) psr.push(k);
+  // indice di ombra permanente (possibile ghiaccio): SOLO criterio di illuminazione (luce_pct sul periodo dei dati, passo 1 h)
+  //   1   = mai illuminata nel periodo (0 h di Sole: ombra permanente, possibile trappola fredda)
+  //   0,5 = quasi sempre in ombra (Sole visibile meno dell'1% del tempo, < ~88 h/anno)
+  //   0   = illuminata più spesso: il ghiaccio in superficie non è stabile
+  // Indica dove il ghiaccio PUÒ trovarsi, non è una misura: servirebbero temperature (< ~110 K) e dati di sonde.
+  const ICE_PSR_PCT = .05, ICE_NEAR_PCT = 1;
+  const iceProb = new Float32Array(n);
+  for (let k = 0; k < n; k++) { const lp = sun[k] * 100; iceProb[k] = !isFinite(lp) ? 0 : lp <= ICE_PSR_PCT ? 1 : lp < ICE_NEAR_PCT ? .5 : 0; }
+  // ghiaccio vicino: distanza dalla cella più vicina in ombra permanente (indice = 1)
+  const psr = []; for (let k = 0; k < n; k++) if (iceProb[k] >= 1) psr.push(k);
   const ice = new Float32Array(n);
   for (let k = 0; k < n; k++) {
     let d = Infinity; const r = Math.floor(k / nx), c = k % nx;
@@ -2671,6 +2786,17 @@ function parseSiteMap(j, source) {
   }
   // orizzonti efficaci: quantile dell'elevazione di Sole/Terra sul periodo dei dati
   const t0 = Date.parse((j.periodo && j.periodo.inizio) || "2027-01-01T00:00:00Z"), days = Math.max(1, +(j.periodo && j.periodo.giorni) || 365);
+  // rendimento del pannello quando c'è Sole, dalla nostra energia_pct (mappatura.py):
+  //   energia_pct = media nel tempo di [frazione del disco solare visibile × fattore polvere]; luce_pct = % di tempo con il disco almeno in parte visibile
+  //   → frazione media del disco quando c'è luce = energia / (luce × polvere media del periodo). La polvere la riapplica il modello energetico.
+  const hp = j.ipotesi || {}, dP0 = isFinite(+hp.perdita_iniziale_polvere_pct) ? +hp.perdita_iniziale_polvere_pct : 0,
+        dA = isFinite(+hp.degrado_polvere_annuo_pct) ? +hp.degrado_polvere_annuo_pct : 1.3;
+  const dustMean = Math.max(.01, (1 - dP0 / 100) * (1 - dA / 100 * days / 365.25 / 2));
+  let panelK = null;
+  if (extra.energia) {
+    panelK = new Float32Array(n);
+    for (let k = 0; k < n; k++) { const e = extra.energia[k] / 100, l = sun[k]; panelK[k] = l > 0 && isFinite(e) ? Math.max(0, Math.min(1, e / (l * dustMean))) : 1; }
+  }
   const S = Math.min(2000, Math.round(days * 4)), sunS = [], earS = [];
   for (let s = 0; s < S; s++) { const d = new Date(t0 + (s + .5) / S * days * DAY); sunS.push(bodyVec(sunAt(d))); earS.push(bodyVec(earthAt(d))); }
   let hzs = null, hz = null; const buf = new Float64Array(S);
@@ -2703,7 +2829,7 @@ function parseSiteMap(j, source) {
   let raw = j;
   if (j.evoluzione) { raw = { ...j }; delete raw.evoluzione; }          // l'export riporta la mappa originale
   const D = { id, name, region: { lat: clat, lon: clon, r: rDeg }, pc, nx, ny, N: nx, gx0, gy0, step, ext: Math.max(nx, ny) * step / 2,
-           sun, earth, ice, hz, hzs, extra, iceProb, craters: CRATERS, demo: false, source, raw, evo, ensureHz,
+           sun, earth, ice, hz, hzs, extra, iceProb, panelK, craters: CRATERS, demo: false, source, raw, evo, ensureHz,
            period: { start: new Date(t0), days }, real: true };
   return D;
 }
@@ -2775,12 +2901,15 @@ async function unpackBuiltinSites() {
   }
   return head.siti || [];
 }
+// doppioni nascosti: Sito_20 è dentro Sito_20v2 (stesso punto migliore); Sito_LM8 si sovrappone a Sito_Shoemaker (stesso punto migliore)
+const HIDDEN_BUILTIN = new Set(["Sito_20", "Sito_LM8"]);
 function loadBuiltinSites() {
   if (BUILTIN_DONE) return BUILTIN_DONE;
   BUILTIN_DONE = (async () => {
     let list = [];
     try { list = await unpackBuiltinSites(); } catch (e) { console.warn("pacchetto siti non leggibile", e); }
     for (const j of list) {
+      if (j && HIDDEN_BUILTIN.has(j.nome)) continue;
       try { const D = parseDataset(j, "builtin"); DATASETS.set(D.id, D); COVERAGE.push(covFromDataset(D)); } catch (e) { console.warn("sito integrato non valido", j && j.nome, e); }
     }
   })();
@@ -2889,7 +3018,9 @@ const LUTS = Object.fromEntries(Object.entries(PALETTES).map(([k, stops]) => {
 const iceScore = d => d <= 2 ? 1 : Math.exp(-(d - 2) / 4);
 
 /* ---------- Stato del workspace e della missione ---------- */
-const PARAMS = [{ id: "sun", color: "#fbbf24" }, { id: "earth", color: "#2dd4bf" }, { id: "ice", color: "#93c5fd" }];
+// pesi di progetto: Sole e Ghiaccio da 0 (ignorati) a 10, Comunicazione da 1 a 10 (la Terra serve sempre)
+const PARAMS = [{ id: "sun", color: "#fbbf24", min: 0 }, { id: "earth", color: "#2dd4bf", min: 1 }, { id: "ice", color: "#93c5fd", min: 0 }];
+const WMIN = id => (PARAMS.find(p => p.id === id) || { min: 1 }).min;
 const toLocalInput = d => new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 16);
 function nextEarthWindow(from, C = REGION) {
   for (let h = 0; h <= 30 * 24; h += 3) {
@@ -2902,11 +3033,12 @@ let MAX_OFFSET_H = 720;       // evoluzione temporale: 30 giorni, oppure fino al
 const WS = { weights: { sun: 7, earth: 8, ice: 6 }, arrival: toLocalInput(nextEarthWindow(new Date())),
              layer: "score", zoom: 1, craters: true, region: null, coverageId: null,
              mission: { name: "Artemis-like landing", stayHours: 72, minSun: 0, minEarth: 0, maxIce: 0,
-                        panelW: 1200, batteryWh: 12000, loadW: 250, reservePct: 10, energyHard: true,
+                        panelW: 1200, batteryWh: 12000, loadW: 250, loadSaveW: 80, opMode: "sun", saveBelowPct: 30, reservePct: 10,
+                        dustInitPct: 0, dustYearPct: 1.3, energyHard: true,
                         maxSlope: 10, minQuota: -2000, maxQuota: 8000, maxDark: 240, maxNoCom: 240, opt: {} },
              cross: { luce: { on: true, w: 7 }, com: { on: true, w: 8 }, ice: { on: true, w: 6 }, energia: { on: false, w: 5 }, lc: { on: false, w: 5 },
                       land: { on: false, w: 5 }, pend: { on: false, w: 5 }, buio: { on: false, w: 5 }, nocom: { on: false, w: 5 }, quota: { on: false, w: 3 } },
-             horizon: "cycle", offsetH: 0 };
+             horizon: "cycle", offsetH: 0, meanMode: "arith" };
 const isMedia = () => WS.horizon === "cycle";
 let PX = null, SITES = [], selectedSite = -1;
 const currentTime = () => new Date(new Date(WS.arrival).getTime() + WS.offsetH * 36e5);
@@ -2916,7 +3048,7 @@ document.querySelectorAll("[data-sliders]").forEach(box => {
   box.innerHTML = PARAMS.map(p => `
     <div class="slider-row" style="--c:${p.color}">
       <div class="slider-head"><span class="dot"></span><label for="${pre}-${p.id}" data-i18n="p_${p.id}"></label><output id="${pre}-${p.id}-out"></output></div>
-      <input type="range" min="1" max="10" step="1" id="${pre}-${p.id}" data-param="${p.id}">
+      <input type="range" min="${p.min}" max="10" step="1" id="${pre}-${p.id}" data-param="${p.id}">
       <p class="slider-desc" data-i18n="p_${p.id}_d"></p>
     </div>`).join("");
 });
@@ -2925,7 +3057,8 @@ function syncControls() {
   document.querySelectorAll("input[data-param]").forEach(el => {
     const v = WS.weights[el.dataset.param];
     el.value = v;
-    el.style.setProperty("--p", ((v - 1) / 9 * 100) + "%");
+    const mn = WMIN(el.dataset.param);
+    el.style.setProperty("--p", ((v - mn) / (10 - mn) * 100) + "%");
     document.getElementById(el.id + "-out").textContent = v;
   });
   document.querySelectorAll("input[data-arrival]").forEach(el => { if (document.activeElement !== el) el.value = WS.arrival; });
@@ -2944,7 +3077,9 @@ function syncControls() {
 }
 
 const OPT_DEFS = [
-  { id: "energy", f: [["panelW", "ePanel", 50], ["batteryWh", "eBattery", 100], ["loadW", "eLoad", 10], ["reservePct", "eReserve", 1]], chk: "energyHard" },
+  { id: "energy", f: [["panelW", "ePanel", 50], ["batteryWh", "eBattery", 100], ["loadW", "eLoad", 10], ["loadSaveW", "eLoadSave", 10],
+                      ["saveBelowPct", "eSaveBelow", 1], ["reservePct", "eReserve", 1], ["dustInitPct", "eDustInit", .5], ["dustYearPct", "eDustYear", .1]],
+    sel: [["opMode", "eOpMode", ["sun", "sunEarth", "always"]]], chk: "energyHard" },
   { id: "minSun", f: [["minSun", "cSun", 1]] }, { id: "minEarth", f: [["minEarth", "cEarth", 1]] }, { id: "maxIce", f: [["maxIce", "cIce", .5]] },
   { id: "landable", f: [] }, { id: "maxSlope", f: [["maxSlope", "oSlope", 1]] }, { id: "quota", f: [["minQuota", "oQmin", 50], ["maxQuota", "oQmax", 50]] },
   { id: "maxDark", f: [["maxDark", "oDark", 6]] }, { id: "maxNoCom", f: [["maxNoCom", "oNoCom", 6]] },
@@ -2967,7 +3102,7 @@ function renderOptParams() {
   const act = OPT_DEFS.filter(d => o[d.id]);
   list.innerHTML = act.length ? act.map(d => `<div class="opt-row"><div class="opt-head"><span>${esc(t("opt_" + d.id))}</span><button type="button" class="q-btn${OPT_HELP_OPEN.has(d.id) ? " on" : ""}" data-opthelp="${d.id}" title="?">?</button><button type="button" data-optrm="${d.id}" title="${esc(t("removeData"))}">✕</button></div>
     ${OPT_HELP_OPEN.has(d.id) ? `<div class="opt-help">${optHelpHtml(d.id)}</div>` : ""}
-    ${d.f.length ? `<div class="opt-fields">${d.f.map(([k, lb, st]) => `<label>${esc(t(lb))}<input type="number" step="${st}" data-m="${k}" value="${WS.mission[k]}"></label>`).join("")}</div>` : `<p class="opt-empty">${esc(t("opt_" + d.id + "_d"))}</p>`}
+    ${d.f.length ? `<div class="opt-fields">${(d.sel || []).map(([k, lb, ops]) => `<label class="wide">${esc(t(lb))}<select data-m="${k}">${ops.map(o => `<option value="${o}"${WS.mission[k] === o ? " selected" : ""}>${esc(t("opm_" + o))}</option>`).join("")}</select></label>`).join("")}${d.f.map(([k, lb, st]) => `<label>${esc(t(lb))}<input type="number" step="${st}" data-m="${k}" value="${WS.mission[k]}"></label>`).join("")}</div>` : `<p class="opt-empty">${esc(t("opt_" + d.id + "_d"))}</p>`}
     ${d.chk ? `<label class="chk m-chk"><input type="checkbox" data-m="${d.chk}" ${WS.mission[d.chk] ? "checked" : ""}> <span>${esc(t("eHard"))}</span></label>` : ""}</div>`).join("")
     : `<p class="opt-empty">${esc(t("optNone"))}</p>`;
 }
@@ -3013,10 +3148,12 @@ document.addEventListener("input", e => {
     const k = el.dataset.m;
     if (k === "name") WS.mission.name = el.value.slice(0, 60);
     else if (el.type === "checkbox") WS.mission[k] = el.checked;
+    else if (el.tagName === "SELECT") WS.mission[k] = el.value;
     else {
       const v = parseFloat(el.value);
       const lim = { stayHours: [1, 720], minSun: [0, 100], minEarth: [0, 100], maxIce: [0, 500],
                     panelW: [0, 100000], batteryWh: [1, 1000000], loadW: [0, 100000], reservePct: [0, 100],
+                    loadSaveW: [0, 100000], saveBelowPct: [0, 100], dustInitPct: [0, 100], dustYearPct: [0, 100],
                     maxSlope: [0, 90], minQuota: [-10000, 12000], maxQuota: [-10000, 12000], maxDark: [0, 8760], maxNoCom: [0, 8760] }[k];
       if (isFinite(v)) WS.mission[k] = Math.max(lim[0], Math.min(lim[1], v));
     }
@@ -3250,17 +3387,39 @@ function consFail(P, i, sv, ev) {
     || (o.quota && (P.xq[i] < m.minQuota || P.xq[i] > m.maxQuota)) || (o.maxDark && P.xd[i] > m.maxDark) || (o.maxNoCom && P.xn[i] > m.maxNoCom);
 }
 const energyExcl = () => !!(WS.mission.opt && WS.mission.opt.energy && WS.mission.energyHard);
+/* ---------- Modello energetico (pannello + batteria), uguale per mappa, siti e grafico ----------
+   A ogni passo dt:  E ← min(capacità, E + (P_pannello − consumo)·dt)
+   P_pannello = panelW × rendimento disco × fattore polvere, solo con il Sole visibile
+     rendimento disco: frazione media del disco solare sopra l'orizzonte quando c'è luce (dalla energia_pct della cella; 1 senza dati)
+     fattore polvere (come effemeridi.py, Hollick & O'Brien 2013): (1 − perdita all'atterraggio) × (1 − degrado annuo × anni dall'atterraggio)
+   consumo: operativo (loadW) oppure risparmio (loadSaveW)
+     risparmio quando la regola operativa non è soddisfatta (buio, o anche Terra non visibile) oppure la carica è sotto saveBelowPct
+   guasto: carica sotto la riserva minima                                                                                  */
+function energyCfg() {
+  const m = WS.mission, cap = m.batteryWh;
+  return { m, cap, reserve: cap * m.reservePct / 100, saveAt: cap * Math.max(m.reservePct, m.saveBelowPct || 0) / 100,
+           rule: m.opMode || "sun", d0: Math.max(0, 1 - (m.dustInitPct || 0) / 100), dA: (m.dustYearPct || 0) / 100 / (365.25 * 24),
+           h0: Math.max(0, WS.offsetH || 0) };       // ore dall'atterraggio all'inizio della finestra
+}
+const dustAt = (C, h) => Math.max(0, C.d0 * (1 - C.dA * (C.h0 + h)));
+let E_SAVE = false;                     // l'ultimo passo era in modalità risparmio
+function energyStep(C, Eb, lit, com, k, h, dt) {
+  const ruleOk = C.rule === "always" || (C.rule === "sunEarth" ? lit && com : lit);
+  E_SAVE = !ruleOk || Eb < C.saveAt;
+  const gen = lit ? C.m.panelW * k * dustAt(C, h) : 0;
+  return Math.min(C.cap, Eb + (gen - (E_SAVE ? C.m.loadSaveW : C.m.loadW)) * dt);
+}
 function computeDynamicEvo(P, D) {      // dati reali: Sole e Terra cella per cella ogni 6 h
   const E = D.evo, t0 = currentTime(), m = WS.mission, stay = WS.horizon === "stay", nc = E.nc;
   const ti0 = evoIdx(E, t0), nW = Math.max(1, Math.round(m.stayHours / E.stepH));
-  const cap = m.batteryWh, reserve = cap * m.reservePct / 100, gainLit = (m.panelW - m.loadW) * E.stepH, gainDark = -m.loadW * E.stepH;
+  const C = energyCfg(), cap = C.cap, reserve = C.reserve, PK = D.panelK;
   const cSun = new Float32Array(nc), cEarth = new Float32Array(nc), cSoc = new Float32Array(nc), cFail = new Uint8Array(nc), cLit = new Uint8Array(nc), cEN = new Uint8Array(nc);
   for (let k = 0; k < nc; k++) {
     let ns = 0, ne = 0, Eb = cap, minB = cap, fail = 0;
     for (let w = 0; w < nW; w++) {
-      const ti = Math.min(E.n - 1, ti0 + w), lit = evoBit(E.luce, E, ti, k);
-      ns += lit; ne += evoBit(E.com, E, ti, k);
-      Eb = Math.min(cap, Eb + (lit ? gainLit : gainDark)); if (Eb < minB) minB = Eb; if (Eb < reserve) fail = 1;
+      const ti = Math.min(E.n - 1, ti0 + w), lit = evoBit(E.luce, E, ti, k), com = evoBit(E.com, E, ti, k);
+      ns += lit; ne += com;
+      Eb = energyStep(C, Eb, lit, com, PK ? PK[k] : 1, (w + .5) * E.stepH, E.stepH); if (Eb < minB) minB = Eb; if (Eb < reserve) fail = 1;
     }
     cSun[k] = ns / nW; cEarth[k] = ne / nW; cSoc[k] = Math.max(0, minB) / cap; cFail[k] = fail;
     cLit[k] = evoBit(E.luce, E, ti0, k); cEN[k] = evoBit(E.com, E, ti0, k);
@@ -3288,21 +3447,20 @@ function computeDynamic() {
   const SV = [], EV = [];
   for (let k = 0; k < K; k++) {
     const d = new Date(+t0 + (k + .5) * dt * 36e5);
-    SV.push(bodyVec(sunAt(d))); if (stay) EV.push(bodyVec(earthAt(d)));
+    SV.push(bodyVec(sunAt(d))); EV.push(bodyVec(earthAt(d)));
   }
-  const cap = m.batteryWh, reserve = cap * m.reservePct / 100, gainLit = (m.panelW - m.loadW) * dt, gainDark = -m.loadW * dt;
+  const C = energyCfg(), cap = C.cap, reserve = C.reserve, PK = MAPDATA && MAPDATA.panelK;
   const minS = m.minSun / 100, minE = m.minEarth / 100, maxI = m.maxIce;
   for (let i = 0; i < P.inside.length; i++) {
     if (!P.inside[i]) continue;
     const sp = P.sphi[i], cp = P.cphi[i], cl = P.clam[i], sl = P.slam[i], hs = P.sHzS[i], he = P.sHzE[i];
     let ns = 0, ne = 0, E = cap, minB = cap, fail = 0;
     for (let k = 0; k < K; k++) {
-      const s = SV[k], lit = sp * s[0] + cp * (s[1] * cl + s[2] * sl) > hs;
-      if (lit) ns++;
-      E = Math.min(cap, E + (lit ? gainLit : gainDark));
+      const s = SV[k], e = EV[k], lit = sp * s[0] + cp * (s[1] * cl + s[2] * sl) > hs, com = sp * e[0] + cp * (e[1] * cl + e[2] * sl) > he;
+      if (lit) ns++; if (com) ne++;
+      E = energyStep(C, E, lit, com, PK ? PK[P.cell[i]] : 1, (k + .5) * dt, dt);
       if (E < minB) minB = E;
       if (E < reserve) fail = 1;
-      if (stay) { const e = EV[k]; if (sp * e[0] + cp * (e[1] * cl + e[2] * sl) > he) ne++; }
     }
     const sv = stay ? ns / K : P.sunF[i], ev = stay ? ne / K : P.earthF[i];
     P.sunV[i] = sv; P.earthV[i] = ev;
@@ -3319,7 +3477,7 @@ function computeDynamic() {
 const tempToV = c => c < 0 ? .5 * Math.max(0, (c + 230) / 230) : .5 + .5 * Math.min(1, c / 120);
 
 /* ---------- Strati: media annua (mappe del file) e andamento nel tempo ---------- */
-const T_LAYERS = ["score", "sunNow", "earthNow", "sun", "earth", "ice", "energy", "temp"];
+const T_LAYERS = ["score", "sun", "earth", "ice", "energy", "temp"];      // "Luce ora" e "Terra ora" tolti: ridondanti
 const M_LAYERS = ["cross", "m_luce", "m_com", "m_lc", "m_lcl", "m_energia", "m_buio", "m_nocom", "m_quota", "m_pend", "m_land", "m_ice"];
 // sorgente per cella, palette, scala (fissa o dai dati), unità
 const MDEF = {
@@ -3379,21 +3537,44 @@ function crossNorm(D, c) {
   }
   return (D._cn[c.id] = out);
 }
+/* ---------- Score: un solo modo di combinare i pesi, in tutte e due le viste ----------
+   media aritmetica pesata  Σ wᵢ·xᵢ / Σ wᵢ            (compensativa: una risorsa alta compensa una bassa)
+   media geometrica pesata  exp(Σ wᵢ·ln xᵢ / Σ wᵢ)    (se una risorsa con peso > 0 manca, il punteggio crolla)
+   Sole, Comunicazione e Ghiaccio usano SEMPRE i pesi di progetto (anche nell'incrocio della media annua).
+   Ghiaccio = indice del gruppo Effemeridi (ombra permanente) più alto entro 2 km: 1, 0,5 o 0.          */
+const GEO_EPS = .02;
+function wMean(ws, xs) {
+  let sw = 0, acc = 0; const geo = WS.meanMode === "geo";
+  for (let j = 0; j < ws.length; j++) { const w = ws[j]; if (!(w > 0)) continue; const x = Math.max(0, Math.min(1, xs[j])); sw += w; acc += geo ? w * Math.log(Math.max(GEO_EPS, x)) : w * x; }
+  return sw > 0 ? (geo ? Math.exp(acc / sw) : acc / sw) : 0;
+}
+const LINKED_W = { luce: "sun", com: "earth", ice: "ice" };           // righe dell'incrocio legate ai pesi di progetto
+const crossW = c => LINKED_W[c.id] ? WS.weights[LINKED_W[c.id]] : (WS.cross[c.id] && WS.cross[c.id].on ? WS.cross[c.id].w : 0);
 function crossCells(D) {
-  const n = D.sun.length, out = new Float32Array(n); let ws = 0;
-  for (const c of CROSS) {
-    const st = WS.cross[c.id]; if (!st || !st.on) continue;
-    const a = crossNorm(D, c); if (!a) continue;
-    ws += st.w; for (let k = 0; k < n; k++) out[k] += st.w * a[k];
-  }
-  if (ws > 0) for (let k = 0; k < n; k++) out[k] /= ws;
+  const n = D.sun.length, out = new Float32Array(n), ws = [], arrs = [];
+  for (const c of CROSS) { const w = crossW(c); if (!(w > 0)) continue; const a = crossNorm(D, c); if (!a) continue; ws.push(w); arrs.push(a); }
+  const xs = new Array(arrs.length);
+  for (let k = 0; k < n; k++) { for (let j = 0; j < arrs.length; j++) xs[j] = arrs[j][k]; out[k] = wMean(ws, xs); }
   return out;
+}
+// ghiaccio per pixel, con la stessa definizione della media annua (fallback: distanza dal ghiaccio per dati senza indice)
+function iceU(P, i) {
+  if (!P.iceU) {
+    const D = MAPDATA, n = P.inside.length; P.iceU = new Float32Array(n);
+    const IN = D && D.iceProb ? iceNear(D) : null;
+    for (let q = 0; q < n; q++) if (P.inside[q]) P.iceU[q] = IN ? Math.max(0, Math.min(1, sampleDS(IN, D, P.gx[q], P.gy[q]))) : iceScore(P.ice[q]);
+  }
+  return P.iceU[i];
 }
 function renderCrossBox() {
   const box = document.getElementById("crossBox"), D = MAPDATA;
-  const html = CROSS.filter(c => !D || c.get(D)).map(c => { const st = WS.cross[c.id];
+  const html = CROSS.filter(c => !D || c.get(D)).map(c => { const st = WS.cross[c.id], lk = LINKED_W[c.id];
+    if (lk) { const w = WS.weights[lk], mn = WMIN(lk);
+      return `<div class="cross-row linked ${w > 0 ? "" : "off"}"><label title="${esc(t("xLinked"))}"><span class="lk">🔗</span>${esc(t("x_" + c.id))} <small>↑</small></label>
+      <input type="range" min="${mn}" max="10" step="1" value="${w}" id="cross-${lk}" data-param="${lk}" style="--p:${(w - mn) / (10 - mn) * 100}%"><output id="cross-${lk}-out">${w}</output></div>`; }
     return `<div class="cross-row ${st.on ? "" : "off"}"><label><input type="checkbox" data-cross-on="${c.id}" ${st.on ? "checked" : ""}>${esc(t("x_" + c.id))} <small>${c.up ? "↑" : "↓"}</small></label>
-      <input type="range" min="1" max="10" step="1" value="${st.w}" data-cross-w="${c.id}" style="--p:${(st.w - 1) / 9 * 100}%"><output>${st.w}</output></div>`; }).join("");
+      <input type="range" min="1" max="10" step="1" value="${st.w}" data-cross-w="${c.id}" style="--p:${(st.w - 1) / 9 * 100}%"><output>${st.w}</output></div>`; }).join("")
+      + `<p class="cross-note">🔗 ${esc(t("xLinked"))}</p>`;
   if (box.dataset.h !== html) { box.innerHTML = html; box.dataset.h = html; }
 }
 document.getElementById("crossBox").addEventListener("input", e => {
@@ -3424,12 +3605,12 @@ function mediaLayer(P, D, L) {
 }
 function recolor() {
   const P = PX; if (!P) return;
-  const d = P.img.data, w = WS.weights, ws = w.sun + w.earth + w.ice, L = WS.layer, lut = LUTS[layerPal(L)], D = MAPDATA, media = isMedia();
+  const d = P.img.data, w = WS.weights, WV = [w.sun, w.earth, w.ice], L = WS.layer, lut = LUTS[layerPal(L)], D = MAPDATA, media = isMedia();
   const CC = media ? crossCells(D) : null, ML = MDEF[L] ? mediaLayer(P, D, L) : null;
   const hatch = Math.max(6, 7 * P.k) | 0, hw = Math.max(2, 2.5 * P.k);
   let lo = 1, hi = 0;
   for (let i = 0; i < P.inside.length; i++) if (P.inside[i]) {
-    const sc = P.score[i] = media ? sampleDS(CC, D, P.gx[i], P.gy[i]) : (w.sun * P.sunV[i] + w.earth * P.earthV[i] + w.ice * iceScore(P.ice[i])) / ws;
+    const sc = P.score[i] = media ? sampleDS(CC, D, P.gx[i], P.gy[i]) : wMean(WV, [P.sunV[i], P.earthV[i], iceU(P, i)]);
     if (!P.mask[i]) { if (sc < lo) lo = sc; if (sc > hi) hi = sc; }
   }
   if (hi <= lo) { lo = 0; hi = 1; }
@@ -3441,7 +3622,7 @@ function recolor() {
     if (!P.inside[i]) { d[o + 3] = 0; continue; }
     const v = L === "score" || L === "cross" ? (P.score[i] - lo) / (hi - lo) : L === "sun" ? P.sunV[i] : L === "earth" ? P.earthV[i]
       : L === "sunNow" ? (P.lit[i] ? .9 : .04) : L === "earthNow" ? (P.enow[i] ? .9 : .04)
-      : ML ? ML.v[i] : L === "energy" ? P.soc[i] : L === "temp" ? tempToV(P.tempC[i]) : iceScore(P.ice[i]);
+      : ML ? ML.v[i] : L === "energy" ? P.soc[i] : L === "temp" ? tempToV(P.tempC[i]) : iceU(P, i);
     if (ML && !isFinite(v)) { const on = (px + py) % hatch < hw; d[o] = on ? 70 : 38; d[o + 1] = on ? 72 : 40; d[o + 2] = on ? 78 : 46; d[o + 3] = 255; continue; }
     const li = Math.max(0, Math.min(255, v * 255 | 0)) * 3;
     const red = (L === "energy" && P.efail[i]) || (L === "score" && P.mask[i] === 3);
@@ -3468,8 +3649,8 @@ function computeSites() {
     if (P.inside[i] && !P.mask[i]) cand.push(i);
   }
   // a parità di punteggio, preferisci i punti migliori sul lungo periodo (ciclo lunare)
-  const w = WS.weights, ws = w.sun + w.earth + w.ice;
-  const key = i => P.score[i] + .01 * (w.sun * P.sunF[i] + w.earth * P.earthF[i] + w.ice * iceScore(P.ice[i])) / ws;
+  const w = WS.weights, WV = [w.sun, w.earth, w.ice];
+  const key = i => P.score[i] + .01 * wMean(WV, [P.sunF[i], P.earthF[i], iceU(P, i)]);
   const keys = new Map(cand.map(i => [i, key(i)]));
   cand.sort((a, b) => keys.get(b) - keys.get(a));
   const minPx = Math.max(.4, degToKm(P.viewDeg) * .07) * P.scale, picks = [];
@@ -3777,16 +3958,30 @@ function updateProbe() {
   const com = nextCh(EV && EV.com, sHzE, earthAt), sun = nextCh(EV && EV.luce, sHzS, sunAt);
   const comLine = com.inH == null ? t("mcNever") : t(com.now ? "mcLosIn" : "mcAosIn", { d: fmtDur(com.inH) });
   const sunLine = sun.inH == null ? t("mcSunNever") : t(sun.now ? "mcSunset" : "mcSunrise", { d: fmtDur(sun.inH) });
-  mc.innerHTML = `<div class="st ${com.now ? "ok" : "los"}"><span class="dot"></span>${t(com.now ? "mcAcq" : "mcLos")}</div>
-    <div class="big">${esc(comLine)}</div><div>${esc(sunLine)}</div><div class="for">${esc(t("mcFor", { p: tg.label, c: coord }))}</div>`;
+  // copertura istantanea dell'intera area (dati della mappa in questo istante)
+  let nIn = 0, nCom = 0, nSun = 0, bestCom = -1;
+  for (let q = 0; q < P.inside.length; q += 3) if (P.inside[q]) { nIn++; if (P.enow[q]) { nCom++; if (bestCom < 0) bestCom = q; } if (P.lit[q]) nSun++; }
+  const pc = x => nIn ? Math.round(100 * x / nIn) : 0;
+  const areaCom = nCom === 0 ? `<span class="bad">${esc(t("mcAreaNoCom"))}</span>` : esc(t("mcAreaCom", { p: pc(nCom) }));
+  const areaSun = nSun === 0 ? `<span class="bad">${esc(t("mcAreaNoSun"))}</span>` : esc(t("mcAreaSun", { p: pc(nSun) }));
+  mc.innerHTML = `<div class="sec"><div class="st ${com.now ? "ok" : "los"}"><span class="dot"></span>📡 ${t(com.now ? "mcAcq" : "mcLos")}</div>
+      <div class="exp">${esc(t(com.now ? "mcComYes" : "mcComNo"))}</div>
+      <div class="big">${esc(com.inH == null ? t("mcNever") : t(com.now ? "mcLosClear" : "mcAosClear", { d: fmtDur(com.inH) }))}</div>
+      <div class="area">${areaCom}</div></div>
+    <div class="sec"><div class="st ${sun.now ? "sun" : "dark"}"><span class="dot"></span>☀ ${t(sun.now ? "mcSunNow" : "mcDarkNow")}</div>
+      <div class="big">${esc(sunLine)}</div>
+      <div class="area">${areaSun}</div></div>
+    <div class="for">${esc(t("mcFor", { p: tg.label, c: coord }))}</div>`;
 
   // --- batteria lungo la permanenza (passo fine)
-  const H = m.stayHours, step = Math.max(.25, H / 480), cap = m.batteryWh, reserve = cap * m.reservePct / 100;
-  let E = cap, minB = cap, failAt = null, night = 0, maxNight = 0;
+  const C = energyCfg(), H = m.stayHours, step = Math.max(.25, H / 480), cap = C.cap, reserve = C.reserve;
+  const comVis = d => EV ? !!evoBit(EV.com, EV, evoIdx(EV, d), kc) : visibleAt(tg.lat, tg.lon, sHzE, earthAt(d));
+  const pk = D && D.panelK ? D.panelK[P.cell[i]] : 1;
+  let E = cap, minB = cap, failAt = null, night = 0, maxNight = 0, saveH = 0;
   const pts = [{ h: 0, soc: 1, lit: sunVis(t0) }];
   for (let h = step; h <= H + 1e-9; h += step) {
-    const lit = sunVis(new Date(+t0 + (h - step / 2) * 36e5));
-    E = Math.min(cap, E + ((lit ? m.panelW : 0) - m.loadW) * step);
+    const dm = new Date(+t0 + (h - step / 2) * 36e5), lit = sunVis(dm);
+    E = energyStep(C, E, lit, comVis(dm), pk, h - step / 2, step); if (E_SAVE) saveH += step;
     if (E < minB) minB = E;
     if (E < reserve && failAt == null) failAt = h;
     night = lit ? 0 : night + step; maxNight = Math.max(maxNight, night);
@@ -3796,6 +3991,9 @@ function updateProbe() {
   document.getElementById("eFor").textContent = t("eFor", { h: H, p: tg.label, c: coord });
   document.getElementById("eStats").innerHTML =
     `${t("eMin", { v: Math.round(Math.max(0, minB) / cap * 100) })} · ${t("eNight", { h: fmtDur(maxNight) })}<br>`
+    + `${t("eSaveH", { h: fmtDur(saveH) })}<br>`
+    + `<span class="e-dust">${t("ePanelEff", { d: (pk * 100).toFixed(1), p: (dustAt(C, H) * 100).toFixed(2), r: (pk * dustAt(C, H) * 100).toFixed(1) })}<br>`
+    + `${t("eDust", { a: +m.dustInitPct.toFixed(2), y: +m.dustYearPct.toFixed(2), l: ((1 - dustAt(C, H)) * 100).toFixed(2) })}</span><br>`
     + (failAt == null ? `<span class="good">${t("eOk")}</span>` : `<span class="bad">${t("eFail", { h: fmtDur(failAt) })}</span>`);
   drawEnergyChart();
 }
@@ -4810,8 +5008,14 @@ const setupEl = document.getElementById("setup");
 const mapBusy = document.getElementById("mapBusy");
 const missionMsg = document.getElementById("missionMsg");
 function setMissionMsg(text, bad) { missionMsg.textContent = text || ""; missionMsg.classList.toggle("bad", !!bad); }
-function openSetup() { syncControls(); setMissionMsg(""); setupEl.classList.add("show"); }
+function openSetup() { syncControls(); syncMean(); setMissionMsg(""); setupEl.classList.add("show"); }
 document.getElementById("btnParams").addEventListener("click", openSetup);
+function syncMean() {
+  const sel = document.getElementById("meanMode"); if (!sel) return;
+  sel.value = WS.meanMode || "arith";
+  document.getElementById("meanHint").textContent = t(WS.meanMode === "geo" ? "meanGeoD" : "meanArithD");
+}
+document.getElementById("meanMode").addEventListener("change", e => { WS.meanMode = e.target.value; syncMean(); queueRecolor(); saveParams(); });
 document.getElementById("btnGenerate").addEventListener("click", async () => {
   setupEl.classList.remove("show");
   saveParams();
@@ -4843,11 +5047,12 @@ document.getElementById("btnExportMission").addEventListener("click", () => {
     exportedBy: session ? { name: session.name, institution: session.institution } : undefined,
     region: WS.region ? { lat: WS.region.lat, lon: WS.region.lon, radiusDeg: WS.region.r } : null,
     dataset: cov ? { id: cov.id, name: cov.name, source: cov.source } : null,
-    weights: { ...WS.weights },
+    weights: { ...WS.weights }, scoring: { mean: WS.meanMode, combine: WS.meanMode === "geo" ? "weighted geometric mean" : "weighted arithmetic mean", ice: "Effemeridi index (permanent shadow) within 2 km" },
     landing: new Date(WS.arrival).toISOString(), stayHours: m.stayHours, evaluateOn: WS.horizon,
     constraints: { minSunPct: m.minSun, minEarthPct: m.minEarth, maxIceKm: m.maxIce, maxSlopeDeg: m.maxSlope, minQuotaM: m.minQuota, maxQuotaM: m.maxQuota,
                    maxDarkH: m.maxDark, maxNoComH: m.maxNoCom, active: Object.keys(m.opt || {}).filter(k => m.opt[k]) },
-    energy: { panelW: m.panelW, batteryWh: m.batteryWh, loadW: m.loadW, reservePct: m.reservePct, excludeBelowReserve: m.energyHard },
+    energy: { panelW: m.panelW, batteryWh: m.batteryWh, loadW: m.loadW, loadSaveW: m.loadSaveW, operationalWhen: m.opMode, saveBelowPct: m.saveBelowPct,
+              reservePct: m.reservePct, dustInitPct: m.dustInitPct, dustYearPct: m.dustYearPct, excludeBelowReserve: m.energyHard },
     results: PX ? {
       time: currentTime().toISOString(), offsetHours: WS.offsetH,
       sites: SITES.map((s, i) => ({ rank: i + 1, lat: +s.lat.toFixed(4), lon: +s.lon.toFixed(4), score: +(s.score * 100).toFixed(1),
@@ -4871,7 +5076,8 @@ missionFile.addEventListener("change", async () => {
     const num = (v, lo, hi, def) => (isFinite(+v) ? Math.max(lo, Math.min(hi, +v)) : def);
     const m = WS.mission;
     m.name = String(j.name || m.name).slice(0, 60);
-    if (j.weights) for (const k of ["sun", "earth", "ice"]) WS.weights[k] = Math.round(num(j.weights[k], 1, 10, WS.weights[k]));
+    if (j.weights) for (const k of ["sun", "earth", "ice"]) WS.weights[k] = Math.round(num(j.weights[k], WMIN(k), 10, WS.weights[k]));
+    if (j.scoring && ["arith", "geo"].includes(j.scoring.mean)) WS.meanMode = j.scoring.mean;
     m.stayHours = num(j.stayHours, 1, 720, m.stayHours);
     if (j.constraints) {
       m.minSun = num(j.constraints.minSunPct, 0, 100, 0);
@@ -4885,6 +5091,9 @@ missionFile.addEventListener("change", async () => {
     if (j.energy) {
       m.panelW = num(j.energy.panelW, 0, 100000, m.panelW); m.batteryWh = num(j.energy.batteryWh, 1, 1000000, m.batteryWh);
       m.loadW = num(j.energy.loadW, 0, 100000, m.loadW); m.reservePct = num(j.energy.reservePct, 0, 100, m.reservePct);
+      m.loadSaveW = num(j.energy.loadSaveW, 0, 100000, m.loadSaveW); m.saveBelowPct = num(j.energy.saveBelowPct, 0, 100, m.saveBelowPct);
+      m.dustInitPct = num(j.energy.dustInitPct, 0, 100, m.dustInitPct); m.dustYearPct = num(j.energy.dustYearPct, 0, 100, m.dustYearPct);
+      if (["sun", "sunEarth", "always"].includes(j.energy.operationalWhen)) m.opMode = j.energy.operationalWhen;
       if (typeof j.energy.excludeBelowReserve === "boolean") m.energyHard = j.energy.excludeBelowReserve;
     }
     if (j.landing && !isNaN(new Date(j.landing))) WS.arrival = toLocalInput(new Date(j.landing));
@@ -5000,6 +5209,17 @@ const I18N_EDU = {
     gEast: "verso Est", gPoleS: "POLO SUD", gCompassT: "Dove è il Nord?", gCompassNote: "Siamo al Polo Sud: ogni direzione che si allontana dal centro della mappa porta verso NORD (frecce gialle). Girando attorno al polo in senso orario si va verso EST, in senso antiorario verso OVEST.", gHowTitle: "Comandi", gHowSpace: "Avvia la discesa, poi tienilo premuto: motore", gHowUp: "Motore principale: frena la caduta", gHowLR: "Sposta il lander a sinistra / destra", gHowLR2: "Anche con A e D", gHowL: "Autoland (punteggio dimezzato)", gHowGoal: "Atterra tra le luci blu: velocità verticale < 2 m/s, laterale < 1 m/s", rotTitle: "Gira il telefono", rotText: "I giochi e le mappe funzionano meglio in orizzontale: ruota il telefono oppure usa lo schermo intero.", rotGo: "Schermo intero orizzontale", rotSkip: "Continua così",
     chipCard: "Scheda", chipExplain: "Spiegazione", chipNorth: "Nord?", chipLegend: "Legenda", chipInfo: "Info", chipCompass: "Bussola", introHintT: "Tocca il pulsante per iniziare",
     gHowTouchT: "Comandi touch", gHowT1: "Tocca un pulsante per avviare la discesa", gHowT2: "Tieni premuto ▲ (a destra) per accendere il motore e frenare", gHowT3: "Usa ◀ ▶ (a sinistra) per spostare il lander", gHowT4: "Autoland: pulsante a sinistra (punteggio dimezzato)", gTapStart: "TOCCA ▲ PER INIZIARE LA DISCESA",
+    eduDeep: "Approfondimento", dKick: "Dati reali", dTitle: "Un sito vero, da vicino", dIntro: "Qui non c'è niente di inventato: sono le mappe calcolate dal team per un sito del Polo Sud, partendo dal rilievo reale della Luna e dalle posizioni del Sole e della Terra per tutto il 2027.", dSiteLbl: "Sito", dMeta: "Centro {c} · area di {km} km di lato · un quadratino = {m} m",
+    dWhat: "Cosa vuoi vedere?", dlSun: "☀ Luce del Sole", dlSunS: "media dell'anno", dlEarth: "📡 Comunicazione", dlEarthS: "media dell'anno", dlBoth: "☀ + 📡 Insieme", dlBothS: "media dell'anno", dlNow: "⏱ Istante per istante", dlNowS: "ogni 6 ore",
+    dRead: "Come si legge", dNumbers: "I numeri di questo sito",
+    dsSun: "luce media dell'area", dsEarth: "comunicazione media dell'area", dsS80: "dell'area al Sole più dell'80% del tempo", dsE80: "dell'area vede la Terra più dell'80% del tempo", dsBoth: "dell'area ha Sole e Terra insieme ≥ 70%", dsBest: "il punto migliore ★ (Sole e Terra insieme)", dsLitNow: "dell'area al Sole in questo istante", dsComNow: "dell'area con segnale in questo istante", dsComNone: "nessun punto con segnale ora",
+    dx_sun: "Ogni quadratino è un pezzetto di terreno di qualche centinaio di metri. Il colore dice per <b>quanta parte dell'anno</b> lì splende il Sole.\nAl Polo Sud il Sole non sale mai in alto: gira basso intorno all'orizzonte. Per questo <b>le creste e i bordi dei crateri</b> (giallo chiaro) restano illuminati quasi sempre, mentre <b>il fondo dei crateri</b> (scuro) può restare al buio per sempre: lì può nascondersi il ghiaccio.\nPer una base serve la luce: i pannelli solari producono energia solo al Sole.",
+    dx_earth: "Qui il colore dice per quanta parte dell'anno <b>la Terra è visibile</b> sopra l'orizzonte. Se la Terra si vede, gli astronauti possono parlare direttamente con il controllo missione.\nAl Polo Sud la Terra è sempre bassa e oscilla un po' (la «librazione»): basta una collina davanti per nasconderla. I punti alti che guardano verso la Terra (colori chiari) sono i migliori per le antenne.",
+    dx_both: "Questa mappa unisce le due precedenti: il colore mostra il valore <b>più basso</b> tra luce e comunicazione. Un punto è chiaro solo se ha <b>tutte e due</b> le cose.\nÈ proprio così che si cerca un sito di atterraggio: non basta il posto più illuminato o quello che vede meglio la Terra, serve un compromesso. La stellina ★ indica il punto migliore di questo sito.",
+    dx_now: "Muovi lo slider o premi ▶ per vedere come cambiano luce e segnale <b>ogni 6 ore</b> durante il 2027.\n<b>Giallo</b> = al Sole ma senza Terra · <b>azzurro</b> = Terra in vista ma al buio · <b>bianco</b> = entrambi · <b>scuro</b> = né Sole né Terra.\nGuarda come le ombre ruotano intorno ai rilievi mentre il Sole gira basso sull'orizzonte: è per questo che la data dell'atterraggio è importante quanto il luogo.",
+    dlgSunT: "Luce del Sole (% dell'anno)", dlgEarthT: "Terra in vista (% dell'anno)", dlgBothT: "Sole e Terra insieme (il minore dei due)", dlgSunN: "Chiaro = quasi sempre al Sole · scuro = sempre in ombra", dlgEarthN: "Chiaro = Terra quasi sempre visibile · scuro = mai", dlgBothN: "Chiaro = buono per tutte e due le cose", dlgStar: "★ = punto migliore per Sole e Terra insieme", dlgNow: "In questo istante", dlgBoth: "Sole e Terra", dlgSun: "solo Sole", dlgCom: "solo Terra (segnale)", dlgNone: "né Sole né Terra",
+    dtSun: "Sole", dtEarth: "Terra in vista", dtQuota: "Quota", dtNow: "Ora",
+    introDKick: "Approfondimento", introDTitle: "Guarda i dati veri di un sito!", introDText: "Finora hai giocato con mappe semplificate. Qui trovi le mappe reali calcolate per un sito del Polo Sud: quanta luce del Sole riceve e per quanto tempo vede la Terra.", introD1: "Scegli cosa vedere: luce, comunicazione o tutte e due", introD2: "Passa il dito o il mouse sulla mappa per leggere i valori", introD3: "Prova «Istante per istante» e premi ▶ per vedere le ombre muoversi",
     introGo: "Iniziamo!", introHint: "Premi Invio o clicca il pulsante", introMission: "La tua missione",
     introRKick: "Ragionamento", introRTitle: "Aiuta gli esperti a mettersi d'accordo!", introRText: "Il consiglio di missione deve scegliere dove atterrare al Polo Sud, ma i tre esperti non sono d'accordo: ognuno tira dalla sua parte. Guarda le condizioni della missione e decidi tu il sito migliore.",
     introR1: "Leggi la missione e la situazione a sinistra", introR2: "Esplora le mappe: Sole, Terra, ghiaccio e le loro intersezioni", introR3: "Ascolta i consigli dei tre esperti", introR4: "Clicca sulla mappa il punto migliore e conferma",
@@ -5056,6 +5276,17 @@ const I18N_EDU = {
     gEast: "towards East", gPoleS: "SOUTH POLE", gCompassT: "Where is North?", gCompassNote: "We are at the South Pole: every direction away from the centre of the map leads NORTH (yellow arrows). Circling the pole clockwise takes you EAST, anticlockwise WEST.", gHowTitle: "Controls", gHowSpace: "Start the descent, then hold it: engine", gHowUp: "Main engine: slows your fall", gHowLR: "Move the lander left / right", gHowLR2: "Also with A and D", gHowL: "Autoland (score halved)", gHowGoal: "Land between the blue lights: vertical speed < 2 m/s, lateral < 1 m/s", rotTitle: "Turn your phone", rotText: "The games and the maps work best in landscape: rotate your phone or use full screen.", rotGo: "Full screen, landscape", rotSkip: "Continue like this",
     chipCard: "Card", chipExplain: "Explanation", chipNorth: "North?", chipLegend: "Legend", chipInfo: "Info", chipCompass: "Compass", introHintT: "Tap the button to start",
     gHowTouchT: "Touch controls", gHowT1: "Tap any button to start the descent", gHowT2: "Hold ▲ (right) to fire the engine and slow down", gHowT3: "Use ◀ ▶ (left) to move the lander", gHowT4: "Autoland: button on the left (score halved)", gTapStart: "TAP ▲ TO START THE DESCENT",
+    eduDeep: "Deep dive", dKick: "Real data", dTitle: "A real site, up close", dIntro: "Nothing here is made up: these are the maps computed by the team for a South Pole site, from the real lunar terrain and the positions of the Sun and Earth throughout 2027.", dSiteLbl: "Site", dMeta: "Centre {c} · area {km} km wide · one square = {m} m",
+    dWhat: "What do you want to see?", dlSun: "☀ Sunlight", dlSunS: "yearly average", dlEarth: "📡 Communication", dlEarthS: "yearly average", dlBoth: "☀ + 📡 Together", dlBothS: "yearly average", dlNow: "⏱ Moment by moment", dlNowS: "every 6 hours",
+    dRead: "How to read it", dNumbers: "The numbers of this site",
+    dsSun: "mean light of the area", dsEarth: "mean communication of the area", dsS80: "of the area sunlit more than 80% of the time", dsE80: "of the area sees Earth more than 80% of the time", dsBoth: "of the area has Sun and Earth together ≥ 70%", dsBest: "the best point ★ (Sun and Earth together)", dsLitNow: "of the area sunlit at this instant", dsComNow: "of the area with signal at this instant", dsComNone: "no point with signal now",
+    dx_sun: "Each little square is a patch of ground a few hundred metres wide. The colour tells you for <b>how much of the year</b> the Sun shines there.\nAt the South Pole the Sun never climbs high: it circles low around the horizon. That is why <b>ridges and crater rims</b> (light yellow) stay lit almost all the time, while <b>crater floors</b> (dark) can stay in darkness forever: that is where ice can hide.\nA base needs light: solar panels only make energy in sunlight.",
+    dx_earth: "Here the colour tells you for how much of the year <b>Earth is visible</b> above the horizon. When Earth is visible, astronauts can talk directly with mission control.\nAt the South Pole Earth is always low and wobbles a little (the “libration”): one hill in front is enough to hide it. High points facing Earth (light colours) are the best for antennas.",
+    dx_both: "This map combines the two previous ones: the colour shows the <b>lower</b> value between light and communication. A point is bright only if it has <b>both</b>.\nThis is exactly how a landing site is chosen: the sunniest spot or the one that sees Earth best is not enough, you need a compromise. The star ★ marks the best point of this site.",
+    dx_now: "Move the slider or press ▶ to see how light and signal change <b>every 6 hours</b> during 2027.\n<b>Yellow</b> = sunlit but no Earth · <b>blue</b> = Earth in view but dark · <b>white</b> = both · <b>dark</b> = neither.\nWatch the shadows sweep around the terrain as the Sun circles low on the horizon: that is why the landing date matters as much as the place.",
+    dlgSunT: "Sunlight (% of the year)", dlgEarthT: "Earth in view (% of the year)", dlgBothT: "Sun and Earth together (the lower of the two)", dlgSunN: "Bright = almost always sunlit · dark = always in shadow", dlgEarthN: "Bright = Earth almost always visible · dark = never", dlgBothN: "Bright = good for both", dlgStar: "★ = best point for Sun and Earth together", dlgNow: "At this instant", dlgBoth: "Sun and Earth", dlgSun: "Sun only", dlgCom: "Earth only (signal)", dlgNone: "neither Sun nor Earth",
+    dtSun: "Sun", dtEarth: "Earth in view", dtQuota: "Elevation", dtNow: "Now",
+    introDKick: "Deep dive", introDTitle: "Look at a site's real data!", introDText: "So far you have played with simplified maps. Here are the real maps computed for a South Pole site: how much sunlight it gets and how long it sees Earth.", introD1: "Choose what to see: light, communication or both", introD2: "Move your finger or mouse over the map to read the values", introD3: "Try “Moment by moment” and press ▶ to watch the shadows move",
     introGo: "Let's go!", introHint: "Press Enter or click the button", introMission: "Your mission",
     introRKick: "Reasoning", introRTitle: "Help the experts agree!", introRText: "The mission council must choose where to land at the South Pole, but the three experts disagree: each one pulls their own way. Look at the mission conditions and pick the best site yourself.",
     introR1: "Read the mission and the situation on the left", introR2: "Explore the maps: Sun, Earth, ice and their intersections", introR3: "Listen to the three experts' advice", introR4: "Click the best point on the map and confirm",
@@ -5878,8 +6109,276 @@ const zMapPinch = (f, live) => { if (ORBIT.on) return zMap(f, live); if (live) {
 zoomCtl("globeWrap", zGlobe); zoomCtl("hWrap", zHist); zoomCtl("mapWrap", zMap);
 pinch(globeCanvas, zGlobe); pinch(hCanvas, zHist); pinch(document.getElementById("mapCanvas"), zMapPinch); pinch(orbitCanvas, (f, live) => { ORBIT.zoom = Math.max(.6, Math.min(2.2, ORBIT.zoom * f)); ORBIT.dirty = true; });
 mChip("hDetail", "chipCard", true); mChip("rExplain", "chipExplain", true); mChip("gCompass", "chipNorth", false);
-mChip("mapLegend", "chipLegend", false); mChip("mcPanel", "chipInfo", false); mChip("globeCmp", "chipCompass", false);
+mChip("mapLegend", "chipLegend", false); mChip("dLegend", "chipLegend", false); mChip("mcPanel", "chipInfo", false); mChip("globeCmp", "chipCompass", false);
 mobileFlags();
+
+
+/* =====================================================================
+   5) APPROFONDIMENTO: mappe reali di illuminazione e comunicazione di un sito (dati del team)
+   ===================================================================== */
+const DS = { D: null, layer: "sun", ti: 0, play: 0, T: null };
+async function openDeep() {
+  const busy = document.getElementById("dBusy");
+  if (!DS.D) {
+    busy.classList.add("show");
+    await loadBuiltinSites();
+    busy.classList.remove("show");
+    const list = [...DATASETS.values()].filter(D => D.source === "builtin").sort((a, b) => a.name.localeCompare(b.name));
+    const sel = document.getElementById("dSite");
+    sel.innerHTML = list.map(D => `<option value="${esc(D.id)}">${esc(D.name)} · ${fmtLL(D.region.lat, D.region.lon)}</option>`).join("");
+    const first = list.find(D => /sito_?0?1$/i.test(D.name)) || list[0];
+    if (!first) return;
+    sel.value = first.id; dSetSite(first);
+    setTimeout(() => showIntro("dWrap", { ico: "🔬", kick: t("introDKick"), title: t("introDTitle"), text: t("introDText"), steps: [t("introD1"), t("introD2"), t("introD3")] }), 0);
+  }
+  dRender();
+}
+function dSetSite(D) {
+  DS.D = D; const E = D.evo;
+  DS.ti = E ? Math.min(E.n - 1, Math.max(0, evoIdx(E, new Date(Date.UTC(2027, 5, 1))))) : 0;
+  const sl = document.getElementById("dSlider"); sl.max = E ? E.n - 1 : 0; sl.value = DS.ti;
+  // numeri del sito
+  const n = D.nx * D.ny; let ok = 0, sSum = 0, eSum = 0, s80 = 0, e80 = 0, both = 0, best = -1, bestV = -1;
+  for (let k = 0; k < n; k++) {
+    const a = D.sun[k], b = D.earth[k]; if (!isFinite(a) || !isFinite(b)) continue;
+    ok++; sSum += a; eSum += b; if (a >= .8) s80++; if (b >= .8) e80++; if (a >= .7 && b >= .7) both++;
+    const v = Math.min(a, b); if (v > bestV) { bestV = v; best = k; }
+  }
+  DS.stats = { ok, sAvg: sSum / ok, eAvg: eSum / ok, s80: s80 / ok, e80: e80 / ok, both: both / ok, best, bestV };
+  document.getElementById("dMeta").textContent = t("dMeta", { c: fmtLL(D.region.lat, D.region.lon), km: (D.nx * D.step).toFixed(1), m: Math.round(D.step * 1000) });
+  dStats(); dRender();
+}
+function dStats() {
+  const S = DS.stats, D = DS.D, p = x => Math.round(x * 100) + "%";
+  let extra = "";
+  if (DS.layer === "now" && D.evo) {
+    const E = D.evo, n = D.nx * D.ny; let l = 0, c = 0, tot = 0;
+    for (let k = 0; k < n; k++) { if (!isFinite(D.sun[k])) continue; tot++; l += evoBit(E.luce, E, DS.ti, k); c += evoBit(E.com, E, DS.ti, k); }
+    extra = `<div><b>${p(l / tot)}</b>${esc(t("dsLitNow"))}</div><div><b>${c ? p(c / tot) : "0%"}</b>${esc(t(c ? "dsComNow" : "dsComNone"))}</div>`;
+  }
+  document.getElementById("dStats").innerHTML = `${extra}<div><b>${p(S.sAvg)}</b>${esc(t("dsSun"))}</div><div><b>${p(S.eAvg)}</b>${esc(t("dsEarth"))}</div>
+    <div><b>${p(S.s80)}</b>${esc(t("dsS80"))}</div><div><b>${p(S.e80)}</b>${esc(t("dsE80"))}</div>
+    <div><b>${p(S.both)}</b>${esc(t("dsBoth"))}</div><div><b>${p(S.bestV)}</b>${esc(t("dsBest"))}</div>`;
+}
+const D_LUT = { sun: makeLut(PALETTES.sun), earth: makeLut(PALETTES.earth), score: makeLut(PALETTES.score) };
+function dColor(k) {
+  const D = DS.D, a = D.sun[k], b = D.earth[k];
+  if (!isFinite(a) || !isFinite(b)) return null;
+  if (DS.layer === "sun" || DS.layer === "earth") { const v = DS.layer === "sun" ? a : b, L = D_LUT[DS.layer], i = Math.round(Math.max(0, Math.min(1, v)) * 255) * 3; return [L[i], L[i + 1], L[i + 2]]; }
+  if (DS.layer === "both") { const v = Math.min(a, b), L = D_LUT.score, i = Math.round(Math.max(0, Math.min(1, v)) * 255) * 3; return [L[i], L[i + 1], L[i + 2]]; }
+  const E = D.evo; if (!E) return [40, 40, 40];
+  const l = evoBit(E.luce, E, DS.ti, k), c = evoBit(E.com, E, DS.ti, k);
+  return l && c ? [255, 250, 220] : l ? [251, 191, 36] : c ? [56, 189, 248] : [22, 24, 32];
+}
+function dRender() {
+  const D = DS.D; if (!D) return;
+  const cv = document.getElementById("dMap"), wrap = cv.parentElement, phone = document.body.classList.contains("phone");
+  const legendW = phone ? 0 : 240;
+  const css = Math.max(220, Math.min(wrap.clientWidth - legendW - 30, wrap.clientHeight - 30));
+  const dpr = Math.min(window.devicePixelRatio || 1, 2), S = Math.round(css * dpr);
+  cv.width = cv.height = S; cv.style.width = cv.style.height = css + "px"; cv.style.marginRight = legendW + "px";
+  const c = cv.getContext("2d"); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, css, css);
+  const off = document.createElement("canvas"); off.width = D.nx; off.height = D.ny;
+  const oc = off.getContext("2d"), img = oc.createImageData(D.nx, D.ny);
+  for (let k = 0; k < D.nx * D.ny; k++) { const col = dColor(k), o = k * 4; if (!col) continue; img.data[o] = col[0]; img.data[o + 1] = col[1]; img.data[o + 2] = col[2]; img.data[o + 3] = 255; }
+  oc.putImageData(img, 0, 0);
+  const m = 34, size = css - 2 * m, sc = size / Math.max(D.nx, D.ny), w = D.nx * sc, h = D.ny * sc, x0 = (css - w) / 2, y0 = (css - h) / 2;
+  c.imageSmoothingEnabled = DS.layer !== "now"; c.drawImage(off, x0, y0, w, h);
+  c.strokeStyle = "rgba(127,211,255,.5)"; c.lineWidth = 1; c.strokeRect(x0, y0, w, h);
+  DS.T = { x0, y0, sc, css };
+  // miglior punto (Sole e Terra insieme)
+  if (DS.stats && DS.stats.best >= 0) {
+    const bx = x0 + (DS.stats.best % D.nx + .5) * sc, by = y0 + (Math.floor(DS.stats.best / D.nx) + .5) * sc;
+    c.fillStyle = "#c4f06a"; c.strokeStyle = "#111"; c.lineWidth = 2; c.beginPath(); c.arc(bx, by, 8, 0, 2 * Math.PI); c.fill(); c.stroke();
+    c.fillStyle = "#111"; c.font = "800 10px Inter"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("★", bx, by + .5);
+  }
+  // scala e direzione del nord (allontanarsi dal polo = nord)
+  const kmBar = Math.max(1, Math.round(D.nx * D.step / 4)), pxBar = kmBar / D.step * sc;
+  c.fillStyle = "#fff"; c.fillRect(x0, y0 + h + 12, pxBar, 3); c.font = "600 11px Inter, sans-serif"; c.textAlign = "left"; c.textBaseline = "top";
+  c.fillText(`${kmBar} km`, x0 + pxBar + 6, y0 + h + 7);
+  const lr = D.region.lon * DEG, nx = Math.sin(lr), ny = Math.cos(lr), ax = x0 + w - 26, ay = y0 + 26;
+  c.save(); c.translate(ax, ay); c.fillStyle = "rgba(8,9,12,.85)"; c.beginPath(); c.arc(0, 0, 20, 0, 2 * Math.PI); c.fill();
+  c.strokeStyle = "#fde047"; c.lineWidth = 2.5; c.beginPath(); c.moveTo(-nx * 12, ny * 12); c.lineTo(nx * 12, -ny * 12); c.stroke();
+  c.fillStyle = "#fde047"; c.beginPath(); c.moveTo(nx * 16, -ny * 16); c.lineTo(nx * 8 - ny * 5, -ny * 8 - nx * 5); c.lineTo(nx * 8 + ny * 5, -ny * 8 + nx * 5); c.fill();
+  c.restore(); c.fillStyle = "#fde047"; c.font = "900 12px Inter"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("N", ax, ay + 30);
+  dLegend(); dExplain(); dTimeUI();
+}
+function dLegend() {
+  const L = DS.layer, el = document.getElementById("dLegend");
+  const grad = p => `linear-gradient(90deg, ${PALETTES[p].join(",")})`;
+  if (L === "now") el.innerHTML = `<div class="t">${esc(t("dlgNow"))}</div><div class="sw"><i style="background:#fffadc"></i>${esc(t("dlgBoth"))}<i style="background:#fbbf24"></i>${esc(t("dlgSun"))}<i style="background:#38bdf8"></i>${esc(t("dlgCom"))}<i style="background:#161820"></i>${esc(t("dlgNone"))}</div><div class="n">${esc(t("dlgStar"))}</div>`;
+  else el.innerHTML = `<div class="t">${esc(t(L === "sun" ? "dlgSunT" : L === "earth" ? "dlgEarthT" : "dlgBothT"))}</div><div class="bar" style="background:${grad(L === "both" ? "score" : L)}"></div><div class="ends"><span>0%</span><span>50%</span><span>100%</span></div><div class="n">${esc(t(L === "sun" ? "dlgSunN" : L === "earth" ? "dlgEarthN" : "dlgBothN"))}</div><div class="n">${esc(t("dlgStar"))}</div>`;
+}
+function dExplain() {
+  document.getElementById("dExplain").innerHTML = t("dx_" + DS.layer).split("\n").map(x => `<p>${x}</p>`).join("");
+  dStats();
+}
+function dTimeUI() {
+  const D = DS.D, E = D && D.evo, show = DS.layer === "now" && E;
+  document.getElementById("dTime").hidden = !show; if (!show) return;
+  const d = new Date(E.start + DS.ti * E.stepH * 36e5);
+  document.getElementById("dTlbl").textContent = d.toLocaleString(lang, { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" }) + " UTC";
+  document.getElementById("dPlay").textContent = DS.play ? "❚❚" : "▶";
+}
+document.getElementById("dSite").addEventListener("change", e => { const D = DATASETS.get(e.target.value); if (D) dSetSite(D); });
+document.getElementById("dLayers").addEventListener("click", e => {
+  const b = e.target.closest("[data-dl]"); if (!b) return;
+  DS.layer = b.dataset.dl; document.querySelectorAll("#dLayers [data-dl]").forEach(x => x.classList.toggle("active", x === b)); dRender();
+});
+document.getElementById("dSlider").addEventListener("input", e => { DS.ti = +e.target.value; dRender(); });
+document.getElementById("dPlay").addEventListener("click", () => {
+  if (DS.play) { clearInterval(DS.play); DS.play = 0; dTimeUI(); return; }
+  DS.play = setInterval(() => { const E = DS.D && DS.D.evo; if (!E || EDU.tab !== "deep") { clearInterval(DS.play); DS.play = 0; return; }
+    DS.ti = (DS.ti + 1) % E.n; document.getElementById("dSlider").value = DS.ti; dRender(); }, 180);
+  dTimeUI();
+});
+document.getElementById("dMap").addEventListener("pointermove", e => {
+  const D = DS.D, T = DS.T, tip = document.getElementById("dTip"); if (!D || !T) return;
+  const r = e.currentTarget.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  const c = Math.floor((x - T.x0) / T.sc), i = Math.floor((y - T.y0) / T.sc);
+  if (c < 0 || i < 0 || c >= D.nx || i >= D.ny) { tip.style.display = "none"; return; }
+  const k = i * D.nx + c, a = D.sun[k], b = D.earth[k]; if (!isFinite(a)) { tip.style.display = "none"; return; }
+  const E = D.evo, now = DS.layer === "now" && E ? `<br>${t("dtNow")}: ${evoBit(E.luce, E, DS.ti, k) ? "☀" : "☾"} ${evoBit(E.com, E, DS.ti, k) ? "📡 ✓" : "📡 ✗"}` : "";
+  const q = D.extra && D.extra.quota && isFinite(D.extra.quota[k]) ? `<br>${t("dtQuota")}: ${Math.round(D.extra.quota[k])} m` : "";
+  const ll = projInv(D.gx0 + c * D.step, D.gy0 - i * D.step, D.pc);
+  tip.innerHTML = `<b>${fmtLL(ll[0], ll[1])}</b><br>☀ ${t("dtSun")}: ${Math.round(a * 100)}%<br>📡 ${t("dtEarth")}: ${Math.round(b * 100)}%${q}${now}`;
+  const wr = e.currentTarget.parentElement.getBoundingClientRect();
+  tip.style.left = Math.min(e.clientX - wr.left + 14, wr.width - 210) + "px"; tip.style.top = (e.clientY - wr.top + 14) + "px"; tip.style.display = "block";
+});
+document.getElementById("dMap").addEventListener("pointerleave", () => { document.getElementById("dTip").style.display = "none"; });
+
+
+/* ===================== TUTORIAL GUIDATO (Expert) =====================
+   Percorre la vera Expert Edition passo per passo: evidenzia ogni elemento e spiega a cosa serve. */
+const TOUR = { i: 0, on: false, els: null };
+const wait = ms => new Promise(r => setTimeout(r, ms));
+async function tourToMap(mode) {
+  if (wsView.dataset.stage !== "map" || !PX) {
+    if (!GLOBE.sel || !selCheck(GLOBE.sel).ok) { const c = COVERAGE.find(x => x.source === "builtin") || COVERAGE[0]; if (c) selectCoverage(c); }
+    const s = GLOBE.sel, chk = selCheck(s); if (!chk.ok) return;
+    applyRegion({ lat: s.lat, lon: s.lon, r: s.r }, chk.cov.id); showStage("map");
+    mapBusy.classList.add("show"); await wait(30); await ensureMapData(); mapBusy.classList.remove("show"); clampToPeriod();
+    setupEl.classList.remove("show"); syncControls(); layoutMap(); await wait(400);
+  }
+  setupEl.classList.remove("show");
+  if (mode && WS.horizon !== mode) { document.querySelector(`#horizonMode [data-h="${mode}"]`).click(); await wait(900); }
+}
+async function tourToSetup() {
+  if (wsView.dataset.stage !== "map" || !MAPDATA) await tourToMap("cycle");
+  openSetup(); await wait(250);
+}
+const TOUR_STEPS = [
+  { k: 0, pre: async () => { showStage("globe"); } },
+  { k: 1, sel: "#globeCanvas", pre: async () => { showStage("globe"); } },
+  { k: 2, sel: "#globeCmp" },
+  { k: 3, sel: "#covList" },
+  { k: 4, sel: "#btnImportData" },
+  { k: 5, sel: "#selInfo" },
+  { k: 6, sel: "#btnConfirmArea" },
+  { k: 7, sel: "#setup .setup-card", pre: tourToSetup },
+  { k: 8, sel: "#setup [data-sliders=setup]", pre: tourToSetup },
+  { k: 9, sel: "#arrivalSetup", pre: tourToSetup, up: 2 },
+  { k: 10, sel: "#setup .opt-add-row", pre: tourToSetup },
+  { k: 11, sel: "#setup .mission-files", pre: tourToSetup },
+  { k: 12, sel: "#btnGenerate", pre: tourToSetup },
+  { k: 13, sel: "#mapCanvas", pre: () => tourToMap("cycle") },
+  { k: 14, sel: "#horizonMode", pre: () => tourToMap("cycle") },
+  { k: 15, sel: "#crossBox", pre: () => tourToMap("cycle"), up: 1 },
+  { k: 16, sel: "#layerTabs", pre: () => tourToMap("cycle"), up: 1 },
+  { k: 17, sel: "#mapLegend", pre: () => tourToMap("cycle") },
+  { k: 18, sel: "#sitesList", pre: () => tourToMap("cycle"), up: 1 },
+  { k: 19, sel: "#timebar", pre: () => tourToMap("stay") },
+  { k: 20, sel: "#mcPanel", pre: () => tourToMap("stay") },
+  { k: 21, sel: "#eWrap", pre: () => tourToMap("stay"), up: 1 },
+  { k: 22, sel: "#btnOrbit", pre: () => tourToMap("stay") },
+  { k: 23, sel: "#stageMap .vault-card", pre: () => tourToMap("stay") },
+  { k: 24, sel: "#view-workspace .ws-top-actions", pre: () => tourToMap() },
+  { k: 25 },
+];
+function tourEls() {
+  if (TOUR.els) return TOUR.els;
+  const block = document.createElement("div"); block.className = "tour-block";
+  const spot = document.createElement("div"); spot.className = "tour-spot";
+  const card = document.createElement("div"); card.className = "tour-card"; card.setAttribute("role", "dialog");
+  document.body.append(block, spot, card);
+  block.addEventListener("click", e => e.stopPropagation());
+  return (TOUR.els = { block, spot, card });
+}
+async function tourShow(i) {
+  const N = TOUR_STEPS.length; TOUR.i = Math.max(0, Math.min(N - 1, i));
+  const st = TOUR_STEPS[TOUR.i], { spot, card } = tourEls();
+  card.innerHTML = `<div class="cnt">…</div>`;
+  if (st.pre) { try { await st.pre(); } catch (e) { console.warn(e); } }
+  let el = st.sel ? document.querySelector(st.sel) : null;
+  if (el && st.up) { let p = el; for (let u = 0; u < st.up && p.parentElement; u++) p = p.parentElement; if (p.closest(".ws-side")) el = p.closest(".side-card") || el; }
+  if (el) {
+    const sc = el.closest(".ws-side, .setup-card"); if (sc) el.scrollIntoView({ block: "nearest" });
+    if (el.classList.contains("m-closed")) el.classList.remove("m-closed");
+  }
+  await wait(60);
+  const k = st.k, title = t(`tr${k}t`), body = t(`tr${k}d`).split("\n").map(x => x.startsWith("💡") ? `<span class="tip">${x}</span>` : `<p>${x}</p>`).join("");
+  card.innerHTML = `<div class="tk">${esc(t("trKick"))} · ${TOUR.i + 1}/${N}</div><h4>${esc(title)}</h4><div class="tx">${body}</div>
+    <div class="bar"><i style="width:${(TOUR.i + 1) / N * 100}%"></i></div>
+    <div class="nav"><button type="button" class="cl" data-t="x">${esc(t("trClose"))}</button>${TOUR.i ? `<button type="button" data-t="p">← ${esc(t("trPrev"))}</button>` : ""}<button type="button" class="nx" data-t="n">${esc(TOUR.i === N - 1 ? t("trEnd") : t("trNext") + " →")}</button></div>`;
+  tourPlace(el);
+  card.querySelector(".nx").focus();
+}
+function tourPlace(el) {
+  const { spot, card } = tourEls(), W = innerWidth, H = innerHeight, pad = 6;
+  const r = el && el.getBoundingClientRect();
+  if (!r || r.width < 2 || r.height < 2) {
+    spot.className = "tour-spot none"; Object.assign(spot.style, { left: W / 2 + "px", top: H / 2 + "px", width: "0px", height: "0px" });
+    card.style.left = Math.max(12, (W - card.offsetWidth) / 2) + "px"; card.style.top = Math.max(12, (H - card.offsetHeight) / 2) + "px"; return;
+  }
+  const x = Math.max(4, r.left - pad), y = Math.max(4, r.top - pad), w = Math.min(W - 8, r.width + 2 * pad), h = Math.min(H - 8, r.height + 2 * pad);
+  spot.className = "tour-spot"; Object.assign(spot.style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" });
+  const cw = card.offsetWidth, ch = card.offsetHeight;
+  let cx, cy;
+  if (x + w + 14 + cw <= W) { cx = x + w + 14; cy = y; }
+  else if (x - 14 - cw >= 0) { cx = x - 14 - cw; cy = y; }
+  else if (y + h + 14 + ch <= H) { cx = x; cy = y + h + 14; }
+  else if (y - 14 - ch >= 0) { cx = x; cy = y - 14 - ch; }
+  else { cx = W - cw - 12; cy = H - ch - 12; }
+  card.style.left = Math.max(12, Math.min(W - cw - 12, cx)) + "px"; card.style.top = Math.max(12, Math.min(H - ch - 12, cy)) + "px";
+}
+function tourStart() {
+  TOUR.on = true; tourEls(); document.body.classList.add("touring");
+  ["block", "spot", "card"].forEach(k => TOUR.els[k].hidden = false);
+  tourShow(0);
+}
+function tourStop() {
+  TOUR.on = false; if (!TOUR.els) return;
+  ["block", "spot", "card"].forEach(k => TOUR.els[k].hidden = true); document.body.classList.remove("touring");
+}
+document.addEventListener("click", e => {
+  if (!TOUR.on) return; const b = e.target.closest(".tour-card [data-t]"); if (!b) return;
+  const a = b.dataset.t;
+  if (a === "x") tourStop(); else if (a === "p") tourShow(TOUR.i - 1); else if (TOUR.i >= TOUR_STEPS.length - 1) tourStop(); else tourShow(TOUR.i + 1);
+});
+document.addEventListener("keydown", e => {
+  if (!TOUR.on) return;
+  if (e.key === "Escape") { tourStop(); e.preventDefault(); }
+  else if (e.key === "ArrowRight") { e.preventDefault(); TOUR.i >= TOUR_STEPS.length - 1 ? tourStop() : tourShow(TOUR.i + 1); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); tourShow(TOUR.i - 1); }
+}, true);
+addEventListener("resize", () => { if (TOUR.on) { const st = TOUR_STEPS[TOUR.i]; tourPlace(st.sel ? document.querySelector(st.sel) : null); } });
+document.getElementById("btnTutorial").addEventListener("click", async () => { showView("workspace"); await wait(600); tourStart(); });
+document.getElementById("btnGuide").addEventListener("click", () => { if (document.body.classList.contains("phone")) document.querySelectorAll(".ws-top.menu-open").forEach(x => x.classList.remove("menu-open")); tourStart(); });
+
+/* ===== Telefono: menu a tendina in alto e riquadri laterali richiudibili ===== */
+document.querySelectorAll(".ws-top").forEach(top => {
+  const acts = top.querySelector(".ws-top-actions"); if (!acts) return;
+  const b = document.createElement("button"); b.type = "button"; b.className = "m-menu-btn"; b.setAttribute("aria-label", "Menu"); b.textContent = "☰";
+  b.addEventListener("click", e => { e.stopPropagation(); top.classList.toggle("menu-open"); });
+  acts.addEventListener("click", () => top.classList.remove("menu-open"));
+  top.appendChild(b);
+});
+document.addEventListener("click", e => {
+  if (!e.target.closest(".ws-top")) document.querySelectorAll(".ws-top.menu-open").forEach(x => x.classList.remove("menu-open"));
+  if (!document.body.classList.contains("phone")) return;
+  const h = e.target.closest(".ws-side .side-card > h3:first-child, .ws-side .side-card > .step-tag:first-child");
+  if (h) h.parentElement.classList.toggle("sc-closed");
+});
 
 /* ---------- Schermate di contesto: coinvolgono il giocatore all'inizio di ogni gioco o fase ---------- */
 function showIntro(wrapId, o) {
@@ -6606,6 +7105,7 @@ function eduShowTab(tab) {
   requestAnimationFrame(() => {
     if (tab === "history") { renderHistoryList(); renderHistoryDetail(); hRender(); }
     if (tab === "reason") openReason();
+    if (tab === "deep") openDeep();
     if (tab === "game") {
       if (!GM.time) { const b = document.getElementById("gBusy"); b.classList.add("show"); setTimeout(() => { eduGrid(); b.classList.remove("show"); gNewScenario(); if (!GM.diff) gSetStep(0); }, 40); }
       else if (GM.step <= 1) gDrawMap(); else if (GM.step === 2) gLoop(); else gRenderPatch();
