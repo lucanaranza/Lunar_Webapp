@@ -7,7 +7,7 @@
 <!-- Privacy: la pagina può comunicare solo con la propria origine (es. il JSON da Python sullo stesso host).
      Nessun dato può essere inviato a server esterni. -->
 <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://upload.wikimedia.org https://raw.githubusercontent.com; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -89,6 +89,17 @@
     display: flex; flex-direction: column; gap: 1.1rem;
   }
   .login-card h2 { font-size: 1.4rem; text-align: center; }
+  .demo-auth { display: flex; flex-direction: column; gap: 1rem; }
+  .demo-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: .3rem; padding: .3rem; border-radius: 12px; background: rgba(255,255,255,.04); border: 1px solid var(--border); }
+  .demo-tabs button { padding: .6rem; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font: 600 .9rem "Inter", sans-serif; cursor: pointer; }
+  .demo-tabs button.active { background: rgba(127,211,255,.18); color: var(--fg); }
+  .demo-users { list-style: none; display: flex; flex-direction: column; gap: .5rem; max-height: 260px; overflow-y: auto; }
+  .demo-users li { display: flex; gap: .4rem; }
+  .demo-users .du { flex: 1; text-align: left; padding: .8rem 1rem; border-radius: 11px; border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--fg); cursor: pointer; font: 600 .95rem "Inter", sans-serif; }
+  .demo-users .du small { display: block; font-weight: 400; color: var(--muted); font-size: .8rem; margin-top: .15rem; }
+  .demo-users .du:hover { border-color: var(--accent); background: rgba(127,211,255,.08); }
+  .demo-users .rm { width: 2.6rem; border-radius: 11px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; }
+  .demo-users .empty { color: var(--muted); font-size: .88rem; text-align: center; padding: .8rem; }
   .login-card .muted { text-align: center; font-size: .9rem; margin-top: -.4rem; }
   .field { display: flex; flex-direction: column; gap: .4rem; }
   .field label { font-size: .75rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); }
@@ -319,6 +330,15 @@
   .sel-status.ok { color: var(--ok); }
   .sel-status.bad { color: var(--danger); }
   #globeCanvas { display: block; cursor: grab; touch-action: none; }
+  #globeCmp { position: absolute; left: 14px; top: 14px; width: 210px; pointer-events: none; z-index: 2; padding: .7rem .8rem .8rem;
+    border-radius: 14px; background: rgba(10,11,13,.88); border: 1px solid rgba(127,211,255,.45); font-family: "Inter", sans-serif; }
+  #globeCmp h4 { font: 800 .72rem "Inter", sans-serif; letter-spacing: .14em; color: #7fd3ff; text-align: center; margin-bottom: .3rem; }
+  #globeCmp svg { display: block; width: 100%; height: auto; }
+  #globeCmp .c1 { font-weight: 700; font-size: .8rem; color: #bae6fd; text-align: center; margin-top: .35rem; }
+  #globeCmp .c2 { font-size: .78rem; color: #e5e7eb; text-align: center; margin-top: .15rem; }
+  #globeCmp .lg { display: grid; grid-template-columns: auto 1fr; gap: .25rem .5rem; margin-top: .55rem; font-size: .74rem; color: #cbd5e1; align-items: center; }
+  #globeCmp .lg i { display: inline-block; width: 22px; height: 0; border-top: 3px solid; }
+  #globeCmp .lg i.d { border-top-style: dashed; border-color: #9ca3af; }
   #globeCanvas.select { cursor: crosshair; }
   #globeCanvas.dragging { cursor: grabbing; }
   .map-busy.show { background: rgba(17,18,20,.6); }
@@ -445,25 +465,52 @@
   .layer-tabs.four { grid-template-columns: repeat(4, 1fr); }
   canvas.sphere { display: block; cursor: grab; touch-action: none; }
 
+  .g-compass { position: absolute; right: 1rem; bottom: 1rem; width: 190px; z-index: 3; padding: .8rem .9rem 1rem; border-radius: 14px;
+    background: rgba(10,11,13,.86); border: 1px solid rgba(253,224,71,.45); text-align: center; pointer-events: none; }
+  .g-compass svg { width: 150px; height: 156px; display: block; margin: 0 auto; }
+  .g-c-east { font: 800 .8rem "Inter", sans-serif; color: #7fd3ff; text-align: right; margin-bottom: -.4rem; }
+  .g-c-pole { font: 800 .8rem "Inter", sans-serif; color: #fde047; letter-spacing: .08em; margin-top: -.2rem; }
+  .g-compass h4 { font: 800 .95rem "Inter", sans-serif; color: #fde047; margin: .7rem 0 .3rem; }
+  .g-compass p { font-size: .82rem; line-height: 1.45; color: #e5e7eb; white-space: pre-line; text-align: left; }
   /* Storia */
-  .mission-list { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
-  .mission-list button { width: 100%; text-align: left; padding: .65rem .75rem; border-radius: 11px; border: 1px solid rgba(255,255,255,.07);
-    background: rgba(30,32,37,.92); color: var(--fg); cursor: pointer; display: grid; grid-template-columns: 10px 1fr auto; gap: .15rem .6rem; align-items: center; }
+  #pane-history { --hz: 1.2; }
+  #pane-history .side-card h3 { font-size: calc(1.05rem * var(--hz)); }
+  #pane-history .slider-desc { font-size: calc(.86rem * var(--hz)); line-height: 1.55; }
+  #hFilter button { font-size: calc(.78rem * var(--hz)); }
+  .h-font { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .8rem; font-size: calc(.78rem * var(--hz)); color: var(--muted); }
+  #hFont { display: flex; gap: .25rem; }
+  #hFont button { min-width: 2.6rem; padding: .35rem .5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,.15); background: transparent; color: var(--fg); font: 700 .85rem "Inter", sans-serif; cursor: pointer; }
+  #hFont button:nth-child(2) { font-size: 1rem; } #hFont button:nth-child(3) { font-size: 1.15rem; }
+  #hFont button.active { background: rgba(127,211,255,.2); border-color: var(--accent); }
+  .mission-list { list-style: none; display: flex; flex-direction: column; gap: .45rem; }
+  .mission-list button { width: 100%; text-align: left; padding: .75rem .85rem; border-radius: 11px; border: 1px solid rgba(255,255,255,.07);
+    background: rgba(30,32,37,.92); color: var(--fg); cursor: pointer; display: grid; grid-template-columns: 12px 1fr auto; gap: .2rem .6rem; align-items: center; }
   .mission-list button:hover, .mission-list button.sel { border-color: var(--accent); background: rgba(127,211,255,.08); }
-  .mission-list .dot { width: 10px; height: 10px; border-radius: 50%; grid-row: span 2; }
-  .mission-list .nm { font: 600 .86rem "Inter", sans-serif; }
-  .mission-list .yr { font: .75rem ui-monospace, Menlo, monospace; color: var(--muted); }
-  .mission-list .pl { grid-column: 2 / 4; font-size: .74rem; color: var(--muted); }
-  .h-detail { position: absolute; right: 1rem; top: 1rem; bottom: 1rem; width: min(380px, 42%); overflow-y: auto; z-index: 2;
-    padding: 1.2rem 1.3rem; border-radius: 14px; background: rgba(10,11,13,.88); border: 1px solid rgba(255,255,255,.1); }
-  .h-detail .tag { display: inline-block; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; padding: .2rem .5rem;
-    border-radius: 5px; border: 1px solid currentColor; margin-bottom: .6rem; }
-  .h-detail h4 { font: 800 1.35rem "Orbitron", sans-serif; letter-spacing: .03em; margin-bottom: .2rem; }
-  .h-detail .meta { font: .78rem/1.5 ui-monospace, Menlo, monospace; color: var(--muted); margin-bottom: .9rem; }
-  .h-detail h5 { font: 600 .7rem "Inter", sans-serif; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin: 1rem 0 .45rem; }
-  .h-detail ul { padding-left: 1.1rem; display: flex; flex-direction: column; gap: .45rem; font-size: .87rem; line-height: 1.5; }
-  .h-detail p { font-size: .87rem; line-height: 1.55; color: #d6d9e6; }
-  .h-detail .src { font-size: .7rem; color: #6b7280; margin-top: 1rem; }
+  .mission-list .dot { width: 12px; height: 12px; border-radius: 50%; grid-row: span 2; }
+  .mission-list .nm { font: 600 calc(.92rem * var(--hz)) "Inter", sans-serif; }
+  .mission-list .yr { font: calc(.8rem * var(--hz)) ui-monospace, Menlo, monospace; color: #b8bdcc; }
+  .mission-list .pl { grid-column: 2 / 4; font-size: calc(.8rem * var(--hz)); color: #b8bdcc; }
+  #hWrap { background: radial-gradient(ellipse at 30% 40%, #0d1324 0%, #05060a 70%); }
+  .h-detail { position: absolute; right: 1rem; top: 1rem; bottom: 1rem; width: min(calc(440px * var(--hz)), 48%); overflow-y: auto; z-index: 2;
+    padding: 1.3rem 1.4rem; border-radius: 14px; background: rgba(10,11,13,.92); border: 1px solid rgba(255,255,255,.1); }
+  .h-head { display: grid; grid-template-columns: calc(96px * var(--hz)) 1fr; gap: 1rem; align-items: center; }
+  .h-patch { width: calc(96px * var(--hz)); aspect-ratio: 1; display: grid; place-items: center; }
+  .h-patch img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,.6)); }
+  .h-patch svg { width: 100%; height: 100%; }
+  .h-pcap { font-size: calc(.72rem * var(--hz)) !important; color: #8b91a3 !important; margin: .5rem 0 0; }
+  .h-detail .tag { display: inline-block; font-size: calc(.72rem * var(--hz)); letter-spacing: .12em; text-transform: uppercase; padding: .2rem .5rem;
+    border-radius: 5px; border: 1px solid currentColor; margin-bottom: .5rem; }
+  .h-detail h4 { font: 800 calc(1.5rem * var(--hz)) "Orbitron", sans-serif; letter-spacing: .03em; margin-bottom: .25rem; }
+  .h-detail .meta { font: calc(.82rem * var(--hz))/1.55 ui-monospace, Menlo, monospace; color: #b8bdcc; }
+  .h-detail h5 { font: 700 calc(.78rem * var(--hz)) "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 1.2rem 0 .5rem; }
+  .h-detail ul { padding-left: 1.2rem; display: flex; flex-direction: column; gap: .6rem; font-size: calc(.95rem * var(--hz)); line-height: 1.6; color: #e6e8ef; }
+  .h-detail p { font-size: calc(.95rem * var(--hz)); line-height: 1.65; color: #e6e8ef; }
+  .h-alt { margin-top: 1.1rem; padding: .2rem 1rem .9rem; border-left: 3px solid #fbbf24; background: rgba(251,191,36,.07); border-radius: 0 10px 10px 0; }
+  .h-alt h5 { color: #fbbf24; }
+  .h-links { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .h-links a { padding: .45rem .75rem; border-radius: 8px; border: 1px solid rgba(127,211,255,.35); color: var(--accent); text-decoration: none; font: 600 calc(.85rem * var(--hz)) "Inter", sans-serif; }
+  .h-links a:hover { background: rgba(127,211,255,.12); }
+  .h-detail .src { font-size: calc(.75rem * var(--hz)); color: #8b91a3; margin-top: 1.1rem; }
 
   /* Esplora */
   #hWrap, #rWrap { align-items: flex-start; padding-left: 1.5rem; }
@@ -579,8 +626,8 @@
   .g-diff { display: flex; flex-direction: column; gap: .5rem; }
   .g-diff button { text-align: left; padding: .7rem .85rem; border-radius: 12px; border: 1px solid rgba(255,255,255,.14);
     background: rgba(255,255,255,.04); color: var(--fg); cursor: pointer; display: flex; flex-direction: column; gap: .25rem; font: inherit; }
-  .g-diff button b { font-size: .95rem; letter-spacing: .04em; }
-  .g-diff button span { font-size: .78rem; color: var(--muted); line-height: 1.45; }
+  .g-diff button b { font-size: 1.05rem; letter-spacing: .04em; }
+  .g-diff button span { font-size: .9rem; color: #c9cede; line-height: 1.5; }
   .g-diff button:hover { border-color: rgba(127,211,255,.5); }
   .g-diff button.active { border-color: #7fd3ff; background: rgba(127,211,255,.12); }
   .g-diff button[data-d="easy"] b { color: #4ade80; } .g-diff button[data-d="medium"] b { color: #fbbf24; } .g-diff button[data-d="hard"] b { color: #f87171; }
@@ -602,6 +649,46 @@
   @media (prefers-reduced-motion: reduce) {
     .warp-text.show, .flash.show { animation-duration: .01s; }
   }
+
+  /* ===== Giochi educativi: testi più grandi e leggibili ===== */
+  #pane-reason .side-card h3, #pane-game .side-card h3 { font-size: .82rem; color: #b8bdcc; }
+  #pane-reason .step-tag, #pane-game .step-tag { font-size: .8rem; }
+  #pane-reason .slider-desc, #pane-game .slider-desc { font-size: .95rem; line-height: 1.55; color: #c9cede; }
+  #pane-reason .r-mname { font-size: 1.1rem; }
+  #pane-reason .r-wbar { font-size: .88rem; grid-template-columns: 90px 1fr 42px; }
+  #pane-reason .r-wbar em { font-size: .82rem; }
+  #pane-reason .r-sit { font-size: .92rem; line-height: 1.5; padding: .55rem .7rem; }
+  #pane-reason .persona .who { font-size: 1rem; }
+  #pane-reason .persona .q { font-size: .9rem; line-height: 1.5; color: #c9cede; }
+  #pane-reason .persona .w { font-size: .8rem; }
+  #pane-reason .r-lg-t { font-size: .9rem; } #pane-reason .r-legend { font-size: .82rem; }
+  #pane-reason .r-explain { font-size: 1rem; line-height: 1.65; color: #e6e8ef; width: min(420px, 40%); }
+  #pane-reason .r-explain h4 { font-size: 1.2rem; }
+  #pane-reason .r-explain h5 { font-size: .88rem; }
+  #pane-reason .r-cmp { font-size: .92rem; }
+  #pane-game .g-steps li { font-size: .82rem; }
+  #pane-game .g-brief { font-size: 1rem; line-height: 1.6; color: #e6e8ef; }
+  #pane-game .g-brief .k { font-size: .88rem; }
+  #pane-game .g-result { font-size: 1rem; line-height: 1.6; }
+  #pane-game .g-tele { font-size: .92rem; } #pane-game .g-tele span { font-size: .72rem; }
+  #pane-game .field label { font-size: .82rem; }
+  #pane-game .g-compass p { font-size: .9rem; }
+  /* schermata di contesto all'inizio di ogni gioco/fase */
+  .edu-intro { position: absolute; inset: 0; z-index: 20; display: grid; place-items: center; padding: 1.5rem;
+    background: radial-gradient(circle at 50% 40%, rgba(15,23,42,.82), rgba(5,6,10,.93)); border-radius: 18px; opacity: 1; }
+  @keyframes eiIn { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: none; } }
+  .edu-intro .card { max-width: 600px; text-align: center; padding: 2rem 2.2rem; border-radius: 20px; background: rgba(10,11,13,.9);
+    border: 1px solid rgba(127,211,255,.4); box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+  .edu-intro .ico { font-size: 3rem; line-height: 1; margin-bottom: .6rem; }
+  .edu-intro .kick { font: 800 .8rem "Inter", sans-serif; letter-spacing: .2em; text-transform: uppercase; color: #7fd3ff; }
+  .edu-intro h3 { font: 800 1.7rem "Orbitron", sans-serif; color: #fff; margin: .4rem 0 .8rem; line-height: 1.25; }
+  .edu-intro p { font-size: 1.1rem; line-height: 1.6; color: #e6e8ef; }
+  .edu-intro .mis { margin-top: .9rem; padding: .7rem 1rem; border-radius: 12px; background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.35); color: #fde68a; font-size: 1rem; }
+  .edu-intro ol { text-align: left; margin: 1rem auto 0; max-width: 440px; padding-left: 1.4rem; display: flex; flex-direction: column; gap: .35rem; font-size: 1rem; color: #cbd5e1; }
+  .edu-intro button { margin-top: 1.4rem; padding: .9rem 2.2rem; border-radius: 12px; border: 0; cursor: pointer;
+    background: linear-gradient(135deg, #38bdf8, #818cf8); color: #0a0b0d; font: 800 1.05rem "Inter", sans-serif; letter-spacing: .06em; }
+  .edu-intro button:hover { filter: brightness(1.1); }
+  .edu-intro .hint { margin-top: .6rem; font-size: .8rem; color: #8b91a3; }
 </style>
 </head>
 <body>
@@ -659,8 +746,10 @@
           <button data-f="all" class="active" data-i18n="hAll">All</button>
           <button data-f="apollo" data-i18n="hApollo">Apollo</button>
           <button data-f="robotic" data-i18n="hRobotic">Robotic</button>
-          <button data-f="future" data-i18n="hFuture">Next</button>
+          <button data-f="future" data-i18n="hFuture">Artemis</button>
         </div>
+        <div class="h-font"><span data-i18n="hFont">Text size</span>
+          <div id="hFont"><button data-z="1" aria-label="A">A</button><button data-z="1.2" aria-label="A+">A+</button><button data-z="1.45" aria-label="A++">A++</button></div></div>
       </section>
       <ol class="mission-list" id="hList"></ol>
     </aside>
@@ -745,10 +834,12 @@
         <div class="g-result" id="gLandRes"></div>
         <button class="btn small" id="gRetry" hidden data-i18n="gRetry">Try again</button>
         <button class="btn small primary" id="gToPatch" hidden data-i18n="gToPatch">Create the patch</button>
+        <button class="btn small" id="gSkipLand" data-i18n="gSkipLand">Skip the landing</button>
+        <p class="slider-desc" data-i18n="gSkipNote"></p>
       </section>
       <section class="side-card" id="gSide3" hidden>
         <h3 data-i18n="gPatchTitle">Your mission patch</h3>
-        <div class="field"><label for="gName" data-i18n="gName">Mission name</label><input id="gName" type="text" maxlength="24"></div>
+        <div class="field"><label for="gName" data-i18n="gName">Mission name</label><input id="gName" type="text" maxlength="30"></div>
         <div class="field"><label for="gCrew" data-i18n="gCrew">Commander</label><input id="gCrew" type="text" maxlength="28"></div>
         <div class="x-btns">
           <button class="btn small primary" id="gSvg" data-i18n="gSvg">Download SVG</button>
@@ -764,6 +855,13 @@
         <button data-k="left">◀</button><button data-k="up">▲</button><button data-k="right">▶</button>
       </div>
       <div class="g-patch" id="gPatch"></div>
+      <div class="g-compass" id="gCompass" hidden>
+        <div class="g-c-east" data-i18n="gEast">towards East</div>
+        <svg viewBox="-10 -14 180 188" aria-hidden="true"><path d="M5.5 37 A86 86 0 0 1 154.5 37" fill="none" stroke="#7fd3ff" stroke-width="2.5"/><path d="M159.5 45.7 L159.7 34 L149.3 40Z" fill="#7fd3ff"/><g font-family="Orbitron,Inter,sans-serif" font-weight="900" font-size="15" fill="#fde047" text-anchor="middle" stroke="#0a0b0d" stroke-width="3" paint-order="stroke"><path d="M80.0 18.0L90.0 80.0L80 80Z" fill="#fde047"/><path d="M80.0 18.0L70.0 80.0L80 80Z" fill="#ca8a04"/><text x="80.0" y="11.0">N</text><path d="M106.9 53.1L84.9 84.9L80 80Z" fill="#fef3c7"/><path d="M106.9 53.1L75.1 75.1L80 80Z" fill="#d6c68e"/><path d="M142.0 80.0L80.0 90.0L80 80Z" fill="#fde047"/><path d="M142.0 80.0L80.0 70.0L80 80Z" fill="#ca8a04"/><text x="154.0" y="85.0">N</text><path d="M106.9 106.9L75.1 84.9L80 80Z" fill="#fef3c7"/><path d="M106.9 106.9L84.9 75.1L80 80Z" fill="#d6c68e"/><path d="M80.0 142.0L70.0 80.0L80 80Z" fill="#fde047"/><path d="M80.0 142.0L90.0 80.0L80 80Z" fill="#ca8a04"/><text x="80.0" y="159.0">N</text><path d="M53.1 106.9L75.1 75.1L80 80Z" fill="#fef3c7"/><path d="M53.1 106.9L84.9 84.9L80 80Z" fill="#d6c68e"/><path d="M18.0 80.0L80.0 70.0L80 80Z" fill="#fde047"/><path d="M18.0 80.0L80.0 90.0L80 80Z" fill="#ca8a04"/><text x="6.0" y="85.0">N</text><path d="M53.1 53.1L84.9 75.1L80 80Z" fill="#fef3c7"/><path d="M53.1 53.1L75.1 84.9L80 80Z" fill="#d6c68e"/></g><circle cx="80" cy="80" r="6" fill="#111" stroke="#fde047" stroke-width="2"/></svg>
+        <div class="g-c-pole" data-i18n="gPoleS">SOUTH POLE</div>
+        <h4>★ <span data-i18n="gCompassT">Where is North?</span></h4>
+        <p data-i18n="gCompassNote"></p>
+      </div>
       <div class="map-busy" id="gBusy" data-i18n="computing">Computing…</div>
     </div>
   </div>
@@ -776,6 +874,23 @@
     <p class="muted" data-i18n="loginSub">Expert Edition is reserved for accredited institutions</p>
     <p class="login-info" id="loginInfo"></p>
     <p class="dev-badge" id="devBadge" hidden data-i18n="devMode">Development mode: no server, access checked only in the browser</p>
+    <div class="demo-auth" id="demoAuth" hidden>
+      <div class="demo-tabs" role="tablist">
+        <button type="button" class="active" data-dtab="login" data-i18n="demoLoginTab">Sign in</button>
+        <button type="button" data-dtab="register" data-i18n="demoRegTab">Register</button>
+      </div>
+      <div id="demoLoginPane">
+        <p class="field-hint" data-i18n="demoPick">Choose your account: one click and you are in, no password.</p>
+        <ul class="demo-users" id="demoUsers"></ul>
+      </div>
+      <div id="demoRegPane" hidden>
+        <div class="field"><label for="demoName" data-i18n="nameLbl">Name</label><input id="demoName" type="text" autocomplete="off" spellcheck="false"></div>
+        <div class="field"><label for="demoInst" data-i18n="institution">Institution</label><input id="demoInst" type="text" autocomplete="off" spellcheck="false"></div>
+        <p class="field-hint" data-i18n="demoRegHint">Demo: no password needed. Your workspace data stay encrypted in this browser.</p>
+        <button class="btn primary" type="button" id="demoRegBtn" data-i18n="demoRegBtn">Create account and sign in</button>
+      </div>
+    </div>
+    <div class="real-auth" id="realAuth">
     <div class="field">
       <label for="loginName" data-i18n="nameLbl">Name</label>
       <input id="loginName" type="text" autocomplete="off" spellcheck="false">
@@ -788,6 +903,7 @@
       <label for="loginPass" data-i18n="passLbl">Vault passphrase</label>
       <input id="loginPass" type="password" autocomplete="new-password">
       <p class="field-hint" data-i18n="passHint">First access: this passphrase creates your encrypted vault. It cannot be recovered.</p>
+    </div>
     </div>
     <p class="login-error" id="loginError" aria-live="polite"></p>
     <button class="btn primary" type="button" id="btnLogin" data-i18n="enter">Sign in</button>
@@ -867,6 +983,7 @@
     </aside>
     <div class="map-wrap" id="globeWrap">
       <canvas id="globeCanvas"></canvas>
+      <div id="globeCmp" aria-hidden="true"></div>
       <div class="globe-empty" id="globeEmpty" hidden>
         <p data-i18n="covEmpty"></p>
         <button class="btn small primary" id="btnImportData2" data-i18n="importData">Import area data</button>
@@ -1072,7 +1189,7 @@ const I18N = {
         educational: "Educational Edition", expert: "Expert Edition",
         tutorial: "Tutorial", workspace: "Workspace", takeoff: "Si parte", skip: "Clicca per saltare",
         placeholder: "In arrivo", back: "Indietro",
-        loginTitle: "Accesso istituzionale", loginSub: "La Expert Edition è riservata alle istituzioni accreditate",
+        demoLoginTab: "Accedi", demoRegTab: "Registrati", demoPick: "Scegli il tuo account: un clic e sei dentro, senza password.", demoRegHint: "Versione demo: non serve la password. I dati del workspace restano cifrati in questo browser.", demoRegBtn: "Crea l'account ed entra", demoNone: "Nessun account ancora: registrati.", demoRemove: "Rimuovi dall'elenco", demoEmpty: "Inserisci nome e istituzione.", cmpPolar: "sopra il polo", cmpLgN: "verso il Polo Nord (S = Polo Sud)", cmpLgE: "direzione della Terra", cmpTitle: "Orientamento", cmpDashed: "tratteggio = dietro la Luna", cmpEarth: "Terra", cmpCenter: "Centro vista: {c}", cmpHemiN: "emisfero Nord", cmpHemiS: "emisfero Sud", cmpHemiEq: "fascia equatoriale", cmpNear: "lato visibile", cmpFar: "lato nascosto", cmpLimb: "bordo (lembo)", loginTitle: "Accesso istituzionale", loginSub: "La Expert Edition è riservata alle istituzioni accreditate",
         nameLbl: "Nome", institution: "Istituzione", enter: "Accedi",
         loginError: "Credenziali non riconosciute", loginEmpty: "Compila tutti i campi",
         passLbl: "Passphrase del vault", passHint: "Primo accesso: questa passphrase crea il tuo archivio cifrato. Non è recuperabile.",
@@ -1092,7 +1209,7 @@ const I18N = {
         educational: "Educational Edition", expert: "Expert Edition",
         tutorial: "Tutorial", workspace: "Workspace", takeoff: "Take us out", skip: "Click to skip",
         placeholder: "Coming soon", back: "Back",
-        loginTitle: "Institutional access", loginSub: "Expert Edition is reserved for accredited institutions",
+        demoLoginTab: "Sign in", demoRegTab: "Register", demoPick: "Choose your account: one click and you are in, no password.", demoRegHint: "Demo version: no password needed. Workspace data stay encrypted in this browser.", demoRegBtn: "Create account and sign in", demoNone: "No accounts yet: register.", demoRemove: "Remove from the list", demoEmpty: "Enter a name and an institution.", cmpPolar: "above the pole", cmpLgN: "towards the North Pole (S = South Pole)", cmpLgE: "direction of Earth", cmpTitle: "Orientation", cmpDashed: "dashed = behind the Moon", cmpEarth: "Earth", cmpCenter: "View centre: {c}", cmpHemiN: "northern hemisphere", cmpHemiS: "southern hemisphere", cmpHemiEq: "equatorial belt", cmpNear: "near side", cmpFar: "far side", cmpLimb: "limb", loginTitle: "Institutional access", loginSub: "Expert Edition is reserved for accredited institutions",
         nameLbl: "Name", institution: "Institution", enter: "Sign in",
         loginError: "Credentials not recognised", loginEmpty: "Please fill in all fields",
         passLbl: "Vault passphrase", passHint: "First access: this passphrase creates your encrypted vault. It cannot be recovered.",
@@ -1324,8 +1441,8 @@ async function deriveAuthKey(passphrase, name, institution) {
 
 const Server = {
   available: null,                      // null = non ancora verificato
-  async detect() {
-    if (this.available !== null) return this.available;
+  detect() { return this._p || (this._p = this._detect()); },
+  async _detect() {
     this.available = false;
     if (location.protocol.startsWith("http")) {
       try {
@@ -1518,7 +1635,8 @@ function showView(name) {
   if (name === "workspace") loadWorkspace();
   if (name === "login") {
     updateLockoutUI();
-    setTimeout(() => document.getElementById("loginName").focus(), 350);
+    if (DEMO.on) { renderDemoUsers(); demoTab(DEMO.users().length ? "login" : "register"); }
+    else setTimeout(() => document.getElementById("loginName").focus(), 350);
   }
   if (name !== "workspace") targetSpeed = 0.4;
 }
@@ -1596,20 +1714,86 @@ async function tryLogin() {
     }
 
     const prevFails = Math.max(Throttle.success(), serverPrev);
-    session = user;
     fName.value = fInst.value = fPass.value = "";
-    setMsg(loginError, ""); setMsg(loginInfo, "");
-    if (res === "created") await audit("vault_created");
-    await audit("login");
-    if (prevFails) await audit("failed", { n: prevFails });
-    buildWatermark();
-    resetIdle();
-    showView("expert");
+    await finishLogin(user, res, prevFails);
   } finally {
     busy = false; btnLogin.textContent = t("enter");
     updateLockoutUI();
   }
 }
+
+
+async function finishLogin(user, res, prevFails = 0) {
+  session = user;
+  setMsg(loginError, ""); setMsg(loginInfo, "");
+  if (res === "created") await audit("vault_created");
+  await audit("login");
+  if (prevFails) await audit("failed", { n: prevFails });
+  buildWatermark();
+  resetIdle();
+  showView("expert");
+}
+
+/* ===== Modalità DEMO (nessun server): accesso con un clic, senza password =====
+   La crittografia resta attiva: l'archivio locale è cifrato con una chiave derivata dall'account demo. */
+const DEMO = {
+  on: false,
+  users() { try { return JSON.parse(localStorage.getItem("mlsn-demo-users")) || []; } catch (e) { return []; } },
+  save(list) { try { localStorage.setItem("mlsn-demo-users", JSON.stringify(list)); } catch (e) {} },
+};
+function demoTab(tab) {
+  document.querySelectorAll("#demoAuth [data-dtab]").forEach(b => b.classList.toggle("active", b.dataset.dtab === tab));
+  document.getElementById("demoLoginPane").hidden = tab !== "login";
+  document.getElementById("demoRegPane").hidden = tab !== "register";
+  setMsg(loginError, "");
+  if (tab === "register") setTimeout(() => document.getElementById("demoName").focus(), 50);
+}
+function renderDemoUsers() {
+  const list = DEMO.users(), ul = document.getElementById("demoUsers");
+  ul.innerHTML = list.length ? list.map((u, i) => `<li><button type="button" class="du" data-du="${i}">${esc(u.name)}<small>${esc(u.institution)}</small></button>
+      <button type="button" class="rm" data-dur="${i}" title="${esc(t("demoRemove"))}" aria-label="${esc(t("demoRemove"))}">✕</button></li>`).join("")
+    : `<li class="empty">${esc(t("demoNone"))}</li>`;
+}
+async function demoLogin(u) {
+  if (busy || !hasCrypto) return;
+  busy = true;
+  try {
+    const user = { name: u.name, institution: u.institution };
+    // archivio separato da quelli creati con passphrase personale
+    const res = await LocalVault.unlock({ name: "demo:" + u.name, institution: u.institution }, `mlsn-demo-vault|${norm(u.name)}|${norm(u.institution)}`);
+    if (res === "wrong" || res === "short") return fail("loginError");
+    await finishLogin(user, res);
+  } finally { busy = false; }
+}
+function initDemoAuth() {
+  DEMO.on = true;
+  document.getElementById("demoAuth").hidden = false;
+  document.getElementById("realAuth").hidden = true;
+  btnLogin.hidden = true;
+  document.getElementById("devBadge").hidden = true;
+  renderDemoUsers();
+  demoTab(DEMO.users().length ? "login" : "register");
+}
+document.getElementById("demoAuth").addEventListener("click", e => {
+  const tb = e.target.closest("[data-dtab]"); if (tb) return demoTab(tb.dataset.dtab);
+  const rm = e.target.closest("[data-dur]");
+  if (rm) { const l = DEMO.users(); l.splice(+rm.dataset.dur, 1); DEMO.save(l); return renderDemoUsers(); }
+  const du = e.target.closest("[data-du]"); if (du) demoLogin(DEMO.users()[+du.dataset.du]);
+});
+function demoRegister() {
+  const name = document.getElementById("demoName").value.trim(), inst = document.getElementById("demoInst").value.trim();
+  if (!name || !inst) return fail("demoEmpty");
+  const list = DEMO.users();
+  let u = list.find(x => norm(x.name) === norm(name) && norm(x.institution) === norm(inst));
+  if (!u) { u = { name, institution: inst }; list.push(u); DEMO.save(list); }
+  document.getElementById("demoName").value = document.getElementById("demoInst").value = "";
+  renderDemoUsers();
+  demoLogin(u);
+}
+document.getElementById("demoRegBtn").addEventListener("click", demoRegister);
+["demoName", "demoInst"].forEach(id => document.getElementById(id).addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); demoRegister(); } }));
+Server.detect().then(ok => { if (!ok) initDemoAuth(); });
+setTimeout(() => loadRealMoon(), 0);
 
 /* ================= Blocco sessione ================= */
 async function lockSession(reasonKey) {
@@ -3787,7 +3971,60 @@ const gctx = globeCanvas.getContext("2d");
 const globeWrap = document.getElementById("globeWrap");
 const GLOBE = { lat: -55, lon: 10, zoom: 1, mode: "rotate", sel: null };
 const TW = 1024, TH = 512;
-let TEX = null;
+let TEX = null, REAL_TEX = false;
+
+/* Fotometria "semi-realistica" della Luna, condivisa dai globi:
+   rilievo dal gradiente della texture, legge di Lommel–Seeliger, terminatore morbido, luce cinerea. */
+const MOON_RL = (() => { const v = [-.62, .32, .72], n = Math.hypot(...v); return v.map(x => x / n); })();
+function moonShade(nx, ny, nz, sp, cp, tx, ty) {
+  const row = ty * TW, bumpK = (REAL_TEX ? .6 : 1.3) / 255 * TW / 360;
+  const gx = (TEX[row + (tx + 2) % TW] - TEX[row + (tx + TW - 2) % TW]) * .5;
+  const gy = (TEX[Math.max(0, ty - 2) * TW + tx] - TEX[Math.min(TH - 1, ty + 2) * TW + tx]) * .5;
+  let ex = cp * nz - sp * ny, ey = sp * nx, ez = -cp * nx;
+  const en = Math.hypot(ex, ey, ez) || 1; ex /= en; ey /= en; ez /= en;
+  const Nx = ny * ez - nz * ey, Ny = nz * ex - nx * ez, Nz = nx * ey - ny * ex;
+  const bs = bumpK * Math.min(1, en * 3);
+  let mx = nx - bs * (gx * ex + gy * Nx), my = ny - bs * (gx * ey + gy * Ny), mz = nz - bs * (gx * ez + gy * Nz);
+  const mn = Math.hypot(mx, my, mz); mx /= mn; my /= mn; mz /= mn;
+  const RL = MOON_RL, mu0 = mx * RL[0] + my * RL[1] + mz * RL[2], mu0g = nx * RL[0] + ny * RL[1] + nz * RL[2];
+  const term = Math.min(1, Math.max(0, (mu0g + .06) / .16));
+  const ls = mu0 > 0 ? 2 * mu0 / (mu0 + nz) : 0;
+  const lit = (.55 * Math.min(1.25, ls) + .5 * Math.max(0, mu0)) * term;
+  const alb = Math.pow(TEX[row + tx] / 255, REAL_TEX ? 1.1 : 1.25);
+  return Math.min(255, (alb * lit * 1.05 + alb * .05) * 255);
+}
+function starPixel(d, o, px, py, k) {            // cielo stellato deterministico
+  const hsh = Math.imul((px / k | 0) * 73856093 ^ (py / k | 0) * 19349663, 2654435761) >>> 0;
+  if ((hsh % 10000) / 10000 < .0022) { const b = 120 + (hsh >>> 20) % 135; d[o] = b; d[o + 1] = b; d[o + 2] = Math.min(255, b + 25); d[o + 3] = 255; }
+  else d[o + 3] = 0;
+}
+/* Foto reale della Luna (mappa cilindrica): la scarica il browser dell'utente, se è online.
+   Senza connessione resta la texture generata. */
+const REAL_MOON_URLS = [
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Moonmap_from_clementine_data.png/1024px-Moonmap_from_clementine_data.png",
+  "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/moon_1024.jpg",
+];
+function loadRealMoon(i = 0) {
+  if (i >= REAL_MOON_URLS.length || !navigator.onLine) return;
+  const img = new Image(); img.crossOrigin = "anonymous"; img.referrerPolicy = "no-referrer";
+  img.onload = () => {
+    try {
+      const cv = document.createElement("canvas"); cv.width = TW; cv.height = TH;
+      const c = cv.getContext("2d"); c.drawImage(img, 0, 0, TW, TH);
+      const px = c.getImageData(0, 0, TW, TH).data, lum = new Float32Array(TW * TH);
+      for (let k = 0; k < TW * TH; k++) lum[k] = .299 * px[k * 4] + .587 * px[k * 4 + 1] + .114 * px[k * 4 + 2];
+      const sorted = Float32Array.from(lum).sort(), lo = sorted[Math.floor(sorted.length * .01)], hi = sorted[Math.floor(sorted.length * .995)];
+      const out = new Uint8ClampedArray(TW * TH);
+      for (let k = 0; k < TW * TH; k++) out[k] = 25 + 225 * Math.max(0, Math.min(1, (lum[k] - lo) / Math.max(1, hi - lo)));
+      TEX = out; REAL_TEX = true;
+      try { queueGlobe(); } catch (e) {}
+      try { if (typeof hRender === "function") hRender(); } catch (e) {}
+      try { if (typeof ORBIT !== "undefined") { ORBIT.dirty = true; } } catch (e) {}
+    } catch (e) { loadRealMoon(i + 1); }          // immagine "tainted" (niente CORS): prova la prossima
+  };
+  img.onerror = () => loadRealMoon(i + 1);
+  img.src = REAL_MOON_URLS[i];
+}
 
 function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
@@ -3868,15 +4105,13 @@ function renderGlobe(low) {
     const ny = (cy - py - .5) / Rd;
     for (let px = 0; px < S; px++) {
       const nx = (px + .5 - cx) / Rd, r2 = nx * nx + ny * ny, o = (py * S + px) * 4;
-      if (r2 > 1) { d[o + 3] = 0; continue; }
+      if (r2 > 1) { starPixel(d, o, px, py, k); continue; }
       const nz = Math.sqrt(1 - r2);
       const lat = Math.asin(nz * sp + ny * cp) / DEG;
       const lon = GLOBE.lon + Math.atan2(nx, nz * cp - ny * sp) / DEG;
       const tx = Math.floor(((lon + 180) / 360 % 1 + 1) % 1 * TW), ty = Math.min(TH - 1, Math.floor((90 - lat) / 180 * TH));
-      const alb = TEX[ty * TW + tx] / 255;
-      const lam = Math.max(0, (nx * L[0] + ny * L[1] + nz * L[2]) / Ln);
-      const v = alb * (.22 + .95 * lam) * (.75 + .25 * nz) * 255;
-      let r = v * .97, g = v * .97, b = v * .97;
+      const v = moonShade(nx, ny, nz, sp, cp, tx, ty);
+      let r = Math.min(255, v * 1.03), g = v * .98, b = v * .9 + 3;
       const pl = lat * DEG, ll = lon * DEG, cpl = Math.cos(pl);
       const ux = cpl * Math.cos(ll), uy = cpl * Math.sin(ll), uz = Math.sin(pl);
       // zone con dati: verde (bordo più marcato); il resto leggermente desaturato
@@ -3888,7 +4123,7 @@ function renderGlobe(low) {
       if (inCov) {
         const a = onEdge ? .75 : .2;
         r = r * (1 - a) + 74 * a; g = g * (1 - a) + 222 * a; b = b * (1 - a) + 128 * a;
-      } else { r *= .8; g *= .8; b *= .82; }
+      } else { r *= .9; g *= .9; b *= .9; }
       if (sel && ux * su[0] + uy * su[1] + uz * su[2] > cosR) {
         const [tr, tg, tb] = bad ? [255, 90, 110] : [127, 211, 255];
         r = r * .55 + tr * .45; g = g * .55 + tg * .45; b = b * .55 + tb * .45;
@@ -3927,10 +4162,7 @@ function drawGlobeOverlays() {
   for (let la = -60; la <= 60; la += 30) { const p = []; for (let lo = -180; lo <= 180; lo += 2) p.push([la, lo]); poly(p); }
   for (let lo = -180; lo < 180; lo += 30) { const p = []; for (let la = -90; la <= 90; la += 2) p.push([la, lo]); poly(p); }
   c.font = `600 ${11 * k}px Inter, sans-serif`; c.textAlign = "center"; c.textBaseline = "middle";
-  for (const [la, txt] of [[90, "N"], [-90, "S"]]) {
-    const s = globeToScreen(la, 0);
-    if (s.vis) { c.fillStyle = "rgba(17,18,20,.7)"; c.beginPath(); c.arc(s.x, s.y, 9 * k, 0, 2 * Math.PI); c.fill(); c.fillStyle = "#fff"; c.fillText(txt, s.x, s.y + .5 * k); }
-  }
+  drawPolarAxis(c, G, k);
   { const s = globeToScreen(0, 0);
     if (s.vis) { c.fillStyle = "#38bdf8"; c.beginPath(); c.arc(s.x, s.y, 4 * k, 0, 2 * Math.PI); c.fill();
       const lb = t("subEarth"), tw = c.measureText(lb).width;          // punto sub-terrestre: da qui la Terra è allo zenit
@@ -3970,6 +4202,66 @@ function drawGlobeOverlays() {
   c.strokeStyle = "rgba(255,255,255,.18)"; c.lineWidth = 1 * k;
   c.beginPath(); c.arc(G.cx, G.cy, G.Rd, 0, 2 * Math.PI); c.stroke();
   c.restore();
+  drawGlobeCompass(c, G);
+}
+// asse di rotazione: esce dai poli; la parte dietro la Luna resta nascosta
+function drawPolarAxis(c, G, k) {
+  const EXT = 1.1;
+  c.save(); c.lineCap = "round";
+  for (const [la, lab, col] of [[90, "N", "#fde047"], [-90, "S", "#e5e7eb"]]) {
+    const s = globeToScreen(la, 0), vx = (s.x - G.cx) / G.Rd, vy = (s.y - G.cy) / G.Rd, vl = Math.hypot(vx, vy);
+    let t0 = 1;
+    if (vl < .12) {                                  // asse rivolto verso chi guarda: resta solo il punto del polo
+      if (s.vis) { c.fillStyle = "rgba(17,18,20,.85)"; c.beginPath(); c.arc(s.x, s.y, 10 * k, 0, 2 * Math.PI); c.fill(); c.strokeStyle = col; c.lineWidth = 2 * k; c.stroke();
+        c.fillStyle = col; c.font = `800 ${11 * k}px Inter, sans-serif`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(lab, s.x, s.y + .5 * k); }
+      continue;
+    }
+    if (!s.vis) { if (vl * EXT <= 1.001) continue; t0 = Math.max(1, 1 / vl); }
+    const x0 = G.cx + vx * t0 * G.Rd, y0 = G.cy + vy * t0 * G.Rd, x1 = G.cx + vx * EXT * G.Rd, y1 = G.cy + vy * EXT * G.Rd;
+    c.strokeStyle = "rgba(10,11,13,.8)"; c.lineWidth = 6 * k; c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.stroke();
+    c.strokeStyle = col; c.lineWidth = 2.5 * k; c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.stroke();
+    if (s.vis) { c.fillStyle = col; c.beginPath(); c.arc(s.x, s.y, 3.5 * k, 0, 2 * Math.PI); c.fill(); }
+    const lx = x1 - vy / vl * 16 * k, ly = y1 + vx / vl * 16 * k;      // etichetta accanto alla punta
+    c.fillStyle = "rgba(17,18,20,.85)"; c.beginPath(); c.arc(lx, ly, 11 * k, 0, 2 * Math.PI); c.fill();
+    c.strokeStyle = col; c.lineWidth = 1.5 * k; c.stroke();
+    c.fillStyle = col; c.font = `800 ${12 * k}px Inter, sans-serif`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(lab, lx, ly + .5 * k);
+  }
+  c.restore();
+}
+// bussola 3D: segue la rotazione del globo (asse dei poli, direzione della Terra, centro della vista)
+function drawGlobeCompass(_c, G) {          // SVG: nitido a qualsiasi zoom
+  const box = document.getElementById("globeCmp"); if (!box) return;
+  const r = 62, x = 90, y = 90, items = [];
+  for (const [la, lo, col, lab, w] of [[-90, 0, "#e5e7eb", "S", 3], [0, 0, "#38bdf8", t("cmpEarth"), 3], [90, 0, "#fde047", "N", 4]]) {
+    const s = globeToScreen(la, lo), vx = (s.x - G.cx) / G.Rd, vy = (s.y - G.cy) / G.Rd, vl = Math.hypot(vx, vy);
+    items.push({ s, vx, vy, vl, col, lab, w });
+  }
+  items.sort((a, b) => a.s.z - b.s.z);                  // prima ciò che sta dietro la Luna
+  let svg = `<svg viewBox="0 0 180 180"><circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="rgba(255,255,255,.18)"/>
+    <path d="M${x - r} ${y}H${x + r}M${x} ${y - r}V${y + r}" stroke="rgba(255,255,255,.1)"/>`;
+  for (const it of items) {
+    const { s, vx, vy, vl, col, lab, w } = it, back = !s.vis, ex = x + vx * r, ey = y + vy * r;
+    const dash = back ? ` stroke-dasharray="6 4" opacity=".7"` : "";
+    let lx, ly;
+    if (vl > .08) {
+      const ux = vx / vl, uy = vy / vl;
+      svg += `<line x1="${x}" y1="${y}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="${col}" stroke-width="${w}" stroke-linecap="round"${dash}/>`;
+      svg += `<path d="M${(ex + ux * 10).toFixed(1)} ${(ey + uy * 10).toFixed(1)}L${(ex - uy * 6).toFixed(1)} ${(ey + ux * 6).toFixed(1)}L${(ex + uy * 6).toFixed(1)} ${(ey - ux * 6).toFixed(1)}Z" fill="${col}"${back ? ' opacity=".7"' : ""}/>`;
+      lx = ex + ux * 20; ly = ey + uy * 20;
+    } else {
+      svg += back ? `<circle cx="${x}" cy="${y}" r="12" fill="none" stroke="${col}" stroke-width="2.5" stroke-dasharray="4 3"/>`
+                  : `<circle cx="${x}" cy="${y}" r="8" fill="${col}"/>`;
+      lx = x + (back ? 22 : -22); ly = y - 18;
+    }
+    lx = Math.max(14, Math.min(166, lx)); ly = Math.max(10, Math.min(172, ly));
+    svg += `<text x="${lx.toFixed(1)}" y="${(ly + 5).toFixed(1)}" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800" font-size="${lab.length > 2 ? 13 : 16}" fill="${col}" stroke="#0a0b0d" stroke-width="4" paint-order="stroke"${back ? ' opacity=".8"' : ""}>${esc(lab)}</text>`;
+  }
+  svg += `<circle cx="${x}" cy="${y}" r="3" fill="#fff"/></svg>`;
+  const la = GLOBE.lat, lo = wrap180(GLOBE.lon);
+  const hemi = t(la > 25 ? "cmpHemiN" : la < -25 ? "cmpHemiS" : "cmpHemiEq") + " · " + t(Math.abs(la) > 75 ? "cmpPolar" : Math.abs(lo) < 70 ? "cmpNear" : Math.abs(lo) > 110 ? "cmpFar" : "cmpLimb");
+  box.innerHTML = `<h4>${esc(t("cmpTitle").toUpperCase())}</h4>${svg}
+    <div class="c1">${esc(t("cmpCenter", { c: fmtLL(la, lo) }))}</div><div class="c2">${esc(hemi)}</div>
+    <div class="lg"><i style="border-color:#fde047"></i><span>${esc(t("cmpLgN"))}</span><i style="border-color:#38bdf8"></i><span>${esc(t("cmpLgE"))}</span><i class="d"></i><span>${esc(t("cmpDashed"))}</span></div>`;
 }
 
 /* --- lista zone con dati --- */
@@ -4171,7 +4463,7 @@ function showStage(stage) {
     if (!TEX) {
       const busy = document.getElementById("globeBusy");
       busy.classList.add("show");
-      setTimeout(() => { TEX = buildMoonTexture(); busy.classList.remove("show"); queueGlobe(); }, 30);
+      setTimeout(() => { if (!TEX) TEX = buildMoonTexture(); busy.classList.remove("show"); queueGlobe(); }, 30);
     } else queueGlobe();
   } else if (PX) requestAnimationFrame(layoutMap);
 }
@@ -4347,10 +4639,13 @@ function onLangChange() {
 const I18N_EDU = {
   it: { rQuiet: "Silenzio radio", rCold: "Ombra fredda", rm_habitat: "Habitat per l'equipaggio", rm_habitat_d: "Costruire il primo modulo abitativo: servono energia, contatto con la Terra e acqua non troppo lontana.", rm_isru: "Impianto di estrazione dell'acqua (ISRU)", rm_isru_d: "Estrarre acqua dal ghiaccio e trasformarla in ossigeno e propellente: servono ghiaccio vicino e tanta energia per i forni.", rm_radio: "Radiotelescopio silenzioso", rm_radio_d: "Ascoltare l'universo nelle onde radio: la Terra è un disturbo enorme, quindi meglio dove la Terra NON si vede. Serve comunque energia.", rm_infrared: "Telescopio a infrarossi", rm_infrared_d: "Gli strumenti a infrarossi lavorano bene solo al freddo: meglio una zona in ombra, ma che possa ancora inviare i dati a Terra.", rm_relay: "Ponte radio per un rover lontano", rm_relay_d: "Mettere una stazione che inoltri i comandi a un rover in esplorazione: deve vedere la Terra ed essere alimentata a lungo.", rs_storm: "Situazione: è prevista una tempesta solare. Conviene stare vicino ai crateri, dove le pareti fanno da riparo.", rs_antenna: "Situazione: l'antenna di bordo è danneggiata e trasmette male. Serve vedere la Terra il più a lungo possibile.", rs_battery: "Situazione: le batterie hanno perso capacità. Le notti brevi sono vitali: serve più Sole.", rs_water: "Situazione: le riserve d'acqua portate da Terra sono scarse. Il ghiaccio vicino diventa più importante.", rs_satrelay: "Situazione: un satellite relè è già in orbita e copre le comunicazioni. Vedere la Terra conta meno.", rs_night: "Situazione: la missione parte all'inizio della notte lunare. Serve un sito con ombre il più corte possibile.", rSitC_storm: " E con la tempesta in arrivo, un cratere vicino come riparo non guasta.", rSitC_antenna: " Con l'antenna messa così, ogni ora di Terra in vista vale doppio.", rSitC_battery: " Con queste batterie non possiamo permetterci notti lunghe.", rSitC_water: " Con l'acqua che abbiamo, il ghiaccio vicino è una sicurezza.", rSitC_satrelay: " Tanto il satellite relè ci copre le comunicazioni.", rSitC_night: " Partiamo col buio: ogni ora di Sole in più conta.", rSitR_storm: "La tempesta solare ha alzato il peso del ghiaccio (e dei crateri vicini): l'ottimo si è avvicinato alle conche.", rSitR_antenna: "L'antenna danneggiata ha alzato il peso della Terra: l'ottimo si è spostato verso il lato che guarda la Terra.", rSitR_battery: "Le batterie ridotte hanno alzato il peso del Sole: l'ottimo preferisce le creste più illuminate.", rSitR_water: "Le riserve d'acqua scarse hanno alzato il peso del ghiaccio: l'ottimo si è avvicinato ai depositi.", rSitR_satrelay: "Il satellite relè ha abbassato il peso della Terra: l'ottimo può stare anche dove la Terra si vede meno.", rSitR_night: "La partenza al buio ha alzato il peso del Sole: l'ottimo cerca le zone dove la notte dura meno.", rOptTop_quiet: "La missione vuole soprattutto silenzio radio: l'ottimo è sul lato opposto alla Terra, dove il rilievo la nasconde, ma ancora abbastanza in luce per alimentare gli strumenti.", rOptTop_cold: "La missione vuole soprattutto il freddo: l'ottimo è in una zona d'ombra, ma non nel buio totale di un cratere, perché deve ancora vedere la Terra per inviare i dati.", rBrief2: "Peso delle risorse per questa missione: {l}.", rNeed_comms_2: "Una rete radio vive solo se vede la Terra, il resto viene dopo.", rNeed_comms_3: "Qui tutto ruota attorno al segnale verso casa.", rNeed_rover_2: "I pannelli del rover devono stare al Sole più ore possibile.", rNeed_rover_3: "Un rover solare fermo al buio è un rover perso.", rNeed_ice_2: "Il campione è nel ghiaccio: più siamo vicini, meno rischiamo nel tragitto.", rNeed_ice_3: "Senza ghiaccio a portata, la missione non ha senso.", rNeed_stay_2: "Restare a lungo vuol dire non spegnersi mai e non perdere mai il contatto.", rNeed_stay_3: "Per una permanenza lunga contano luce e Terra insieme, ogni giorno.", rNeed_mixed_2: "Una missione mista deve accontentare un po' tutti.", rNeed_mixed_3: "Qui nessuna risorsa può mancare del tutto.", rNeed_habitat: "Un habitat deve avere energia, contatto con casa e acqua a portata di mano.", rNeed_habitat_2: "Ci vivranno delle persone: serve tutto, senza eccessi.", rNeed_habitat_3: "Per un habitat il compromesso è la regola.", rNeed_isru: "Un impianto ISRU vuole ghiaccio vicino ed energia per scaldarlo.", rNeed_isru_2: "Estrarre acqua costa energia: servono ghiaccio e Sole insieme.", rNeed_isru_3: "Il ghiaccio è la materia prima, il Sole il motore dell'impianto.", rNeed_radio: "Un radiotelescopio odia la Terra: è la sorgente di disturbo più forte del cielo.", rNeed_radio_2: "Per ascoltare l'universo dobbiamo nasconderci dalla Terra.", rNeed_radio_3: "Più la Terra è nascosta, più il cielo radio è pulito.", rNeed_infrared: "Un telescopio a infrarossi vuole il freddo, cioè l'ombra.", rNeed_infrared_2: "Il calore del Sole acceca gli infrarossi: serve ombra.", rNeed_infrared_3: "Freddo sì, ma i dati devono comunque arrivare a Terra.", rNeed_relay: "Un ponte radio deve vedere la Terra e restare acceso a lungo.", rNeed_relay_2: "Se il ponte radio si spegne, il rover resta muto.", rNeed_relay_3: "Terra in vista ed energia: sono le due cose che contano.", rProp1: "Io propongo {c}: Sole {s}%, Terra {e}%, ghiaccio a {i} km.", rProp2: "Io andrei qui, {c}: il Sole c'è il {s}% del tempo, la Terra il {e}%, il ghiaccio è a {i} km.", rProp3: "Guardate {c}: Sole {s}%, Terra {e}% e ghiaccio a {i} km. Per me è il posto giusto.", rGeoSelf_2: "Il ghiaccio è la vera ricchezza della Luna: non voglio allontanarmene.", rGeoSelf_3: "Più vicini al ghiaccio, più campioni e più scienza.", rEngSelf_2: "Ogni ora al buio consuma batteria: voglio la cresta più illuminata.", rEngSelf_3: "Il mio lavoro è tenere tutto acceso, e senza Sole non si accende niente.", rComSelf_2: "Se perdiamo la Terra perdiamo anche il controllo della missione.", rComSelf_3: "Per me conta una cosa: che Houston ci senta.", rExpScore2: "{n}: a {d} km dall'ottimo, per questa missione vale", rExpWhy: "Gli esperti non centrano mai l'ottimo: ognuno tira verso la sua priorità. È proprio il tuo compito mettere insieme i loro consigli con il profilo della missione.", rLgD_sun: "Quota di tempo in cui il punto è illuminato dal Sole.", rLgD_earth: "Quota di tempo in cui la Terra è sopra l'orizzonte (comunicazioni).", rLgD_ice: "Quanto è vicino il ghiaccio: chiaro = sopra o vicino a un deposito.", rLgD_quiet: "Quanto la Terra è nascosta: chiaro = silenzio radio.", rLgD_cold: "Quanto il punto resta in ombra: scuro = freddo.", rLgD_inter: "Intersezione: è chiaro solo dove tutte le risorse scelte sono alte insieme. Basta che una manchi per scurire la zona.", rLgIceHi: "sul ghiaccio", rLgIceLo: "lontano", rLgQuietHi: "Terra nascosta", rLgQuietLo: "Terra in vista", rLgColdHi: "sempre in luce", rLgColdLo: "sempre in ombra", rLgBoth: "tutte alte", rLgNone: "almeno una manca", rLgCrater: "cratere", rLgIceCr: "cratere con ghiaccio", rLgEarth: "direzione della Terra", rLgYou: "il tuo sito", rLgExp: "proposte degli esperti", rLgOpt: "sito ottimo", rl_quiet: "Terra nascosta", rl_cold: "Ombra (freddo)", rl_quiet_lg: "Silenzio radio (Terra nascosta)", rl_cold_lg: "Ombra e freddo", rOptTop_mixed: "La missione mista dà lo stesso peso a ghiaccio, Sole e Terra: l'ottimo è il punto di equilibrio, abbastanza alto da avere luce e Terra, ma non troppo lontano da un cratere con ghiaccio. Non vince in nessuna singola mappa, vince nell'intersezione di tutte e tre.", rOptTop_pair: "La missione premia allo stesso modo {a} e {b}: l'ottimo è dove le due mappe sono chiare insieme, cioè sulle zone alte del lato rivolto verso la Terra, dove la luce arriva radente e il segnale resta in vista.", rLesson2: "Prova una nuova partita: cambiano missione, crateri e rilievi, e cambia anche il sito ottimo.", rExpScore: "{n}: {p}/100 per questa missione, a {d} km dall'ottimo.", rExperts: "E gli esperti?", rLossMost: "La differenza più grande rispetto all'ottimo è su: <b>{f}</b>.", rYou: "Tu", rYouVsOpt: "Il tuo sito e l'ottimo", rGeo: "Il punteggio è una media pesata «geometrica»: basta che una risorsa importante sia quasi a zero per far crollare tutto. Per questo l'ottimo non è mai nel punto migliore per una sola risorsa, ma dove le risorse che contano per la missione si sovrappongono: è l'intersezione che vedi chiara nelle mappe.", rNotIce: "Il punto più vicino al ghiaccio ({c}) è a {d} km: lì però il Sole è {s}% e la Terra {e}%.", rNotEarth: "Il punto con più Terra ({c}, Terra {e}%) è a {d} km, ma lì il Sole è {s}% e il ghiaccio a {i} km.", rNotSun: "Il punto più illuminato in assoluto ({c}, Sole {s}%) è a {d} km, ma lì la Terra si vede {e}% e il ghiaccio è a {i} km.", rOptTop_ice: "La missione premia soprattutto il ghiaccio: l'ottimo è appena fuori da un cratere freddo, abbastanza vicino da raggiungere il deposito ma non dentro il buio totale, dove non arriverebbero né luce né segnale.", rOptTop_sun: "La missione premia soprattutto il Sole: l'ottimo è su un rilievo alto, dove le creste vedono il Sole che gira basso sull'orizzonte e le ombre arrivano più tardi.", rOptTop_earth: "La missione premia soprattutto la Terra: l'ottimo si trova dove il terreno è alto e rivolto verso la Terra, così l'antenna resta in contatto per la maggior parte del tempo, senza però finire in una zona del tutto buia.", rOptIs: "Il sito ottimo ★ è <b>{c}</b>: Sole {s}%, Terra {e}%, ghiaccio a {i} km.", rWhyOpt: "Perché proprio lì", rR_bad: "Il tuo sito non va bene per questa missione: l'ottimo è a {d} km. Guarda qui sotto cosa ti mancava.", rR_ok: "Scelta discreta: l'ottimo è a {d} km e dà molto di più a questa missione.", rR_good: "Buona scelta: il tuo sito vale quasi quanto l'ottimo, che è a {d} km.", rR_great: "Ottimo lavoro: hai trovato il sito migliore (o quasi). Il tuo punto è a {d} km dall'ottimo.", rResult: "Risultato", rComSelf: "Da ufficiale delle comunicazioni voglio il contatto con la Terra: senza, niente comandi e niente dati.", rEngSelf: "Da ingegnere guardo l'energia: senza Sole i pannelli non reggono la notte lunare.", rGeoSelf: "Da geologa non rinuncio al ghiaccio vicino: è quello che rende la missione davvero preziosa.", rPropose: "Io propongo {c}: Sole {s}%, Terra {e}%, ghiaccio a {i} km.", rNeed_mixed: "Qui serve un equilibrio fra ghiaccio, luce e Terra.", rNeed_stay: "Per restare a lungo servono insieme luce e collegamento con la Terra.", rNeed_ice: "Per prendere un campione bisogna arrivare vicino al ghiaccio.", rNeed_rover: "Per un rover solare serve luce, tanta e continua.", rNeed_comms: "Per una rete di comunicazione conta prima di tutto vedere la Terra.", rHowTo: "Apri le mappe a sinistra (anche le intersezioni), ascolta gli esperti se vuoi e poi clicca il punto che secondo te è il migliore. Quando confermi, il gioco calcola il sito ottimo e ti spiega perché.", rBrief: "Peso delle risorse per questa missione: ghiaccio <b>{i}%</b>, Sole <b>{s}%</b>, Terra <b>{e}%</b>.", rPicked: "Il tuo sito: <b>{c}</b> — Sole {s}%, Terra {e}%, ghiaccio a {i} km.", rPickHint: "Clicca sulla mappa per mettere il tuo sito. Puoi spostarlo quante volte vuoi prima di confermare.", rEarthDir: "Terra", rl_all_lg: "Ghiaccio, Sole e Terra insieme", rl_ei_lg: "Terra e ghiaccio insieme", rl_si_lg: "Sole e ghiaccio insieme", rl_se_lg: "Sole e Terra insieme", rl_earth_lg: "Visibilità della Terra", rl_sun_lg: "Esposizione al Sole", rl_ice_lg: "Vicinanza al ghiaccio", rl_all: "Tutte e 3 insieme", rl_ei: "Terra ∩ Ghiaccio", rl_si: "Sole ∩ Ghiaccio", rl_se: "Sole ∩ Terra", rl_earth: "Terra", rl_sun: "Sole", rl_ice: "Ghiaccio", rm_mixed_d: "Una base che fa un po' di tutto: energia, comunicazioni e accesso al ghiaccio, in equilibrio.", rm_mixed: "Missione mista Artemis", rm_stay_d: "Restare a lungo in un sito: servono energia continua e collegamento costante con la Terra.", rm_stay: "Permanenza prolungata", rm_ice_d: "Raccogliere un campione di ghiaccio d'acqua da un cratere in ombra e analizzarlo.", rm_ice: "Campione di ghiaccio", rm_rover_d: "Far lavorare un rover alimentato solo dal Sole: deve restare carico il più a lungo possibile.", rm_rover: "Rover a pannelli solari", rm_comms_d: "Installare un'antenna che faccia da ponte radio tra la Terra e i futuri satelliti in orbita lunare.", rm_comms: "Rete di comunicazione", rMissionPts: "Per la missione", rIceKm: "Ghiaccio a", rEarth: "Terra", rSun: "Sole", rIce: "Ghiaccio", rNewBtn: "Nuova partita", rConfirmBtn: "Conferma il sito", rAskBtn: "Chiedi agli esperti", rExpertsTitle: "Il consiglio di missione", rMapsHelp: "Ogni partita è una configurazione casuale del Polo Sud. Guarda le tre risorse da sole e poi le loro intersezioni: le zone chiare sono quelle dove le risorse scelte ci sono insieme.", rMapsTitle: "Esplora le mappe", rMissionTitle: "La missione che ti è affidata", rStep4: "4 · La tua scelta", rStep3: "3 · Esperti", rStep2: "2 · Mappe", rStep1: "1 · Missione",
     eduHistory: "Storia", eduExplore: "Esplora", eduReason: "Ragionamento", eduGame: "Missione",
-    hTitle: "Perché proprio lì?", hIntro: "Ogni allunaggio è un compromesso tra sicurezza, scienza, luce e comunicazioni. Scegli una missione per scoprire perché è atterrata in quel punto.",
-    hAll: "Tutte", hApollo: "Apollo", hRobotic: "Robotiche", hFuture: "Prossime",
+    hWhat: "Che cos'era", hAlt: "Perché non altrove?", hLinks: "Per saperne di più", hCrew: "Equipaggio", hFlyby: "nessun punto di atterraggio",
+    hPatchAlt: "Stemma della missione {n}", hPatchCap: "Lo stemma ufficiale della missione (immagine NASA via Wikimedia Commons).", hPatchGen: "Logo del programma Artemis (NASA via Wikimedia Commons).",
+    hPatchNone: "Stemma ricostruito per questa app.", hPatchOff: "Stemma ufficiale non caricato (serve la connessione a Internet): ecco una versione semplificata.",
+    hFont: "Dimensione del testo", hTitle: "Perché proprio lì?", hIntro: "Ogni allunaggio è un compromesso tra sicurezza, scienza, luce e comunicazioni. Scegli una missione per scoprire perché è atterrata in quel punto.",
+    hAll: "Tutte", hApollo: "Apollo", hRobotic: "Robotiche", hFuture: "Artemis",
     hWhy: "Perché quel sito", hLegacy: "Cosa ci ha lasciato", hApprox: "coordinate approssimate", hPlanned: "pianificata",
-    hSrc: "Fonti: archivi NASA, CNSA, ISRO, JAXA; stato Artemis aggiornato a novembre 2026.",
+    hSrc: "Fonti: NASA, ESA e Wikipedia (link sopra). Stemmi: NASA via Wikimedia Commons. Stato di Artemis aggiornato a novembre 2026.",
     xTitle: "Mettiti sulla Luna", xIntro: "Ruota la Luna e clicca un punto (o scegline uno a caso). Poi atterra e guardati intorno: vedrai dove sono il Sole e la Terra da lì.",
     xRandom: "Punto a caso", xLand: "Atterra e guardati intorno", xBack: "Torna al globo", xNone: "Nessun punto scelto",
     xSkyTitle: "Il cielo da qui", xLookSun: "Guarda il Sole", xLookEarth: "Guarda la Terra", xTime: "Tempo",
@@ -4385,15 +4680,25 @@ const I18N_EDU = {
     gLit: "al Sole", gDark: "al buio", gReady: "THRUSTERS READY, CAPTAIN", gContact: "CONTACT LIGHT", gCrash: "IMPATTO",
     gLandOk: "Atterraggio riuscito: {p} punti", gLandHard: "Atterraggio duro: {p} punti", gLandCrash: "Il lander si è schiantato: 0 punti",
     gLandWhy: "Morbidezza {a}/40 · pendenza {b}/30 · luce {c}/30", gRetry: "Riprova l'allunaggio", gToPatch: "Crea la toppa di missione",
-    gPatchTitle: "La tua toppa di missione", gName: "Nome missione", gCrew: "Comandante", gSvg: "Scarica SVG", gPng: "Scarica PNG",
+    gEast: "verso Est", gPoleS: "POLO SUD", gCompassT: "Dove è il Nord?", gCompassNote: "Siamo al Polo Sud: ogni direzione che si allontana dal centro della mappa porta verso NORD (frecce gialle). Girando attorno al polo in senso orario si va verso EST, in senso antiorario verso OVEST.", gHowTitle: "Comandi", gHowSpace: "Avvia la discesa, poi tienilo premuto: motore", gHowUp: "Motore principale: frena la caduta", gHowLR: "Sposta il lander a sinistra / destra", gHowLR2: "Anche con A e D", gHowL: "Autoland (punteggio dimezzato)", gHowGoal: "Atterra tra le luci blu: velocità verticale < 2 m/s, laterale < 1 m/s", introGo: "Iniziamo!", introHint: "Premi Invio o clicca il pulsante", introMission: "La tua missione",
+    introRKick: "Ragionamento", introRTitle: "Aiuta gli esperti a mettersi d'accordo!", introRText: "Il consiglio di missione deve scegliere dove atterrare al Polo Sud, ma i tre esperti non sono d'accordo: ognuno tira dalla sua parte. Guarda le condizioni della missione e decidi tu il sito migliore.",
+    introR1: "Leggi la missione e la situazione a sinistra", introR2: "Esplora le mappe: Sole, Terra, ghiaccio e le loro intersezioni", introR3: "Ascolta i consigli dei tre esperti", introR4: "Clicca sulla mappa il punto migliore e conferma",
+    introG0Kick: "Missione", introG0Title: "Comandante, tocca a te!", introG0Text: "Sei al comando di una missione Artemis verso il Polo Sud della Luna. Scegli la difficoltà, trova il sito di atterraggio giusto, fai atterrare il lander e crea la toppa della tua missione.",
+    introG1Kick: "Fase 1 · Il sito", introG1Title: "Trova il posto giusto per atterrare!", introG1Text: "Questa è una foto del Polo Sud scattata dall'orbita. Ti servono <b>luce</b> per tutte le 48 ore, la <b>Terra in vista</b> per parlare con Houston e il <b>ghiaccio</b> vicino. Leggi il briefing a sinistra e clicca sulla mappa dove vuoi atterrare.",
+    introG2Kick: "Fase 2 · L'allunaggio", introG2Title: "Fai atterrare il lander!", introG2Text: "Il computer di bordo è pronto e il sito è sotto di te. Scendi piano, resta tra le luci blu e tocca il suolo dolcemente. Se è troppo difficile puoi usare l'autoland oppure saltare questa fase.",
+    introG3Kick: "Fase 3 · La toppa", introG3Title: "Ce l'hai fatta: crea la tua toppa!", introG3Text: "Ogni missione vera ha il suo stemma. Dai un nome alla tua missione, scrivi il nome del comandante e scarica la toppa da tenere come ricordo.",
+    gSkipLand: "Salta l'allunaggio", gSkipNote: "Saltando l'allunaggio ottieni solo un quarto dei punti: 25/100.", gPatchTitle: "La tua toppa di missione", gName: "Nome missione", gCrew: "Comandante", gSvg: "Scarica SVG", gPng: "Scarica PNG",
     gTotal: "PUNTEGGIO", gNear: "presso {c}", gOutOfFuel: "Carburante esaurito!", gStep0: "Difficoltà", gDiffTitle: "Scegli la difficoltà", gEasy: "FACILE", gMedium: "MEDIO", gHard: "DIFFICILE", gEasyD: "Carburante illimitato, niente meteoriti, il sito è vicino al punto di partenza.", gMediumD: "Carburante al 75%, pioggia di meteoriti, il sito è un po' più lontano. Punteggio del sito più severo.", gHardD: "Carburante al 45% e consumo maggiore, tanti meteoriti, sito molto distante. Niente indicazioni di Sole e Terra sulla mappa.", gChangeDiff: "Cambia difficoltà", gStartDescent: "Avvia la discesa (Spazio)", gAutoBtn: "Autoland (L)", gPressSpace: "Premi SPAZIO per iniziare la discesa", gSiteLbl: "SITO", gToSite: "AL SITO", gComet: "Una cometa!", gUfo: "UFO?!", gOrion: "Orion · Artemis", gAutoOn: "AUTOLAND ATTIVO · un comando manuale lo spegne", gAutoHalf: "Atterraggio automatico: punteggio dimezzato.", gLandWhy2: "Morbidezza {a}/35 · pendenza {b}/15 · precisione {c}/35 · luce {d}/15", gMissionOk: "MISSIONE COMPIUTA", gSplat: "SPLAT!", gMeteorHit: "COLPITO DA UN METEORITE", gHitMeteor: "Un meteorite ha colpito il lander: 0 punti", gEscaped: "Troppa spinta: il lander è tornato nello spazio. 0 punti", gEscapeTitle: "HOUSTON… DOVE STATE ANDANDO?", gGalaxies: "Si sta forse dirigendo verso\ngalassie lontane lontane?", gPlEarth: "Terra", gPlMars: "Marte", gPlJupiter: "Giove", gPlSaturn: "Saturno", gPlNeptune: "Nettuno", gBriefHard: "Livello difficile: nessuna indicazione su dove sono il Sole e la Terra. Deducilo dalla luce sulla mappa."
   },
   en: { rQuiet: "Radio silence", rCold: "Cold shadow", rm_habitat: "Crew habitat", rm_habitat_d: "Build the first living module: it needs power, contact with Earth and water not too far away.", rm_isru: "Water extraction plant (ISRU)", rm_isru_d: "Extract water from ice and turn it into oxygen and propellant: it needs nearby ice and lots of power for the ovens.", rm_radio: "Quiet radio telescope", rm_radio_d: "Listen to the universe in radio waves: Earth is a huge source of noise, so it is better where Earth is NOT visible. It still needs power.", rm_infrared: "Infrared telescope", rm_infrared_d: "Infrared instruments only work well in the cold: better a shadowed area, but one that can still send data to Earth.", rm_relay: "Radio relay for a distant rover", rm_relay_d: "Place a station that forwards commands to an exploring rover: it must see Earth and stay powered for a long time.", rs_storm: "Situation: a solar storm is forecast. Better stay near craters, whose walls act as shelter.", rs_antenna: "Situation: the onboard antenna is damaged and transmits poorly. Earth must be in view as long as possible.", rs_battery: "Situation: the batteries have lost capacity. Short nights are vital: more Sun is needed.", rs_water: "Situation: the water brought from Earth is running low. Nearby ice becomes more important.", rs_satrelay: "Situation: a relay satellite is already in orbit and covers communications. Seeing Earth matters less.", rs_night: "Situation: the mission starts at the beginning of the lunar night. A site with the shortest shadows is needed.", rSitC_storm: " And with the storm coming, a nearby crater as shelter won't hurt.", rSitC_antenna: " With the antenna in that state, every hour of Earth in view counts double.", rSitC_battery: " With these batteries we can't afford long nights.", rSitC_water: " With the water we have, nearby ice is a safety net.", rSitC_satrelay: " Anyway the relay satellite covers our communications.", rSitC_night: " We start in the dark: every extra hour of Sun counts.", rSitR_storm: "The solar storm raised the weight of ice (and nearby craters): the optimum moved closer to the hollows.", rSitR_antenna: "The damaged antenna raised the weight of Earth: the optimum moved toward the side facing Earth.", rSitR_battery: "The weaker batteries raised the weight of the Sun: the optimum prefers the brightest ridges.", rSitR_water: "The low water reserves raised the weight of ice: the optimum moved closer to the deposits.", rSitR_satrelay: "The relay satellite lowered the weight of Earth: the optimum can sit where Earth is less visible.", rSitR_night: "Starting in the dark raised the weight of the Sun: the optimum looks for places where night is shortest.", rOptTop_quiet: "The mission wants radio silence above all: the optimum is on the side opposite Earth, where the terrain hides it, but still lit enough to power the instruments.", rOptTop_cold: "The mission wants cold above all: the optimum is in a shadowed area, but not in the total darkness of a crater, because it must still see Earth to send data.", rBrief2: "Resource weights for this mission: {l}.", rNeed_comms_2: "A radio network only lives if it sees Earth; everything else comes after.", rNeed_comms_3: "Here everything revolves around the signal home.", rNeed_rover_2: "The rover's panels must stay in the Sun as many hours as possible.", rNeed_rover_3: "A solar rover stuck in the dark is a lost rover.", rNeed_ice_2: "The sample is in the ice: the closer we are, the less we risk on the way.", rNeed_ice_3: "Without ice within reach, the mission makes no sense.", rNeed_stay_2: "Staying long means never switching off and never losing contact.", rNeed_stay_3: "For a long stay, light and Earth both matter, every day.", rNeed_mixed_2: "A mixed mission has to please a bit of everyone.", rNeed_mixed_3: "Here no resource can be missing completely.", rNeed_habitat: "A habitat needs power, contact with home and water close at hand.", rNeed_habitat_2: "People will live here: we need everything, without extremes.", rNeed_habitat_3: "For a habitat, compromise is the rule.", rNeed_isru: "An ISRU plant wants nearby ice and power to heat it.", rNeed_isru_2: "Extracting water costs energy: we need ice and Sun together.", rNeed_isru_3: "Ice is the raw material, the Sun is the engine of the plant.", rNeed_radio: "A radio telescope hates Earth: it is the strongest source of noise in the sky.", rNeed_radio_2: "To listen to the universe we must hide from Earth.", rNeed_radio_3: "The more Earth is hidden, the cleaner the radio sky.", rNeed_infrared: "An infrared telescope wants cold, that is, shadow.", rNeed_infrared_2: "The Sun's heat blinds infrared: we need shade.", rNeed_infrared_3: "Cold, yes, but the data must still reach Earth.", rNeed_relay: "A radio relay must see Earth and stay on for a long time.", rNeed_relay_2: "If the relay shuts down, the rover goes silent.", rNeed_relay_3: "Earth in view and power: those are the two things that matter.", rProp1: "I propose {c}: Sun {s}%, Earth {e}%, ice at {i} km.", rProp2: "I would go here, {c}: Sun {s}% of the time, Earth {e}%, ice {i} km away.", rProp3: "Look at {c}: Sun {s}%, Earth {e}% and ice at {i} km. To me it is the right place.", rGeoSelf_2: "Ice is the Moon's real treasure: I don't want to move away from it.", rGeoSelf_3: "The closer to the ice, the more samples and the more science.", rEngSelf_2: "Every hour in the dark drains the battery: I want the brightest ridge.", rEngSelf_3: "My job is to keep everything on, and without Sun nothing stays on.", rComSelf_2: "If we lose Earth we also lose control of the mission.", rComSelf_3: "For me one thing matters: that Houston can hear us.", rExpScore2: "{n}: {d} km from the optimum, for this mission it scores", rExpWhy: "The experts never hit the optimum: each one pulls toward their own priority. Your job is to combine their advice with the mission profile.", rLgD_sun: "Share of time the point is lit by the Sun.", rLgD_earth: "Share of time Earth is above the horizon (communications).", rLgD_ice: "How close ice is: bright = on or near a deposit.", rLgD_quiet: "How hidden Earth is: bright = radio silence.", rLgD_cold: "How much the point stays in shadow: dark = cold.", rLgD_inter: "Intersection: bright only where all the chosen resources are high together. One missing resource is enough to darken the area.", rLgIceHi: "on the ice", rLgIceLo: "far away", rLgQuietHi: "Earth hidden", rLgQuietLo: "Earth in view", rLgColdHi: "always lit", rLgColdLo: "always shaded", rLgBoth: "all high", rLgNone: "at least one missing", rLgCrater: "crater", rLgIceCr: "crater with ice", rLgEarth: "direction of Earth", rLgYou: "your site", rLgExp: "experts' proposals", rLgOpt: "optimal site", rl_quiet: "Earth hidden", rl_cold: "Shadow (cold)", rl_quiet_lg: "Radio silence (Earth hidden)", rl_cold_lg: "Shadow and cold", rOptTop_mixed: "The mixed mission gives ice, Sun and Earth the same weight: the optimum is the balance point, high enough to get light and Earth, but not too far from an icy crater. It wins on no single map, it wins on the intersection of all three.", rOptTop_pair: "The mission rewards {a} and {b} equally: the optimum is where both maps are bright together, on the high ground of the side facing Earth, where light grazes the surface and the signal stays in view.", rLesson2: "Try a new game: the mission, craters and terrain change, and so does the optimal site.", rExpScore: "{n}: {p}/100 for this mission, {d} km from the optimum.", rExperts: "And the experts?", rLossMost: "The biggest difference from the optimum is in: <b>{f}</b>.", rYou: "You", rYouVsOpt: "Your site vs the optimum", rGeo: "The score is a weighted “geometric” average: if one important resource is close to zero, everything drops. That is why the optimum is never the best point for a single resource, but where the resources that matter for the mission overlap: the intersection you see bright on the maps.", rNotIce: "The point closest to ice ({c}) is {d} km away: but there the Sun is {s}% and Earth {e}%.", rNotEarth: "The point with the most Earth ({c}, Earth {e}%) is {d} km away, but there the Sun is {s}% and ice {i} km away.", rNotSun: "The brightest point overall ({c}, Sun {s}%) is {d} km away, but there Earth is visible {e}% and ice is {i} km away.", rOptTop_ice: "The mission rewards ice above all: the optimum is just outside a cold crater, close enough to reach the deposit but not inside total darkness, where neither light nor signal would arrive.", rOptTop_sun: "The mission rewards the Sun above all: the optimum is on high ground, where ridges see the low Sun circling the horizon and shadows arrive later.", rOptTop_earth: "The mission rewards Earth above all: the optimum is where the ground is high and faces Earth, so the antenna stays in contact most of the time, without ending up in a fully dark area.", rOptIs: "The optimal site ★ is <b>{c}</b>: Sun {s}%, Earth {e}%, ice at {i} km.", rWhyOpt: "Why exactly there", rR_bad: "Your site does not suit this mission: the optimum is {d} km away. See below what you were missing.", rR_ok: "Fair choice: the optimum is {d} km away and gives this mission much more.", rR_good: "Good choice: your site is almost as good as the optimum, {d} km away.", rR_great: "Great job: you found the best site (or almost). Your point is {d} km from the optimum.", rResult: "Result", rComSelf: "As communications officer I want contact with Earth: without it, no commands and no data.", rEngSelf: "As an engineer I look at power: without Sun the panels won't survive the lunar night.", rGeoSelf: "As a geologist I won't give up nearby ice: it is what makes the mission truly valuable.", rPropose: "I propose {c}: Sun {s}%, Earth {e}%, ice at {i} km.", rNeed_mixed: "Here we need a balance between ice, light and Earth.", rNeed_stay: "For a long stay you need light and a link with Earth together.", rNeed_ice: "To take a sample you must get close to the ice.", rNeed_rover: "A solar rover needs light, lots of it and without breaks.", rNeed_comms: "For a communication network, seeing Earth comes first.", rHowTo: "Open the maps on the left (including the intersections), listen to the experts if you like, then click the point you think is best. When you confirm, the game computes the optimal site and explains why.", rBrief: "Resource weights for this mission: ice <b>{i}%</b>, Sun <b>{s}%</b>, Earth <b>{e}%</b>.", rPicked: "Your site: <b>{c}</b> — Sun {s}%, Earth {e}%, ice at {i} km.", rPickHint: "Click on the map to place your site. You can move it as often as you like before confirming.", rEarthDir: "Earth", rl_all_lg: "Ice, Sun and Earth together", rl_ei_lg: "Earth and ice together", rl_si_lg: "Sun and ice together", rl_se_lg: "Sun and Earth together", rl_earth_lg: "Earth visibility", rl_sun_lg: "Sun exposure", rl_ice_lg: "Proximity to ice", rl_all: "All 3 together", rl_ei: "Earth ∩ Ice", rl_si: "Sun ∩ Ice", rl_se: "Sun ∩ Earth", rl_earth: "Earth", rl_sun: "Sun", rl_ice: "Ice", rm_mixed_d: "A base that does a bit of everything: power, communications and access to ice, in balance.", rm_mixed: "Mixed Artemis mission", rm_stay_d: "Stay at one site for a long time: you need continuous power and a constant link with Earth.", rm_stay: "Long stay", rm_ice_d: "Collect a water-ice sample from a shadowed crater and analyse it.", rm_ice: "Ice sample", rm_rover_d: "Run a rover powered only by the Sun: it must stay charged as long as possible.", rm_rover: "Solar-powered rover", rm_comms_d: "Install an antenna that relays radio between Earth and future satellites in lunar orbit.", rm_comms: "Communication network", rMissionPts: "For the mission", rIceKm: "Ice at", rEarth: "Earth", rSun: "Sun", rIce: "Ice", rNewBtn: "New game", rConfirmBtn: "Confirm the site", rAskBtn: "Ask the experts", rExpertsTitle: "The mission council", rMapsHelp: "Every game is a random South Pole configuration. Look at the three resources alone and then at their intersections: bright areas are where the chosen resources come together.", rMapsTitle: "Explore the maps", rMissionTitle: "Your assigned mission", rStep4: "4 · Your choice", rStep3: "3 · Experts", rStep2: "2 · Maps", rStep1: "1 · Mission",
     eduHistory: "History", eduExplore: "Explore", eduReason: "Reasoning", eduGame: "Mission",
-    hTitle: "Why there?", hIntro: "Every landing is a trade-off between safety, science, light and communications. Pick a mission to find out why it landed where it did.",
-    hAll: "All", hApollo: "Apollo", hRobotic: "Robotic", hFuture: "Next",
+    hWhat: "What it was", hAlt: "Why not somewhere else?", hLinks: "Find out more", hCrew: "Crew", hFlyby: "no landing point",
+    hPatchAlt: "{n} mission patch", hPatchCap: "The official mission patch (NASA image via Wikimedia Commons).", hPatchGen: "Artemis program logo (NASA via Wikimedia Commons).",
+    hPatchNone: "Badge recreated for this app.", hPatchOff: "Official patch not loaded (an Internet connection is needed): here is a simplified version.",
+    hFont: "Text size", hTitle: "Why there?", hIntro: "Every landing is a trade-off between safety, science, light and communications. Pick a mission to find out why it landed where it did.",
+    hAll: "All", hApollo: "Apollo", hRobotic: "Robotic", hFuture: "Artemis",
     hWhy: "Why that site", hLegacy: "What it left us", hApprox: "approximate coordinates", hPlanned: "planned",
-    hSrc: "Sources: NASA, CNSA, ISRO, JAXA archives; Artemis status as of November 2026.",
+    hSrc: "Sources: NASA, ESA and Wikipedia (links above). Patches: NASA via Wikimedia Commons. Artemis status as of November 2026.",
     xTitle: "Stand on the Moon", xIntro: "Rotate the Moon and click a point (or pick one at random). Then land and look around: you'll see where the Sun and Earth are from there.",
     xRandom: "Random point", xLand: "Land and look around", xBack: "Back to the globe", xNone: "No point chosen",
     xSkyTitle: "The sky from here", xLookSun: "Look at the Sun", xLookEarth: "Look at Earth", xTime: "Time",
@@ -4428,7 +4733,14 @@ const I18N_EDU = {
     gLit: "sunlit", gDark: "dark", gReady: "THRUSTERS READY, CAPTAIN", gContact: "CONTACT LIGHT", gCrash: "IMPACT",
     gLandOk: "Landing successful: {p} points", gLandHard: "Hard landing: {p} points", gLandCrash: "The lander crashed: 0 points",
     gLandWhy: "Softness {a}/40 · slope {b}/30 · light {c}/30", gRetry: "Retry the landing", gToPatch: "Create the mission patch",
-    gPatchTitle: "Your mission patch", gName: "Mission name", gCrew: "Commander", gSvg: "Download SVG", gPng: "Download PNG",
+    gEast: "towards East", gPoleS: "SOUTH POLE", gCompassT: "Where is North?", gCompassNote: "We are at the South Pole: every direction away from the centre of the map leads NORTH (yellow arrows). Circling the pole clockwise takes you EAST, anticlockwise WEST.", gHowTitle: "Controls", gHowSpace: "Start the descent, then hold it: engine", gHowUp: "Main engine: slows your fall", gHowLR: "Move the lander left / right", gHowLR2: "Also with A and D", gHowL: "Autoland (score halved)", gHowGoal: "Land between the blue lights: vertical speed < 2 m/s, lateral < 1 m/s", introGo: "Let's go!", introHint: "Press Enter or click the button", introMission: "Your mission",
+    introRKick: "Reasoning", introRTitle: "Help the experts agree!", introRText: "The mission council must choose where to land at the South Pole, but the three experts disagree: each one pulls their own way. Look at the mission conditions and pick the best site yourself.",
+    introR1: "Read the mission and the situation on the left", introR2: "Explore the maps: Sun, Earth, ice and their intersections", introR3: "Listen to the three experts' advice", introR4: "Click the best point on the map and confirm",
+    introG0Kick: "Mission", introG0Title: "Commander, it's your turn!", introG0Text: "You are in command of an Artemis mission to the Moon's South Pole. Choose the difficulty, find the right landing site, land the lander and create your mission patch.",
+    introG1Kick: "Phase 1 · The site", introG1Title: "Find the right place to land!", introG1Text: "This is a photo of the South Pole taken from orbit. You need <b>light</b> for the whole 48 hours, <b>Earth in view</b> to talk to Houston and <b>ice</b> nearby. Read the briefing on the left and click on the map where you want to land.",
+    introG2Kick: "Phase 2 · The landing", introG2Title: "Land the lander!", introG2Text: "The onboard computer is ready and the site is below you. Go down slowly, stay between the blue lights and touch the ground gently. If it is too hard you can use autoland or skip this phase.",
+    introG3Kick: "Phase 3 · The patch", introG3Title: "You made it: create your patch!", introG3Text: "Every real mission has its own emblem. Name your mission, write the commander's name and download the patch as a keepsake.",
+    gSkipLand: "Skip the landing", gSkipNote: "If you skip the landing you only get a quarter of the points: 25/100.", gPatchTitle: "Your mission patch", gName: "Mission name", gCrew: "Commander", gSvg: "Download SVG", gPng: "Download PNG",
     gTotal: "SCORE", gNear: "near {c}", gOutOfFuel: "Out of fuel!", gStep0: "Difficulty", gDiffTitle: "Choose the difficulty", gEasy: "EASY", gMedium: "MEDIUM", gHard: "HARD", gEasyD: "Unlimited fuel, no meteorites, the site is close to the starting point.", gMediumD: "Fuel at 75%, meteorite shower, the site is a bit farther away. Stricter site score.", gHardD: "Fuel at 45% with higher consumption, lots of meteorites, the site is far away. No Sun and Earth hints on the map.", gChangeDiff: "Change difficulty", gStartDescent: "Start descent (Space)", gAutoBtn: "Autoland (L)", gPressSpace: "Press SPACE to start the descent", gSiteLbl: "SITE", gToSite: "TO SITE", gComet: "A comet!", gUfo: "UFO?!", gOrion: "Orion · Artemis", gAutoOn: "AUTOLAND ON · any manual input turns it off", gAutoHalf: "Automatic landing: score halved.", gLandWhy2: "Softness {a}/35 · slope {b}/15 · precision {c}/35 · light {d}/15", gMissionOk: "MISSION ACCOMPLISHED", gSplat: "SPLAT!", gMeteorHit: "HIT BY A METEORITE", gHitMeteor: "A meteorite hit the lander: 0 points", gEscaped: "Too much thrust: the lander went back to space. 0 points", gEscapeTitle: "HOUSTON… WHERE ARE YOU GOING?", gGalaxies: "Could it be heading for\na galaxy far, far away?", gPlEarth: "Earth", gPlMars: "Mars", gPlJupiter: "Jupiter", gPlSaturn: "Saturn", gPlNeptune: "Neptune", gBriefHard: "Hard level: no hints on where the Sun and Earth are. Work it out from the light on the map."
   },
 };
@@ -4448,20 +4760,28 @@ function drawSphere(cv, st) {
   st.geom = { S, k, Rd, cx, cy };
   const img = c.createImageData(S, S), d = img.data;
   const sp = Math.sin(st.lat * DEG), cp = Math.cos(st.lat * DEG), L = [-.45, .35, .82], Ln = Math.hypot(...L);
+  const real = !!st.real;
   for (let py = 0; py < S; py++) {
     const ny = (cy - py - .5) / Rd;
     for (let px = 0; px < S; px++) {
       const nx = (px + .5 - cx) / Rd, r2 = nx * nx + ny * ny, o = (py * S + px) * 4;
-      if (r2 > 1) { d[o + 3] = 0; continue; }
+      if (r2 > 1) {
+        if (real) starPixel(d, o, px, py, k); else d[o + 3] = 0;
+        continue;
+      }
       const nz = Math.sqrt(1 - r2), lat = Math.asin(nz * sp + ny * cp) / DEG, lon = st.lon + Math.atan2(nx, nz * cp - ny * sp) / DEG;
       const tx = Math.floor(((lon + 180) / 360 % 1 + 1) % 1 * TW), ty = Math.min(TH - 1, Math.floor((90 - lat) / 180 * TH));
-      const v = TEX[ty * TW + tx] / 255 * (.22 + .95 * Math.max(0, (nx * L[0] + ny * L[1] + nz * L[2]) / Ln)) * (.75 + .25 * nz) * 255;
-      d[o] = v; d[o + 1] = v * .99; d[o + 2] = v * .97; d[o + 3] = 255;
+      if (!real) {
+        const v = TEX[ty * TW + tx] / 255 * (.22 + .95 * Math.max(0, (nx * L[0] + ny * L[1] + nz * L[2]) / Ln)) * (.75 + .25 * nz) * 255;
+        d[o] = v; d[o + 1] = v * .99; d[o + 2] = v * .97; d[o + 3] = 255; continue;
+      }
+      const v = moonShade(nx, ny, nz, sp, cp, tx, ty);
+      d[o] = Math.min(255, v * 1.03); d[o + 1] = v * .98; d[o + 2] = v * .9 + 3; d[o + 3] = 255;
     }
   }
   c.putImageData(img, 0, 0);
   // reticolo leggero + marcatori
-  c.save(); c.lineWidth = k; c.strokeStyle = "rgba(255,255,255,.1)";
+  c.save(); c.lineWidth = k; c.strokeStyle = real ? "rgba(255,255,255,.05)" : "rgba(255,255,255,.1)";
   const poly = pts => { let pen = false; c.beginPath(); for (const [la, lo] of pts) { const s = sphereToScreen(st, la, lo); if (!s.vis) { pen = false; continue; } pen ? c.lineTo(s.x, s.y) : c.moveTo(s.x, s.y); pen = true; } c.stroke(); };
   for (let la = -60; la <= 60; la += 30) { const p = []; for (let lo = -180; lo <= 180; lo += 3) p.push([la, lo]); poly(p); }
   for (let lo = -180; lo < 180; lo += 30) { const p = []; for (let la = -90; la <= 90; la += 3) p.push([la, lo]); poly(p); }
@@ -4519,83 +4839,219 @@ const fmtDateL = d => d.toLocaleString(lang, { dateStyle: "medium", timeStyle: "
 /* =====================================================================
    1) STORIA
    ===================================================================== */
+const WM = (h, f, w = 240) => `https://upload.wikimedia.org/wikipedia/commons/thumb/${h}/${f}/${w}px-${f}${f.endsWith(".svg") ? ".png" : ""}`;
 const HIST = [
-  { id: "luna9", name: "Luna 9", agency: "URSS", date: "1966-02-03", lat: 7.08, lon: -64.37, place: "Oceanus Procellarum", group: "robotic",
-    why: [["Primo atterraggio morbido della storia: serviva una pianura di mare liscia e raggiungibile con una traiettoria diretta.", "First soft landing in history: it needed a smooth mare plain reachable on a direct trajectory."],
-          ["Bisognava dimostrare che il suolo regge un veicolo: si temeva che la Luna fosse coperta da polvere profonda.", "It had to prove the ground could hold a lander: many feared the Moon was covered in deep dust."]],
-    legacy: ["Le prime foto dalla superficie: il suolo era solido. Via libera agli atterraggi con equipaggio.", "The first photos from the surface: the ground was solid. Green light for crewed landings."] },
+  { id: "sv1", name: "Surveyor 1", agency: "NASA", date: "1966-06-02", lat: -2.47, lon: -43.34, place: "Oceanus Procellarum", group: "robotic",
+    intro: ["Surveyor 1 era una sonda robotica a tre gambe, grande come un'auto piccola. È stata la prima sonda americana a posarsi dolcemente sulla Luna, tre anni prima degli astronauti.",
+            "Surveyor 1 was a three-legged robotic probe about the size of a small car. It was the first American spacecraft to touch down gently on the Moon, three years before the astronauts."],
+    why: [["Prima di mandare persone bisognava rispondere a una domanda semplice ma fondamentale: il suolo lunare regge il peso di un veicolo, oppure è una polvere soffice in cui si sprofonda? Serviva quindi un posto «facile», per non confondere un guasto con un problema del terreno.",
+           "Before sending people, NASA had to answer a simple but vital question: can the lunar ground hold the weight of a spacecraft, or is it soft dust you sink into? So it needed an “easy” place, so a crash would not be confused with a problem with the ground."],
+          ["L'Oceanus Procellarum è un «mare»: una pianura enorme di lava antica solidificata, piatta e con pochi massi. Più il terreno è piatto, meno rischi che la sonda si ribalti.",
+           "Oceanus Procellarum is a “mare”: a huge plain of old, hardened lava, flat and with few boulders. The flatter the ground, the lower the risk of the probe tipping over."],
+          ["Si trova vicino all'equatore e sul lato della Luna rivolto verso di noi: la Terra è sempre in cielo, quindi i segnali radio arrivano diretti e senza interruzioni.",
+           "It lies near the equator on the side of the Moon that faces us: Earth is always in the sky, so radio signals travel straight home without interruption."]],
+    alt: ["Gli altopiani, più chiari e pieni di crateri, erano troppo accidentati per una sonda senza pilota che non poteva scansare gli ostacoli. Il lato nascosto era escluso: senza la Terra in vista nessuno avrebbe potuto ricevere i dati.",
+          "The highlands, brighter and full of craters, were too rough for an unpiloted probe that could not dodge obstacles. The far side was ruled out: with no Earth in view, nobody could have received the data."],
+    legacy: ["Oltre 11 000 foto della superficie e la prova che il terreno era solido. Era il via libera per il modulo lunare dell'Apollo.",
+             "More than 11,000 photos of the surface and proof that the ground was solid. It was the green light for the Apollo lunar module."],
+    links: [["NASA", "https://science.nasa.gov/mission/surveyor-1/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Surveyor_1"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Surveyor_1"]] },
+
   { id: "a11", name: "Apollo 11", agency: "NASA", date: "1969-07-20", lat: .674, lon: 23.473, place: "Mare Tranquillitatis", group: "apollo",
-    why: [["Mare piatto e liscio, con pochi massi: il sito più sicuro per il primo allunaggio con equipaggio.", "Flat, smooth mare with few boulders: the safest place for the first crewed landing."],
-          ["Vicino all'equatore e sul lato visibile: traiettorie semplici, rientro d'emergenza possibile e Terra sempre in vista per le comunicazioni.", "Near the equator and on the near side: simple trajectories, emergency return possible and Earth always in view for comms."],
-          ["Atterraggio all'alba locale, con il Sole basso alle spalle: i crateri proiettavano ombre lunghe e il terreno si leggeva bene.", "Landing at local dawn with the Sun low behind them: craters cast long shadows and the terrain was easy to read."],
-          ["La zona era già stata fotografata dalle sonde Ranger, Surveyor e Lunar Orbiter.", "The area had already been imaged by the Ranger, Surveyor and Lunar Orbiter probes."]],
-    legacy: ["I primi esseri umani sulla Luna e 21,5 kg di campioni di basalto dei mari.", "The first humans on the Moon and 21.5 kg of mare basalt samples."] },
+    patch: WM("2/27", "Apollo_11_insignia.png"), crew: "Neil Armstrong, Buzz Aldrin, Michael Collins",
+    intro: ["La missione in cui per la prima volta due esseri umani, Neil Armstrong e Buzz Aldrin, hanno camminato sulla Luna, mentre Michael Collins li aspettava in orbita. Il modulo lunare si chiamava «Eagle».",
+            "The mission in which two humans, Neil Armstrong and Buzz Aldrin, walked on the Moon for the first time, while Michael Collins waited for them in orbit. The lunar module was called “Eagle”."],
+    why: [["La regola numero uno era la sicurezza. Il Mare della Tranquillità è una distesa di lava antica, piatta e liscia, con pochi crateri grandi e pochi massi: il posto ideale per un primo atterraggio in cui tutto era nuovo.",
+           "Rule number one was safety. The Sea of Tranquillity is an expanse of old lava, flat and smooth, with few large craters and few boulders: the ideal place for a first landing where everything was new."],
+          ["È vicino all'equatore lunare. Da lì le traiettorie sono le più semplici e consumano meno carburante, e in caso di emergenza si poteva ripartire e tornare verso la Terra più facilmente.",
+           "It is close to the lunar equator. From there the trajectories are the simplest and use the least fuel, and in an emergency it was easier to lift off and head back to Earth."],
+          ["È sul lato visibile: la Terra resta sempre sopra l'orizzonte, così Houston poteva parlare con gli astronauti in ogni momento e milioni di persone hanno visto la diretta TV.",
+           "It is on the near side: Earth always stays above the horizon, so Houston could talk to the astronauts at any time and millions of people watched the live TV broadcast."],
+          ["Si atterrò all'alba lunare, con il Sole basso alle spalle. Così le rocce e i crateri facevano ombre lunghe e si vedevano bene, ma il Sole non accecava gli astronauti e non scaldava troppo il suolo.",
+           "They landed at lunar dawn, with the Sun low behind them. That way rocks and craters cast long shadows and were easy to spot, but the Sun did not blind the astronauts or heat the ground too much."],
+          ["La zona era già stata fotografata da vicino dalle sonde Ranger, Surveyor e Lunar Orbiter: si sapeva cosa aspettarsi.",
+           "The area had already been photographed up close by the Ranger, Surveyor and Lunar Orbiter probes: they knew what to expect."]],
+    alt: ["Gli altopiani o i bordi dei grandi crateri erano scientificamente più interessanti, ma troppo rischiosi per la prima volta. Anche così, Armstrong dovette pilotare a mano per evitare un campo di massi e atterrò con meno di un minuto di carburante.",
+          "The highlands or the rims of big craters were scientifically more interesting, but too risky for a first attempt. Even so, Armstrong had to fly by hand to avoid a boulder field and landed with less than a minute of fuel left."],
+    legacy: ["I primi passi umani su un altro mondo e 21,5 kg di rocce lunari, che hanno mostrato che i mari sono lava vulcanica di circa 3,7 miliardi di anni fa.",
+             "The first human steps on another world and 21.5 kg of Moon rocks, which showed that the maria are volcanic lava about 3.7 billion years old."],
+    links: [["NASA", "https://www.nasa.gov/mission/apollo-11/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_11"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_11"]] },
+
   { id: "a12", name: "Apollo 12", agency: "NASA", date: "1969-11-19", lat: -3.01, lon: -23.42, place: "Oceanus Procellarum", group: "apollo",
-    why: [["Obiettivo: dimostrare un atterraggio di precisione, a poche centinaia di metri dalla sonda Surveyor 3 arrivata nel 1967.", "Goal: prove a precision landing, a few hundred metres from the Surveyor 3 probe that arrived in 1967."],
-          ["Un mare diverso da Tranquillitatis, per confrontare l'età delle lave.", "A different mare from Tranquillitatis, to compare lava ages."]],
-    legacy: ["Atterraggio a circa 180 m da Surveyor 3: gli astronauti ne riportarono a Terra dei pezzi.", "Landed about 180 m from Surveyor 3: the astronauts brought pieces of it back to Earth."] },
+    patch: WM("8/8d", "Apollo_12_insignia.png"), crew: "Pete Conrad, Alan Bean, Richard Gordon",
+    intro: ["Quattro mesi dopo Apollo 11, Pete Conrad e Alan Bean tornarono sulla Luna con una sfida nuova: atterrare in un punto preciso, scelto in anticipo.",
+            "Four months after Apollo 11, Pete Conrad and Alan Bean returned to the Moon with a new challenge: landing on a precise spot chosen in advance."],
+    why: [["Apollo 11 era atterrato a circa 6 km dal punto previsto. Per le missioni future, verso zone più interessanti ma più strette, bisognava dimostrare di saper «parcheggiare» con precisione.",
+           "Apollo 11 had landed about 6 km from the planned point. Future missions, heading to more interesting but tighter places, needed proof that the crew could “park” precisely."],
+          ["Il bersaglio era perfetto: la sonda Surveyor 3, arrivata nel 1967. Era un oggetto ben visibile da raggiungere, e i suoi pezzi rimasti due anni e mezzo al sole e al vuoto erano un esperimento già pronto.",
+           "The target was perfect: the Surveyor 3 probe, which landed in 1967. It was a clearly visible object to aim for, and its parts, after two and a half years of sunlight and vacuum, were a ready-made experiment."],
+          ["Era un mare diverso da quello di Apollo 11: confrontando le rocce si poteva capire se le lave lunari avevano tutte la stessa età.",
+           "It was a different mare from Apollo 11's: comparing the rocks would show whether all lunar lavas were the same age."]],
+    alt: ["Un sito qualsiasi non avrebbe permesso di misurare la precisione: senza un «bersaglio» sul terreno non si poteva dire di quanto si era sbagliato.",
+          "Any random site would not have measured precision: without a “target” on the ground there was no way to tell how far off you were."],
+    legacy: ["Atterraggio a circa 180 m da Surveyor 3. Gli astronauti ne staccarono la telecamera e la riportarono a Terra. Le rocce erano circa 500 milioni di anni più giovani di quelle di Apollo 11.",
+             "Landing about 180 m from Surveyor 3. The astronauts removed its camera and brought it back to Earth. The rocks were about 500 million years younger than Apollo 11's."],
+    links: [["NASA", "https://www.nasa.gov/mission/apollo-12/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_12"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_12"]] },
+
   { id: "a14", name: "Apollo 14", agency: "NASA", date: "1971-02-05", lat: -3.65, lon: -17.47, place: "Fra Mauro", group: "apollo",
-    why: [["La formazione Fra Mauro è materiale espulso dall'impatto che creò il bacino Imbrium: campionarla permette di datare quell'evento.", "The Fra Mauro formation is debris thrown out by the impact that made the Imbrium basin: sampling it dates that event."],
-          ["Era l'obiettivo originale di Apollo 13, rimasto da esplorare.", "It was Apollo 13's original target, still to be explored."]],
-    legacy: ["Prime rocce degli altopiani riportate con un'età precisa del bacino Imbrium.", "Highland rocks that pinned down the age of the Imbrium basin."] },
+    patch: WM("d/d7", "Apollo_14-insignia.png"), crew: "Alan Shepard, Edgar Mitchell, Stuart Roosa",
+    intro: ["Dopo l'incidente di Apollo 13, che non poté atterrare, Apollo 14 andò nello stesso luogo. Al comando c'era Alan Shepard, il primo americano nello spazio.",
+            "After the Apollo 13 accident, which could not land, Apollo 14 went to the same place. In command was Alan Shepard, the first American in space."],
+    why: [["Fra Mauro non è un mare: è un terreno collinoso fatto di detriti lanciati lontano dall'enorme impatto che scavò il bacino Imbrium, grande come mezza Europa.",
+           "Fra Mauro is not a mare: it is hilly ground made of debris thrown far by the huge impact that dug out the Imbrium basin, as wide as half of Europe."],
+          ["Raccogliere quelle rocce significava poter datare l'impatto di Imbrium, un evento chiave per scrivere la storia della Luna. Era il primo passo dalla «sicurezza» alla «scienza».",
+           "Collecting those rocks meant being able to date the Imbrium impact, a key event in writing the Moon's history. It was the first step from “safety” to “science”."],
+          ["Era l'obiettivo mancato di Apollo 13: la domanda scientifica era ancora lì, e la preparazione era già fatta.",
+           "It was Apollo 13's missed target: the scientific question was still open, and the preparation was already done."]],
+    alt: ["Un altro mare piatto sarebbe stato più sicuro ma avrebbe insegnato poco di nuovo: le lave erano già state campionate da Apollo 11 e 12.",
+          "Another flat mare would have been safer but taught little that was new: lavas had already been sampled by Apollo 11 and 12."],
+    legacy: ["Rocce che hanno fissato l'età del bacino Imbrium a circa 3,9 miliardi di anni. E Shepard colpì due palline da golf sulla Luna!",
+             "Rocks that set the age of the Imbrium basin at about 3.9 billion years. And Shepard hit two golf balls on the Moon!"],
+    links: [["NASA", "https://www.nasa.gov/mission/apollo-14/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_14"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_14"]] },
+
   { id: "a15", name: "Apollo 15", agency: "NASA", date: "1971-07-30", lat: 26.13, lon: 3.63, place: "Hadley–Apennine", group: "apollo",
-    why: [["Prima missione con il rover: si poteva puntare a un sito vario ma più impegnativo, tra montagne e un canale.", "First mission with the rover: they could target a varied but harder site between mountains and a channel."],
-          ["La Hadley Rille, un antico canale di lava, e i Monti Appennini, crosta antica sollevata dall'impatto di Imbrium.", "Hadley Rille, an ancient lava channel, and the Apennine Mountains, old crust uplifted by the Imbrium impact."]],
-    legacy: ["La «Genesis Rock», un frammento di crosta primordiale (anortosite).", "The “Genesis Rock”, a fragment of primordial crust (anorthosite)."] },
+    patch: WM("e/e5", "Apollo_15-insignia.png"), crew: "David Scott, James Irwin, Alfred Worden",
+    intro: ["La prima delle missioni «J», più lunghe e scientifiche: tre giorni sulla Luna e, per la prima volta, un'auto elettrica, il Lunar Roving Vehicle.",
+            "The first of the “J” missions, longer and more scientific: three days on the Moon and, for the first time, an electric car, the Lunar Roving Vehicle."],
+    why: [["Con il rover gli astronauti potevano percorrere decine di chilometri. Così si poteva scegliere un sito vario, con diversi tipi di terreno vicini tra loro.",
+           "With the rover the astronauts could drive tens of kilometres. That made it possible to choose a varied site, with different kinds of terrain close together."],
+          ["Da un lato c'erano i Monti Appennini, alti fino a 5 km: crosta antichissima sollevata dall'impatto di Imbrium. Dall'altro la Hadley Rille, un canale lungo e sinuoso scavato dalla lava.",
+           "On one side stood the Apennine Mountains, up to 5 km high: very old crust lifted up by the Imbrium impact. On the other lay Hadley Rille, a long, winding channel carved by lava."],
+          ["In un solo sito si potevano studiare due grandi capitoli della storia lunare: la crosta primordiale e il vulcanismo.",
+           "In a single site they could study two big chapters of lunar history: the primordial crust and volcanism."]],
+    alt: ["Era un atterraggio difficile, tra le montagne e con una discesa ripida. Non sarebbe stato possibile senza l'esperienza e la precisione delle missioni precedenti: per questo non era stato scelto prima.",
+          "It was a difficult landing, between mountains and with a steep descent. It would not have been possible without the experience and precision of earlier missions: that is why it was not chosen earlier."],
+    legacy: ["La «Genesis Rock», un pezzo di crosta lunare primordiale di circa 4 miliardi di anni. E l'esperimento della piuma e del martello che cadono insieme nel vuoto.",
+             "The “Genesis Rock”, a piece of primordial lunar crust about 4 billion years old. And the experiment of the feather and the hammer falling together in a vacuum."],
+    links: [["NASA", "https://www.nasa.gov/mission/apollo-15/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_15"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_15"]] },
+
   { id: "a16", name: "Apollo 16", agency: "NASA", date: "1972-04-21", lat: -8.97, lon: 15.50, place: "Descartes", group: "apollo",
-    why: [["Unico Apollo negli altopiani centrali: si pensava che fossero di origine vulcanica.", "The only Apollo in the central highlands: they were thought to be volcanic."]],
-    legacy: ["Sorpresa: erano brecce da impatto, non vulcani. Una lezione su quanto contino i campioni sul posto.", "Surprise: they were impact breccias, not volcanoes. A lesson in why on-site samples matter."] },
+    patch: WM("6/66", "Apollo-16-LOGO.png"), crew: "John Young, Charles Duke, Ken Mattingly",
+    intro: ["L'unica missione Apollo atterrata negli altopiani centrali, le zone chiare della Luna che vediamo anche a occhio nudo.",
+            "The only Apollo mission to land in the central highlands, the bright areas of the Moon we can see with the naked eye."],
+    why: [["Gli altopiani coprono la maggior parte della Luna, ma nessuno ci era ancora atterrato. Senza quei campioni la storia lunare restava a metà.",
+           "Highlands cover most of the Moon, but nobody had landed there yet. Without those samples the Moon's story was only half told."],
+          ["Dalle foto sembravano colline di origine vulcanica, diverse dalla lava scura dei mari. Descartes era il posto migliore per verificarlo.",
+           "From photos they looked like hills of volcanic origin, different from the dark lava of the maria. Descartes was the best place to check."],
+          ["Era abbastanza vicino all'equatore e raggiungibile con il rover dai punti di interesse principali.",
+           "It was close enough to the equator and the main points of interest were within rover reach."]],
+    alt: ["Restare nei mari, più sicuri, avrebbe lasciato senza risposta la domanda più grande: di che cosa è fatta la parte chiara della Luna?",
+          "Staying in the maria, which were safer, would have left the biggest question unanswered: what is the bright part of the Moon made of?"],
+    legacy: ["Sorpresa: non erano vulcani, ma rocce frantumate e saldate dagli impatti (brecce). Una lezione importante: le foto dall'orbita non bastano, servono campioni sul posto.",
+             "Surprise: they were not volcanoes, but rocks shattered and welded together by impacts (breccias). An important lesson: photos from orbit are not enough, you need samples on site."],
+    links: [["NASA", "https://www.nasa.gov/mission/apollo-16/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_16"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_16"]] },
+
   { id: "a17", name: "Apollo 17", agency: "NASA", date: "1972-12-11", lat: 20.19, lon: 30.77, place: "Taurus–Littrow", group: "apollo",
-    why: [["Una valle che offriva insieme rocce antiche degli altopiani (i massicci) e depositi vulcanici scuri e giovani.", "A valley offering both ancient highland rocks (the massifs) and young dark volcanic deposits."],
-          ["Con il geologo Harrison Schmitt a bordo, si scelse il sito geologicamente più ricco.", "With geologist Harrison Schmitt aboard, they chose the most geologically rich site."]],
-    legacy: ["Il «suolo arancione», vetro vulcanico. Ultima volta di esseri umani sulla Luna nel XX secolo.", "The “orange soil”, volcanic glass. The last humans on the Moon in the 20th century."] },
-  { id: "ce3", name: "Chang'e 3", agency: "CNSA", date: "2013-12-14", lat: 44.12, lon: -19.51, place: "Mare Imbrium", group: "robotic",
-    why: [["Primo atterraggio cinese: un mare piatto e sicuro, sul lato visibile per comunicare direttamente con la Terra.", "China's first landing: a flat, safe mare on the near side for direct contact with Earth."]],
-    legacy: ["Il rover Yutu e il primo atterraggio morbido dal 1976.", "The Yutu rover and the first soft landing since 1976."] },
-  { id: "ce4", name: "Chang'e 4", agency: "CNSA", date: "2019-01-03", lat: -45.44, lon: 177.60, place: "Von Kármán (lato nascosto)", group: "robotic",
-    why: [["Dal lato nascosto la Terra non si vede mai: per comunicare serviva il satellite relay Queqiao, posizionato oltre la Luna.", "Earth is never visible from the far side: it needed the Queqiao relay satellite stationed beyond the Moon."],
-          ["Il cratere Von Kármán è dentro il bacino Polo Sud–Aitken, il più grande e antico: potrebbe esporre materiale del mantello.", "Von Kármán crater lies inside the South Pole–Aitken basin, the largest and oldest: it may expose mantle material."]],
-    legacy: ["Il primo atterraggio sul lato nascosto della Luna.", "The first landing on the far side of the Moon."] },
-  { id: "ce5", name: "Chang'e 5", agency: "CNSA", date: "2020-12-01", lat: 43.06, lon: -51.92, place: "Mons Rümker", group: "robotic",
-    why: [["Lave tra le più giovani della Luna: datarle serve a tarare il metodo che stima l'età delle superfici contando i crateri.", "Some of the youngest lavas on the Moon: dating them calibrates the crater-counting method used to age surfaces."]],
-    legacy: ["1,73 kg di campioni: il primo ritorno di campioni dal 1976.", "1.73 kg of samples: the first sample return since 1976."] },
-  { id: "ch3", name: "Chandrayaan-3", agency: "ISRO", date: "2023-08-23", lat: -69.37, lon: 32.32, place: "Alta latitudine sud", group: "robotic",
-    why: [["Avvicinarsi al Polo Sud, dove si cerca il ghiaccio, ma su un terreno abbastanza piatto e illuminato per un primo tentativo.", "Get close to the South Pole, where ice is sought, but on ground flat and sunlit enough for a first attempt."]],
-    legacy: ["L'India diventa la quarta nazione ad atterrare; misure di temperatura del suolo vicino al polo.", "India becomes the fourth nation to land; soil temperature measurements near the pole."] },
-  { id: "slim", name: "SLIM", agency: "JAXA", date: "2024-01-19", lat: -13.32, lon: 25.25, place: "Cratere Shioli", group: "robotic", approx: true,
-    why: [["Missione dimostrativa di precisione: atterrare entro 100 m dal punto scelto, vicino a rocce che potrebbero venire dal mantello.", "Precision demo: land within 100 m of the target, near rocks that may come from the mantle."]],
-    legacy: ["Atterrato a circa 55 m dal bersaglio, ma capovolto: la precisione funzionava.", "Landed about 55 m from the target, though upside down: the precision worked."] },
-  { id: "im1", name: "IM-1 Odysseus", agency: "Intuitive Machines / NASA CLPS", date: "2024-02-22", lat: -80.13, lon: 1.44, place: "Malapert A", group: "robotic", approx: true,
-    why: [["Primo lander commerciale: puntava vicino al Polo Sud per testare l'ambiente polare per Artemis.", "First commercial lander: it aimed close to the South Pole to test the polar environment for Artemis."]],
-    legacy: ["Atterrato ma inclinato su un fianco: la luce radente e il terreno irregolare dei poli sono difficili.", "Landed but tipped on its side: low sunlight and rough polar terrain are hard."] },
-  { id: "ce6", name: "Chang'e 6", agency: "CNSA", date: "2024-06-01", lat: -41.63, lon: -153.99, place: "Bacino Apollo (lato nascosto)", group: "robotic",
-    why: [["Primi campioni dal lato nascosto, dentro il bacino Polo Sud–Aitken, con il relay Queqiao-2 per le comunicazioni.", "First samples from the far side, inside the South Pole–Aitken basin, with the Queqiao-2 relay for comms."]],
-    legacy: ["Circa 1,9 kg di campioni del lato nascosto riportati a Terra.", "About 1.9 kg of far-side samples returned to Earth."] },
-  { id: "bg1", name: "Blue Ghost 1", agency: "Firefly / NASA CLPS", date: "2025-03-02", lat: 18.56, lon: 61.81, place: "Mare Crisium", group: "robotic", approx: true,
-    why: [["Un mare piatto sul lato visibile: Terra sempre in vista e un intero giorno lunare di luce per gli strumenti.", "A flat mare on the near side: Earth always in view and a full lunar day of light for the instruments."]],
-    legacy: ["Primo atterraggio commerciale riuscito in pieno, con circa due settimane di operazioni.", "The first fully successful commercial landing, with about two weeks of operations."] },
-  { id: "art4", name: "Artemis IV", agency: "NASA", date: "2028", lat: -86, lon: 10, place: "Polo Sud (9 regioni candidate)", group: "future", approx: true, planned: true,
-    why: [["Ghiaccio d'acqua nei crateri in ombra permanente: risorsa per acqua, ossigeno e carburante.", "Water ice in permanently shadowed craters: a resource for water, oxygen and fuel."],
-          ["Creste e picchi illuminati quasi sempre: luce continua per una missione di circa 6,5 giorni.", "Ridges and peaks lit almost all the time: continuous light for a mission of about 6.5 days."],
-          ["La Terra è bassa sull'orizzonte e va e viene: comunicazioni da pianificare con cura.", "Earth sits low on the horizon and comes and goes: communications must be carefully planned."],
-          ["Nove regioni candidate (es. Peak near Cabeus B, Haworth, Malapert Massif, Mons Mouton, Nobile Rim, de Gerlache Rim 2, Slater Plain): quella finale dipende dalla data di lancio.", "Nine candidate regions (e.g. Peak near Cabeus B, Haworth, Malapert Massif, Mons Mouton, Nobile Rim, de Gerlache Rim 2, Slater Plain): the final one depends on the launch date."]],
-    legacy: ["Primo allunaggio con equipaggio di Artemis, previsto per l'inizio del 2028. A febbraio 2026 la NASA ha trasformato Artemis III in un test in orbita terrestre (metà 2027); Artemis II ha sorvolato la Luna con quattro astronauti ad aprile 2026.", "The first crewed Artemis landing, planned for early 2028. In February 2026 NASA turned Artemis III into an Earth-orbit test (mid-2027); Artemis II flew around the Moon with four astronauts in April 2026."] },
-  { id: "ce7", name: "Chang'e 7", agency: "CNSA", date: "2027", lat: -88.8, lon: 123.4, place: "Bordo di Shackleton", group: "future", approx: true, planned: true,
-    why: [["Il bordo di Shackleton è tra i punti più illuminati della Luna, accanto a uno dei crateri in ombra più famosi.", "Shackleton's rim is among the most sunlit spots on the Moon, next to one of the best-known shadowed craters."],
-          ["Un piccolo «saltatore» volerà dentro le zone in ombra a cercare il ghiaccio.", "A small “hopper” will fly into the shadowed areas to look for ice."]],
-    legacy: ["Lancio rinviato al 2027 (annuncio di agosto 2026). Preparerà il terreno per una base robotica internazionale.", "Launch postponed to 2027 (August 2026 announcement). It will pave the way for an international robotic base."] },
+    patch: WM("7/76", "Apollo_17-insignia.png"), crew: "Eugene Cernan, Harrison Schmitt, Ronald Evans",
+    intro: ["L'ultima missione Apollo e, finora, l'ultima volta di esseri umani sulla Luna. A bordo c'era Harrison Schmitt, l'unico geologo ad aver camminato sulla Luna.",
+            "The last Apollo mission and, so far, the last time humans were on the Moon. On board was Harrison Schmitt, the only geologist to have walked on the Moon."],
+    why: [["Essendo l'ultima occasione, si scelse il sito più ricco possibile. Taurus–Littrow è una valle stretta tra montagne alte oltre 2 km, ai margini del Mare Serenitatis.",
+           "Since it was the last chance, they chose the richest site possible. Taurus–Littrow is a narrow valley between mountains over 2 km high, on the edge of Mare Serenitatis."],
+          ["Le montagne (i «massicci») contenevano rocce antiche degli altopiani; il fondo della valle era coperto da un materiale scuro che sembrava cenere vulcanica giovane. Due mondi in pochi chilometri.",
+           "The mountains (the “massifs”) held ancient highland rocks; the valley floor was covered by dark material that looked like young volcanic ash. Two worlds within a few kilometres."],
+          ["Una frana scesa da una montagna portava rocce dall'alto fino a portata di rover, senza bisogno di scalare.",
+           "A landslide down one mountain had brought rocks from high up within rover reach, with no need to climb."]],
+    alt: ["Si era valutato anche il cratere Copernico o il lato nascosto, ma erano troppo lontani o troppo rischiosi. Taurus–Littrow dava la massima varietà con un rischio accettabile.",
+          "Copernicus crater and the far side were also considered, but they were too far or too risky. Taurus–Littrow offered the most variety at an acceptable risk."],
+    legacy: ["Il famoso «suolo arancione», minuscole perle di vetro vulcanico. 110 kg di campioni, il bottino più grande del programma Apollo.",
+             "The famous “orange soil”, tiny beads of volcanic glass. 110 kg of samples, the biggest haul of the Apollo program."],
+    links: [["NASA", "https://www.nasa.gov/mission/apollo-17/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_17"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_17"]] },
+
+  { id: "lp", name: "Lunar Prospector", agency: "NASA", date: "1999-07-31", lat: -87.7, lon: 42.1, place: ["Cratere Shoemaker (Polo Sud)", "Shoemaker crater (South Pole)"], group: "robotic", approx: true,
+    patch: WM("0/05", "Lunar_Prospector_insignia.png"),
+    intro: ["Una piccola sonda a forma di barile che per 19 mesi ha girato intorno alla Luna passando sopra i poli. Non doveva atterrare: alla fine fu fatta cadere apposta su un cratere del Polo Sud.",
+            "A small barrel-shaped probe that circled the Moon for 19 months, passing over the poles. It was not meant to land: at the end it was crashed on purpose into a South Pole crater."],
+    why: [["Dall'orbita aveva misurato molto idrogeno vicino ai poli, un indizio di possibile ghiaccio d'acqua nascosto nei crateri dove il Sole non arriva mai.",
+           "From orbit it had measured a lot of hydrogen near the poles, a clue to possible water ice hidden in craters the Sun never reaches."],
+          ["Il cratere Shoemaker è in ombra permanente: il suo fondo resta sotto i –200 °C. L'idea era che lo schianto sollevasse una nuvola di polvere e vapore da osservare con i telescopi dalla Terra.",
+           "Shoemaker crater is permanently shadowed: its floor stays below –200 °C. The idea was that the crash would throw up a cloud of dust and vapour to be watched with telescopes from Earth."],
+          ["Il carburante stava finendo: invece di lasciare la sonda cadere a caso, la si usò per un ultimo esperimento.",
+           "Fuel was running out: instead of letting the probe fall at random, they used it for one last experiment."]],
+    alt: ["Un cratere illuminato non avrebbe insegnato niente sul ghiaccio: alla luce del Sole il ghiaccio evapora in fretta. Solo le «trappole fredde» dei poli possono conservarlo per miliardi di anni.",
+          "A sunlit crater would have taught nothing about ice: in sunlight ice evaporates quickly. Only the polar “cold traps” can keep it for billions of years."],
+    legacy: ["Dalla Terra non si vide nessuna nuvola, ma le mappe dell'idrogeno ai poli hanno indicato dove cercare l'acqua. È anche l'unica sonda a portare sulla Luna le ceneri di una persona, il geologo Eugene Shoemaker.",
+             "No cloud was seen from Earth, but its polar hydrogen maps showed where to look for water. It is also the only probe to carry a person's ashes to the Moon, geologist Eugene Shoemaker's."],
+    links: [["NASA", "https://science.nasa.gov/mission/lunar-prospector/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Lunar_Prospector"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Lunar_Prospector"]] },
+
+  { id: "smart1", name: "SMART-1", agency: "ESA", date: "2006-09-03", lat: -34.26, lon: -46.19, place: "Lacus Excellentiae", group: "robotic",
+    intro: ["La prima missione europea verso la Luna. Era una sonda piccola ma innovativa: usava un motore a ioni, che spinge pochissimo ma per moltissimo tempo, alimentato dai pannelli solari.",
+            "Europe's first mission to the Moon. It was a small but innovative probe: it used an ion engine, which pushes very gently but for a very long time, powered by solar panels."],
+    why: [["Come Lunar Prospector, alla fine della missione non doveva atterrare ma cadere. Si scelse di farla cadere sul lato visibile, in una zona che dalla Terra fosse ben osservabile.",
+           "Like Lunar Prospector, at the end of the mission it was not meant to land but to crash. The team chose the near side, in an area that could be watched well from Earth."],
+          ["Il punto d'impatto era al confine tra luce e ombra, nella notte lunare ma vicino al giorno: un lampo nel buio si vede meglio, e i telescopi a Terra erano pronti.",
+           "The impact point was on the border between light and shadow, in lunar night but close to daytime: a flash in the dark is easier to see, and telescopes on Earth were ready."],
+          ["Una piana di lava vicino a zone più antiche: la polvere sollevata poteva rivelare di che cosa è fatto il terreno.",
+           "A lava plain next to older terrain: the dust thrown up could reveal what the ground is made of."]],
+    alt: ["Un impatto sul lato nascosto non sarebbe stato visibile da nessun telescopio. Lasciare la sonda in orbita fino a quando cadesse da sola avrebbe significato un punto e un'ora imprevedibili.",
+          "An impact on the far side would not have been visible to any telescope. Leaving the probe in orbit until it fell on its own would have meant an unpredictable place and time."],
+    legacy: ["Il lampo dell'impatto fu visto dal telescopio CFHT alle Hawaii. SMART-1 ha dimostrato la propulsione elettrica per lo spazio profondo, poi usata da missioni ESA come BepiColombo verso Mercurio.",
+             "The impact flash was seen by the CFHT telescope in Hawaii. SMART-1 proved electric propulsion for deep space, later used by ESA missions such as BepiColombo to Mercury."],
+    links: [["ESA", "https://www.esa.int/Science_Exploration/Space_Science/SMART-1"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/SMART-1"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/SMART-1"]] },
+
+  { id: "lcross", name: "LCROSS", agency: "NASA", date: "2009-10-09", lat: -84.68, lon: -48.7, place: ["Cratere Cabeus (Polo Sud)", "Cabeus crater (South Pole)"], group: "robotic", approx: true,
+    intro: ["Una missione «a proiettile»: lo stadio vuoto del razzo fu lanciato contro un cratere del Polo Sud, e la sonda LCROSS lo seguì da vicino per studiare la nuvola sollevata, prima di schiantarsi a sua volta.",
+            "A “bullet” mission: the empty rocket stage was aimed at a South Pole crater, and the LCROSS probe followed close behind to study the cloud it threw up, before crashing too."],
+    why: [["Dopo Lunar Prospector si sospettava ghiaccio ai poli, ma nessuno l'aveva mai «toccato». Serviva un cratere in ombra permanente, cioè una trappola fredda dove il ghiaccio può sopravvivere.",
+           "After Lunar Prospector, ice was suspected at the poles, but nobody had ever “touched” it. They needed a permanently shadowed crater, a cold trap where ice can survive."],
+          ["Cabeus fu scelto all'ultimo, grazie alle nuove misure della sonda LRO: mostrava il segnale di idrogeno più forte tra i candidati.",
+           "Cabeus was picked at the last moment, thanks to new measurements from the LRO probe: it showed the strongest hydrogen signal among the candidates."],
+          ["Il bordo del cratere doveva essere abbastanza basso da permettere alla nuvola di uscire alla luce del Sole, dove gli strumenti potevano vederla, e alla Terra di osservarla.",
+           "The crater rim had to be low enough for the cloud to rise into sunlight, where the instruments could see it, and for Earth to observe it."]],
+    alt: ["Il famoso cratere Shackleton o altri crateri polari avevano bordi più alti o segnali più deboli: la nuvola sarebbe rimasta nascosta nell'ombra.",
+          "The famous Shackleton crater and other polar craters had higher rims or weaker signals: the cloud would have stayed hidden in the shadow."],
+    legacy: ["La conferma: nella nuvola c'era acqua, circa il 5% del materiale. Per questo il programma Artemis oggi punta al Polo Sud.",
+             "The confirmation: the cloud contained water, about 5% of the material. That is why the Artemis program is aiming for the South Pole today."],
+    links: [["NASA", "https://science.nasa.gov/mission/lcross/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/LCROSS"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/LCROSS"]] },
+
+  { id: "art2", name: "Artemis II", agency: "NASA · ESA", date: "2026-04-06", lat: null, lon: 180, place: ["Sorvolo del lato nascosto", "Far-side flyby"], group: "future", flyby: true,
+    patch: WM("9/9c", "Artemis_program_(solid_with_wordmark).svg"), patchGeneric: true, crew: "Reid Wiseman, Victor Glover, Christina Koch, Jeremy Hansen",
+    intro: ["Il primo volo con astronauti verso la Luna dal 1972. Quattro persone a bordo della capsula Orion hanno girato intorno alla Luna e sono tornate a Terra, dall'1 all'11 aprile 2026. Il modulo di servizio che dava energia e spinta a Orion è stato costruito in Europa dall'ESA.",
+            "The first crewed flight to the Moon since 1972. Four people aboard the Orion capsule flew around the Moon and came back to Earth, from 1 to 11 April 2026. The service module that gave Orion power and thrust was built in Europe by ESA."],
+    why: [["Artemis II non doveva atterrare: era una prova generale. Prima di portare persone sulla superficie bisognava verificare che Orion, i suoi sistemi di supporto vitale e lo scudo termico funzionassero con un equipaggio vero.",
+           "Artemis II was not meant to land: it was a dress rehearsal. Before taking people to the surface, NASA had to check that Orion, its life-support systems and its heat shield worked with a real crew."],
+          ["La traiettoria «a ritorno libero» passa dietro il lato nascosto e usa la gravità lunare per tornare verso la Terra senza grandi accensioni del motore: se qualcosa si guasta, la capsula torna comunque a casa.",
+           "The “free-return” trajectory swings behind the far side and uses the Moon's gravity to head back to Earth without big engine burns: if something fails, the capsule comes home anyway."],
+          ["Il 6 aprile, al punto più vicino, l'equipaggio ha visto con i propri occhi il lato nascosto, che dalla Terra non si vede mai.",
+           "On 6 April, at closest approach, the crew saw with their own eyes the far side, which can never be seen from Earth."]],
+    alt: ["Entrare in orbita lunare o tentare un atterraggio al primo volo con equipaggio avrebbe aggiunto rischi senza un piano di rientro sicuro. Per questo sul globo non c'è un punto: Artemis II non ha toccato la superficie.",
+          "Entering lunar orbit or attempting a landing on the first crewed flight would have added risk without a safe way home. That is why there is no point on the globe: Artemis II never touched the surface."],
+    legacy: ["Ha aperto la strada al ritorno sulla Luna. Jeremy Hansen è il primo astronauta non americano a viaggiare verso la Luna e Christina Koch la prima donna.",
+             "It paved the way for the return to the Moon. Jeremy Hansen is the first non-American astronaut to travel to the Moon and Christina Koch the first woman."],
+    links: [["NASA", "https://www.nasa.gov/mission/artemis-ii/"], ["ESA", "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Orion"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Artemis_II"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Artemis_II"]] },
+
+  { id: "art4", name: "Artemis IV", agency: "NASA · ESA", date: "2028", lat: -86, lon: 10, place: ["Polo Sud (regioni candidate)", "South Pole (candidate regions)"], group: "future", approx: true, planned: true,
+    patch: WM("9/9c", "Artemis_program_(solid_with_wordmark).svg"), patchGeneric: true,
+    intro: ["Sarà il primo allunaggio con equipaggio del programma Artemis, previsto per il 2028. Quattro astronauti voleranno su Orion fino all'orbita lunare; due scenderanno sulla superficie con un lander commerciale, vicino al Polo Sud, dove nessun essere umano è mai stato.",
+            "It will be the first crewed landing of the Artemis program, planned for 2028. Four astronauts will fly Orion to lunar orbit; two will descend to the surface in a commercial lander, near the South Pole, where no human has ever been."],
+    why: [["Il motivo principale è l'acqua. Nei crateri in ombra permanente c'è ghiaccio (lo hanno dimostrato Lunar Prospector e LCROSS). Il ghiaccio si può trasformare in acqua da bere, ossigeno da respirare e carburante per i razzi.",
+           "The main reason is water. Permanently shadowed craters hold ice (as Lunar Prospector and LCROSS showed). Ice can be turned into drinking water, breathable oxygen and rocket fuel."],
+          ["Ai poli il Sole non sorge e tramonta come da noi: gira basso tutto intorno all'orizzonte. Così alcune creste restano illuminate quasi sempre: energia quasi continua per i pannelli solari, a pochi chilometri dal ghiaccio al buio.",
+           "At the poles the Sun does not rise and set as it does for us: it circles low around the horizon. So some ridges stay lit almost all the time: nearly continuous power for solar panels, a few kilometres from the dark ice."],
+          ["La Terra invece è bassa sull'orizzonte e a volte sparisce dietro le montagne: per questo i siti candidati sono su rilievi da cui la Terra si vede per più tempo possibile.",
+           "Earth, on the other hand, sits low on the horizon and sometimes disappears behind mountains: that is why the candidate sites are on high ground with Earth in view for as long as possible."],
+          ["La NASA ha individuato diverse regioni candidate, tra cui Peak near Cabeus B, Haworth, Malapert Massif, Mons Mouton, Nobile Rim, de Gerlache Rim 2 e Slater Plain. La scelta finale dipende dalla data di lancio, perché luce e Terra cambiano nel tempo.",
+           "NASA has identified several candidate regions, including Peak near Cabeus B, Haworth, Malapert Massif, Mons Mouton, Nobile Rim, de Gerlache Rim 2 and Slater Plain. The final choice depends on the launch date, because light and Earth change over time."]],
+    alt: ["L'equatore, dove sono atterrati gli Apollo, è più facile da raggiungere ma ha notti di due settimane e niente ghiaccio a portata di mano. Per una presenza lunga e sostenibile serve il Polo Sud. È esattamente il problema che la versione esperta di questa app aiuta a risolvere.",
+          "The equator, where Apollo landed, is easier to reach but has two-week nights and no ice within reach. A long, sustainable presence needs the South Pole. It is exactly the problem the expert edition of this app helps solve."],
+    legacy: ["Missione futura. A febbraio 2026 la NASA ha trasformato Artemis III in un test in orbita terrestre (previsto per il 2027) e ha spostato il primo allunaggio ad Artemis IV, nel 2028. L'ESA contribuisce con il modulo di servizio di Orion e con moduli per la futura stazione lunare.",
+             "Future mission. In February 2026 NASA turned Artemis III into an Earth-orbit test (planned for 2027) and moved the first landing to Artemis IV, in 2028. ESA contributes Orion's service module and modules for the future lunar station."],
+    links: [["NASA", "https://www.nasa.gov/humans-in-space/artemis/"], ["ESA", "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Exploration/Artemis"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Programma_Artemis"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Artemis_IV"]] },
 ];
 const HCOL = { apollo: "#fbbf24", robotic: "#7fd3ff", future: "#4ade80" };
-const HG = { lat: 10, lon: 10, zoom: 1, sel: "a11", filter: "all", maxWidthFrac: .58 };
+const HG = { lat: 10, lon: 10, zoom: 1, sel: "a11", filter: "all", maxWidthFrac: .58, real: true };
+const hPlace = h => Array.isArray(h.place) ? tL(h.place[0], h.place[1]) : h.place;
 const hCanvas = document.getElementById("hGlobe");
 function hMarkers() {
-  HG.markers = HIST.filter(h => HG.filter === "all" || h.group === HG.filter)
+  HG.markers = HIST.filter(h => (HG.filter === "all" || h.group === HG.filter) && h.lat != null)
     .map(h => ({ lat: h.lat, lon: h.lon, color: HCOL[h.group], sel: h.id === HG.sel, label: h.id === HG.sel ? h.name : null }));
 }
-const hRender = rafOnce(() => { hMarkers(); drawSphere(hCanvas, HG); });
+function hFit() {                          // il globo occupa solo lo spazio a sinistra della scheda
+  const w = hCanvas.parentElement, det = document.getElementById("hDetail");
+  if (w.clientWidth) HG.maxWidthFrac = Math.max(.3, (w.clientWidth - det.offsetWidth - 56) / w.clientWidth);
+}
+const hRender = rafOnce(() => { hMarkers(); hFit(); drawSphere(hCanvas, HG); });
 sphereControls(hCanvas, HG, hRender, ll => {
   let best = null, bd = 8;                // clic vicino a un sito → lo seleziona
-  for (const h of HIST) { const d = angDeg(unit(ll[0], ll[1]), unit(h.lat, h.lon)); if (d < bd) { bd = d; best = h; } }
+  for (const h of HIST) { if (h.lat == null) continue; const d = angDeg(unit(ll[0], ll[1]), unit(h.lat, h.lon)); if (d < bd) { bd = d; best = h; } }
   if (best) selectHistory(best.id);
 });
 function renderHistoryList() {
@@ -4603,33 +5059,63 @@ function renderHistoryList() {
   ol.innerHTML = HIST.filter(h => HG.filter === "all" || h.group === HG.filter).map(h => `
     <li><button data-h="${h.id}" class="${h.id === HG.sel ? "sel" : ""}"><span class="dot" style="background:${HCOL[h.group]}"></span>
       <span class="nm">${esc(h.name)}</span><span class="yr">${esc(h.date.slice(0, 4))}</span>
-      <span class="pl">${esc(h.place)} · ${esc(h.agency)}</span></button></li>`).join("");
+      <span class="pl">${esc(hPlace(h))} · ${esc(h.agency)}</span></button></li>`).join("");
+}
+function hBadge(h) {
+  const c = HCOL[h.group], words = h.name.split(/\s+/);
+  return `<svg viewBox="0 0 120 120" class="h-badge" role="img" aria-label="${esc(h.name)}">
+    <defs><radialGradient id="hbg_${h.id}" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#2a3550"/><stop offset="1" stop-color="#0b0f1a"/></radialGradient></defs>
+    <circle cx="60" cy="60" r="56" fill="url(#hbg_${h.id})" stroke="${c}" stroke-width="5"/>
+    <circle cx="60" cy="60" r="47" fill="none" stroke="${c}" stroke-opacity=".35" stroke-width="1.5"/>
+    <circle cx="60" cy="27" r="10" fill="#d9d4c7"/><circle cx="57" cy="25" r="2.2" fill="#b9b3a5"/><circle cx="63.5" cy="30" r="1.6" fill="#b9b3a5"/>
+    ${words.map((w, i) => `<text x="60" y="${68 + (i - (words.length - 1) / 2) * 17}" text-anchor="middle" fill="#fff" font-family="Orbitron, sans-serif" font-weight="800" font-size="${w.length > 7 ? 13 : 16}">${esc(w)}</text>`).join("")}
+    <text x="60" y="103" text-anchor="middle" fill="${c}" font-family="Inter, sans-serif" font-weight="700" font-size="10" letter-spacing="2">${esc(h.agency.replace(/ · /g, "/"))}</text>
+  </svg>`;
 }
 function renderHistoryDetail() {
   const h = HIST.find(x => x.id === HG.sel); if (!h) return;
   const dt = h.date.length > 4 ? new Date(h.date + "T12:00:00Z").toLocaleDateString(lang, { dateStyle: "long" }) : h.date;
-  document.getElementById("hDetail").innerHTML = `
-    <span class="tag" style="color:${HCOL[h.group]}">${t(h.group === "apollo" ? "hApollo" : h.group === "future" ? "hFuture" : "hRobotic")}${h.planned ? " · " + t("hPlanned") : ""}</span>
-    <h4>${esc(h.name)}</h4>
-    <div class="meta">${esc(h.agency)} · ${esc(dt)}<br>${esc(h.place)} · ${h.approx ? "≈ " : ""}${fmtLL(h.lat, h.lon)}${h.approx ? ` (${t("hApprox")})` : ""}</div>
+  const pos = h.lat == null ? t("hFlyby") : `${h.approx ? "≈ " : ""}${fmtLL(h.lat, h.lon)}${h.approx ? ` (${t("hApprox")})` : ""}`;
+  const el = document.getElementById("hDetail");
+  el.innerHTML = `
+    <div class="h-head">
+      <div class="h-patch">${h.patch ? `<img src="${h.patch}" alt="${esc(t("hPatchAlt", { n: h.name }))}" referrerpolicy="no-referrer" loading="lazy">` : hBadge(h)}</div>
+      <div><span class="tag" style="color:${HCOL[h.group]}">${t(h.group === "apollo" ? "hApollo" : h.group === "future" ? "hFuture" : "hRobotic")}${h.planned ? " · " + t("hPlanned") : ""}</span>
+      <h4>${esc(h.name)}</h4>
+      <div class="meta">${esc(h.agency)} · ${esc(dt)}<br>${esc(hPlace(h))} · ${pos}${h.crew ? `<br>${t("hCrew")}: ${esc(h.crew)}` : ""}</div></div>
+    </div>
+    ${h.patch ? `<p class="h-pcap">${t(h.patchGeneric ? "hPatchGen" : "hPatchCap")}</p>` : `<p class="h-pcap">${t("hPatchNone")}</p>`}
+    <h5>${t("hWhat")}</h5><p>${esc(tL(h.intro[0], h.intro[1]))}</p>
     <h5>${t("hWhy")}</h5><ul>${h.why.map(w => `<li>${esc(tL(w[0], w[1]))}</li>`).join("")}</ul>
+    <div class="h-alt"><h5>${t("hAlt")}</h5><p>${esc(tL(h.alt[0], h.alt[1]))}</p></div>
     <h5>${t("hLegacy")}</h5><p>${esc(tL(h.legacy[0], h.legacy[1]))}</p>
+    <h5>${t("hLinks")}</h5><div class="h-links">${h.links.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener noreferrer">${esc(l)} ↗</a>`).join("")}</div>
     <p class="src">${t("hSrc")}</p>`;
+  const im = el.querySelector(".h-patch img");
+  if (im) im.addEventListener("error", () => { im.parentElement.innerHTML = hBadge(h); el.querySelector(".h-pcap").textContent = t("hPatchOff"); }, { once: true });
+  el.scrollTop = 0;
 }
 let hAnim = 0;
 function selectHistory(id) {
   HG.sel = id; renderHistoryList(); renderHistoryDetail(); hMarkers();
-  const h = HIST.find(x => x.id === id), from = { lat: HG.lat, lon: HG.lon }, to = { lat: Math.max(-75, Math.min(75, h.lat)), lon: h.lon };
+  const h = HIST.find(x => x.id === id), from = { lat: HG.lat, lon: HG.lon }, to = { lat: h.lat == null ? 0 : Math.max(-75, Math.min(75, h.lat)), lon: h.lon };
   const dl = wrap180(to.lon - from.lon), t0 = performance.now(); cancelAnimationFrame(hAnim);
   const step = now => {
     const k = Math.min(1, (now - t0) / 700), e = k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2;
     HG.lat = from.lat + (to.lat - from.lat) * e; HG.lon = wrap180(from.lon + dl * e); HG.low = k < 1;
-    drawSphere(hCanvas, HG);
+    hFit(); drawSphere(hCanvas, HG);
     if (k < 1) hAnim = requestAnimationFrame(step); else hRender();
   };
   hAnim = requestAnimationFrame(step);
 }
 document.getElementById("hList").addEventListener("click", e => { const b = e.target.closest("[data-h]"); if (b) selectHistory(b.dataset.h); });
+(function () {
+  const pane = document.getElementById("pane-history"), box = document.getElementById("hFont");
+  let z = "1.2"; try { z = localStorage.getItem("mlsn_hz") || z; } catch (e) {}
+  const apply = v => { pane.style.setProperty("--hz", v); box.querySelectorAll("button").forEach(b => b.classList.toggle("active", b.dataset.z === v)); };
+  apply(z);
+  box.addEventListener("click", e => { const b = e.target.closest("[data-z]"); if (!b) return; apply(b.dataset.z); hRender(); try { localStorage.setItem("mlsn_hz", b.dataset.z); } catch (e) {} });
+})();
 document.getElementById("hFilter").addEventListener("click", e => {
   const b = e.target.closest("[data-f]"); if (!b) return;
   HG.filter = b.dataset.f;
@@ -4708,6 +5194,36 @@ function drawGridMap(cv, G, colorAt, opts = {}) {
     c.setLineDash([]);
   }
   return T;
+}
+
+// griglia lat/lon sulle mappe polari educative; inside = etichette di longitudine dentro il bordo
+function drawLLGrid(T, G, opt = {}) {
+  const c = T.c, reg = G.D.region, cx = T.css / 2, cy = T.css / 2, R = T.size / 2;
+  c.save(); c.beginPath(); c.arc(cx, cy, R, 0, 2 * Math.PI); c.clip();
+  c.strokeStyle = opt.color || "rgba(255,255,255,.22)"; c.lineWidth = 1;
+  const latMin = Math.ceil((reg.lat + reg.r) / 2) * 2;
+  for (let la = -88; la <= latMin + 2; la += 2) { c.beginPath(); for (let lo = -180; lo <= 180; lo += 3) { const [x, y] = T.llToPx(la, lo); lo === -180 ? c.moveTo(x, y) : c.lineTo(x, y); } c.stroke(); }
+  for (let lo = -180; lo < 180; lo += 30) { c.beginPath(); for (let la = -90; la <= reg.lat + reg.r + 1; la += .5) { const [x, y] = T.llToPx(la, lo); la === -90 ? c.moveTo(x, y) : c.lineTo(x, y); } c.stroke(); }
+  c.restore();
+  const fs = opt.font || 10;
+  c.font = `600 ${fs}px Inter, sans-serif`; c.textAlign = "center"; c.textBaseline = "middle";
+  const tag = (txt, x, y) => { const tw = c.measureText(txt).width; c.fillStyle = "rgba(10,11,13,.72)"; c.fillRect(x - tw / 2 - 3, y - fs * .7, tw + 6, fs * 1.4); c.fillStyle = "#e5e7eb"; c.fillText(txt, x, y); };
+  for (let la = -88; la <= latMin; la += 2) { const [x, y] = T.llToPx(la, 135); if (Math.hypot(x - cx, y - cy) < R - 8) tag(`${-la}°S`, x, y); }
+  for (let lo = -180; lo < 180; lo += 30) {
+    const [px, py] = T.llToPx(-85, lo), d = Math.hypot(px - cx, py - cy) || 1, rr = opt.inside ? R - 16 : R + 13;
+    tag(lo === 0 ? "0°" : lo === -180 ? "180°" : `${Math.abs(lo)}°${lo > 0 ? "E" : "W"}`, cx + (px - cx) / d * rr, cy + (py - cy) / d * rr);
+  }
+}
+// "stella polare" al Polo Sud: ogni direzione che si allontana dal polo porta a Nord
+function drawNorthArrows(T) {              // frecce "N" sul bordo: allontanarsi dal polo = andare a Nord
+  const c = T.c, cx = T.css / 2, cy = T.css / 2, R = T.size / 2; c.save();
+  for (let i = 0; i < 8; i++) { const a = (i + .5) * Math.PI / 4, r0 = R - 46, r1 = R - 24, ux = Math.cos(a), uy = Math.sin(a);
+    c.strokeStyle = "rgba(253,224,71,.85)"; c.fillStyle = "rgba(253,224,71,.95)"; c.lineWidth = 2.5;
+    c.beginPath(); c.moveTo(cx + ux * r0, cy + uy * r0); c.lineTo(cx + ux * r1, cy + uy * r1); c.stroke();
+    c.beginPath(); c.moveTo(cx + ux * (r1 + 9), cy + uy * (r1 + 9)); c.lineTo(cx + ux * r1 - uy * 6, cy + uy * r1 + ux * 6); c.lineTo(cx + ux * r1 + uy * 6, cy + uy * r1 - ux * 6); c.fill();
+    c.font = "900 12px Orbitron, Inter, sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.lineWidth = 3; c.strokeStyle = "rgba(10,11,13,.85)";
+    const lx = cx + ux * (r0 - 10), ly = cy + uy * (r0 - 10); c.strokeText("N", lx, ly); c.fillText("N", lx, ly); }
+  c.restore();
 }
 const gcKm = (a, b, c2, d) => degToKm(angDeg(unit(a, b), unit(c2, d)));
 
@@ -4871,19 +5387,7 @@ function rDrawMap() {
     const li = Math.max(0, Math.min(255, v * 255 | 0)) * 3; return [lut[li], lut[li + 1], lut[li + 2]];
   }, { widthFrac: .6, craters: false });
   const c = T.c, N = G.N, px = (x, y) => [T.m + (x + .5) / N * T.size, T.m + (y + .5) / N * T.size];
-  // griglia di latitudine e longitudine
-  { const reg = G.D.region, cxp = T.css / 2, cyp = T.css / 2, Rpx = T.size / 2;
-    c.save(); c.beginPath(); c.arc(cxp, cyp, Rpx, 0, 2 * Math.PI); c.clip();
-    c.strokeStyle = "rgba(255,255,255,.22)"; c.lineWidth = 1;
-    const latMin = Math.ceil((reg.lat + reg.r) / 2) * 2;
-    for (let la = -88; la <= latMin + 2; la += 2) { c.beginPath(); for (let lo = -180; lo <= 180; lo += 3) { const [x, y] = T.llToPx(la, lo); lo === -180 ? c.moveTo(x, y) : c.lineTo(x, y); } c.stroke(); }
-    for (let lo = -180; lo < 180; lo += 30) { c.beginPath(); for (let la = -90; la <= reg.lat + reg.r + 1; la += .5) { const [x, y] = T.llToPx(la, lo); la === -90 ? c.moveTo(x, y) : c.lineTo(x, y); } c.stroke(); }
-    c.restore();
-    c.font = "600 10px Inter, sans-serif"; c.textAlign = "center"; c.textBaseline = "middle";
-    const tag = (txt, x, y) => { const tw = c.measureText(txt).width; c.fillStyle = "rgba(10,11,13,.7)"; c.fillRect(x - tw / 2 - 3, y - 7, tw + 6, 14); c.fillStyle = "#e5e7eb"; c.fillText(txt, x, y); };
-    for (let la = -88; la <= latMin; la += 2) { const [x, y] = T.llToPx(la, 135); if (Math.hypot(x - cxp, y - cyp) < Rpx - 8) tag(`${-la}°S`, x, y); }
-    for (let lo = -180; lo < 180; lo += 30) { const a = (lo) * DEG, x = cxp + Math.sin(a) * (Rpx + 13), y = cyp - Math.cos(a) * (Rpx + 13);
-      tag(lo === 0 ? "0°" : lo === -180 ? "180°" : `${Math.abs(lo)}°${lo > 0 ? "E" : "W"}`, x, y); } }
+  drawLLGrid(T, G);
   // crateri della partita
   c.font = "600 10px Inter, sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.setLineDash([3, 3]);
   for (const cr of RS.craters) {
@@ -4968,7 +5472,7 @@ function renderReason() {
 }
 document.getElementById("rLayers").addEventListener("click", e => { const b = e.target.closest("[data-rl]"); if (!b) return; RS.layer = b.dataset.rl; renderReason(); });
 document.getElementById("rAsk").addEventListener("click", () => { RS.experts = true; renderReason(); });
-document.getElementById("rNew").addEventListener("click", () => { rGenerate(); renderReason(); });
+document.getElementById("rNew").addEventListener("click", () => { rGenerate(); renderReason(); introReason(); });
 document.getElementById("rConfirm").addEventListener("click", () => { if (RS.pick < 0) return; RS.confirmed = true; RS.experts = true; renderReason(); document.getElementById("rExplain").scrollTop = 0; });
 document.getElementById("rMap").addEventListener("click", e => {
   if (!RS.T || RS.confirmed) return;
@@ -4985,10 +5489,38 @@ document.getElementById("rMap").addEventListener("mousemove", e => {
   tip.style.display = "block"; tip.style.left = (e.clientX - wr.left + 14) + "px"; tip.style.top = (e.clientY - wr.top + 14) + "px";
 });
 document.getElementById("rMap").addEventListener("mouseleave", () => { document.getElementById("rTip").style.display = "none"; });
+
+/* ---------- Schermate di contesto: coinvolgono il giocatore all'inizio di ogni gioco o fase ---------- */
+function showIntro(wrapId, o) {
+  const wrap = document.getElementById(wrapId); if (!wrap) return;
+  wrap.querySelector(".edu-intro")?.remove();
+  const d = document.createElement("div"); d.className = "edu-intro"; d.setAttribute("role", "dialog");
+  d.innerHTML = `<div class="card"><div class="ico">${o.ico}</div><div class="kick">${esc(o.kick)}</div><h3>${esc(o.title)}</h3><p>${o.text}</p>
+    ${o.mission ? `<div class="mis">${o.mission}</div>` : ""}${o.steps ? `<ol>${o.steps.map(x => `<li>${x}</li>`).join("")}</ol>` : ""}
+    <button type="button">${esc(o.btn || t("introGo"))}</button><div class="hint">${esc(t("introHint"))}</div></div>`;
+  const close = () => { d.remove(); document.removeEventListener("keydown", onKey, true); if (o.onClose) o.onClose(); };
+  const onKey = e => { if (!document.body.contains(d)) return document.removeEventListener("keydown", onKey, true);
+    if (e.key === "Enter" || e.key === " " || e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); } };
+  d.querySelector("button").addEventListener("click", close);
+  document.addEventListener("keydown", onKey, true);
+  wrap.appendChild(d);
+  setTimeout(() => d.querySelector("button").focus(), 50);
+}
+function introReason() {
+  const m = RS.mission, sit = RS.situation;
+  showIntro("rWrap", { ico: "🧑‍🚀", kick: t("introRKick"), title: t("introRTitle"), text: t("introRText"),
+    mission: m ? `<b>${esc(t("introMission"))}:</b> ${esc(t("rm_" + m.id))}${sit && sit.id !== "none" ? `<br>${esc(t("rs_" + sit.id))}` : ""}` : "",
+    steps: [t("introR1"), t("introR2"), t("introR3"), t("introR4")] });
+}
+function introGame(step) {
+  const k = ["G0", "G1", "G2", "G3"][step], ico = ["🚀", "🛰️", "🛬", "🏅"][step];
+  showIntro("gWrap", { ico, kick: t("intro" + k + "Kick"), title: t("intro" + k + "Title"), text: t("intro" + k + "Text"),
+    onClose: step === 2 ? () => { try { gLc.focus(); } catch (e) {} } : null });
+}
 function openReason() {
   if (RS.ready) return renderReason();
   const busy = document.getElementById("rBusy"); busy.classList.add("show");
-  setTimeout(() => { rGenerate(); busy.classList.remove("show"); renderReason(); }, 40);
+  setTimeout(() => { rGenerate(); busy.classList.remove("show"); renderReason(); introReason(); }, 40);
 }
 
 /* =====================================================================
@@ -5040,6 +5572,7 @@ function gDrawMap() {
     return rgb;
   }, { widthFrac: 1, labels: true, margin: 52 });
   const c = T.c, cx = T.css / 2, cy = T.css / 2, R = T.size / 2;
+  drawLLGrid(T, G, { inside: true, color: "rgba(127,211,255,.25)" }); drawNorthArrows(T);
   // Sole e Terra sul bordo
   const s = sunAt(GM.time), e = earthAt(GM.time);
   if (GM.diff !== "hard") [[s, "#fde047", t("xSun")], [e, "#38bdf8", t("xEarth")]].forEach(([b, col, lb]) => {
@@ -5080,12 +5613,13 @@ document.getElementById("gNew1").addEventListener("click", gNewScenario);
 document.getElementById("gNew3").addEventListener("click", gNewScenario);
 document.getElementById("gToLand").addEventListener("click", () => gStartLanding());
 function gSetStep(s) {
-  GM.step = s;
+  const prev = GM.step; GM.step = s;
+  if (prev !== s) setTimeout(() => introGame(s), 0);
   document.querySelectorAll("#gSteps li").forEach(li => { const n = +li.dataset.s; li.classList.toggle("on", n === s); li.classList.toggle("done", n < s); });
   document.getElementById("gSide0").hidden = s !== 0; document.getElementById("gSide1").hidden = s !== 1; document.getElementById("gSide2").hidden = s !== 2; document.getElementById("gSide3").hidden = s !== 3;
   if (s === 0) { document.querySelectorAll("#gDiff [data-d]").forEach(x => x.classList.toggle("active", x.dataset.d === GM.diff)); if (GM.time) gDrawMap(); }
   gWrap.classList.toggle("landing", s === 2); gWrap.classList.toggle("patch", s === 3);
-  document.getElementById("gPadCtl").hidden = s !== 2;
+  document.getElementById("gPadCtl").hidden = s !== 2; document.getElementById("gCompass").hidden = s !== 1;
   if (s !== 2) cancelAnimationFrame(LD.raf);
 }
 
@@ -5501,10 +6035,7 @@ function gDrawLander() {
   }
   // testi di stato
   c.textAlign = "center";
-  if (L.phase === "ready") {
-    c.font = "800 22px Orbitron, Inter, sans-serif"; c.fillStyle = "#e8ecff"; c.fillText(t("gReady"), W / 2, H * .3);
-    c.font = "600 15px Inter, sans-serif"; c.fillStyle = `rgba(253,224,71,${.55 + .45 * blink})`; c.fillText(t("gPressSpace"), W / 2, H * .3 + 30);
-  }
+  if (L.phase === "ready") gDrawHowTo(c, W, H, blink);
   if (L.phase === "fly" && L.fuel <= 0) { c.font = "600 14px Inter"; c.fillStyle = "#fca5a5"; c.fillText(t("gOutOfFuel"), W / 2, H * .38); }
   if (L.phase === "fly" && L.auto) { c.font = "700 13px Inter"; c.fillStyle = "#4ade80"; c.fillText(t("gAutoOn"), W / 2, H * .38 + 18); }
   // telemetria
@@ -5515,6 +6046,36 @@ function gDrawLander() {
     [t("gFuel"), fuelTxt, isFinite(L.fuel) && L.fuel < 15], [t("gToSite"), (dist >= 0 ? "→ " : "← ") + Math.abs(dist).toFixed(0) + " m", Math.abs(dist) > L.pw / 2],
     [t("gSlope"), (Math.atan(Math.abs(L.ground(L.x + 2.5) - L.ground(L.x - 2.5)) / 5) / DEG).toFixed(0) + "°"]]
     .map(([a, b, w]) => `<div class="${w ? "warn" : ""}"><span>${a}</span>${b}</div>`).join("");
+}
+
+// schermata di istruzioni prima della discesa
+function gDrawHowTo(c, W, H, blink) {
+  const rows = [[["SPAZIO|SPACE"], "gHowSpace"], [["▲", "W"], "gHowUp"], [["◀", "▶"], "gHowLR"], [["A", "D"], "gHowLR2"], [["L"], "gHowL"]];
+  const bw = Math.min(560, W - 40), rh = 40, bh = 96 + rows.length * rh + 50, bx = (W - bw) / 2, by = Math.max(12, H * .14);
+  c.save();
+  c.fillStyle = "rgba(8,10,18,.88)"; c.strokeStyle = "rgba(127,211,255,.55)"; c.lineWidth = 1.5;
+  c.beginPath(); c.roundRect ? c.roundRect(bx, by, bw, bh, 16) : c.rect(bx, by, bw, bh); c.fill(); c.stroke();
+  c.textAlign = "center"; c.textBaseline = "middle";
+  c.font = "800 20px Orbitron, Inter, sans-serif"; c.fillStyle = "#e8ecff"; c.fillText(t("gReady"), W / 2, by + 30);
+  c.font = "700 13px Inter, sans-serif"; c.fillStyle = "#7fd3ff"; c.fillText(t("gHowTitle").toUpperCase(), W / 2, by + 62);
+  const key = (label, x, y) => {
+    c.font = "800 15px Inter, sans-serif"; const w = Math.max(34, c.measureText(label).width + 20);
+    c.fillStyle = "#e5e7eb"; c.beginPath(); c.roundRect ? c.roundRect(x, y - 15, w, 30, 6) : c.rect(x, y - 15, w, 30); c.fill();
+    c.fillStyle = "#9ca3af"; c.fillRect(x + 3, y + 11, w - 6, 3);
+    c.fillStyle = "#111"; c.textAlign = "center"; c.fillText(label, x + w / 2, y); return w;
+  };
+  rows.forEach(([keys, txt], i) => {
+    const y = by + 96 + i * rh; let x = bx + 24;
+    keys.forEach((k, j) => {
+      if (j) { c.font = "600 13px Inter"; c.fillStyle = "#9ca3af"; c.textAlign = "center"; c.fillText("/", x + 8, y); x += 16; }
+      x += key(k.includes("|") ? k.split("|")[lang === "it" ? 0 : 1] : k, x, y) + 4;
+    });
+    c.textAlign = "left"; c.font = "500 14px Inter, sans-serif"; c.fillStyle = "#e5e7eb"; c.fillText(t(txt), bx + 190, y);
+  });
+  c.textAlign = "center"; c.font = "500 13px Inter, sans-serif"; c.fillStyle = "#cbd5e1";
+  c.fillText(t("gHowGoal"), W / 2, by + bh - 40);
+  c.font = "700 15px Inter, sans-serif"; c.fillStyle = `rgba(253,224,71,${.55 + .45 * blink})`; c.fillText(t("gPressSpace"), W / 2, by + bh - 16);
+  c.restore();
 }
 const keyMap = { ArrowUp: "up", KeyW: "up", Space: "up", ArrowLeft: "left", KeyA: "left", ArrowRight: "right", KeyD: "right" };
 window.addEventListener("keydown", e => {
@@ -5536,7 +6097,12 @@ document.getElementById("gPadCtl").querySelectorAll("button[data-k]").forEach(b 
 document.getElementById("gAuto").addEventListener("click", () => { const L = LD.state; if (L && L.phase === "ready") gBeginDescent(); gToggleAuto(); gLc.focus(); });
 document.getElementById("gStartDescent").addEventListener("click", () => { gBeginDescent(); gLc.focus(); });
 document.getElementById("gRetry").addEventListener("click", gStartLanding);
-document.getElementById("gToPatch").addEventListener("click", () => { gSetStep(3); gRenderPatch(); });
+document.getElementById("gSkipLand").addEventListener("click", () => {   // salta l'allunaggio: un quarto dei punti
+  if (LD.state) { LD.state.phase = "skipped"; LD.state.thrust = false; LD.state.auto = false; }
+  Object.keys(LD.keys || {}).forEach(k => LD.keys[k] = false);
+  GM.landPts = 25; gSetStep(3); gDefaults(); gRenderPatch();
+});
+document.getElementById("gToPatch").addEventListener("click", () => { gSetStep(3); gDefaults(); gRenderPatch(); });
 
 /* ---------- Toppa di missione (SVG originale, scaricabile) ---------- */
 const PATCH_NAMES = ["SELENE", "ARTEMIDE", "CYNTHIA", "LUNARIS", "AURORA", "VEGA", "ORIONE", "ALTAIR"];
@@ -5552,7 +6118,7 @@ function nearestCrater(la, lo) {
 }
 function patchSVG() {
   const G = eduGrid(), k = GM.pick, la = G.lat[k], lo = G.lon[k], cr = nearestCrater(la, lo);
-  const name = (document.getElementById("gName").value || "MISSION").toUpperCase().slice(0, 24);
+  const name = (document.getElementById("gName").value || "MISSION").toUpperCase().slice(0, 30);
   const crew = (document.getElementById("gCrew").value || "").toUpperCase().slice(0, 28);
   const total = GM.sitePts + GM.landPts, stars = Math.max(0, Math.min(5, Math.round(total / 40)));
   const date = GM.time.toLocaleDateString(lang, { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
@@ -5560,18 +6126,24 @@ function patchSVG() {
   const starDots = Array.from({ length: 60 }, () => `<circle cx="${(120 + rnd() * 360).toFixed(1)}" cy="${(110 + rnd() * 220).toFixed(1)}" r="${(.6 + rnd() * 1.4).toFixed(1)}" fill="#fff" opacity="${(.4 + rnd() * .6).toFixed(2)}"/>`).join("");
   const stitch = Array.from({ length: 5 }, (_, i) => `<text x="${300 + (i - 2) * 26}" y="440" font-size="22" fill="${i < stars ? "#ca8a04" : "#57534e"}" stroke="#1e293b" stroke-width=".6" text-anchor="middle">★</text>`).join("");
   const coord = `${fmtLat(la)} · ${fmtLon(lo)}`.replace(/·/g, "•");
+  // dimensioni adattate alla lunghezza: il testo resta dentro il suo arco
+  const fit = (n, arc, base, per, ls) => Math.max(11, Math.min(base, Math.floor((arc / Math.max(1, n) - ls) / per)));
+  const nameLs = name.length > 14 ? 2 : 4, nameFs = fit(name.length, 640, 32, .8, nameLs);
+  const coordTxt = coord + (cr ? " • " + cr.name.toUpperCase() : ""), coordFs = fit(coordTxt.length, 520, 15, .66, 2);
+  const crewFs = fit(crew.length + 6, 440, 15, .7, 2);
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
   <defs>
     <radialGradient id="bg" cx="50%" cy="38%" r="65%"><stop offset="0" stop-color="#16295c"/><stop offset=".7" stop-color="#0a1433"/><stop offset="1" stop-color="#050a1c"/></radialGradient>
     <radialGradient id="moon" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#e7e5e4"/><stop offset=".6" stop-color="#a8a29e"/><stop offset="1" stop-color="#57534e"/></radialGradient>
     <linearGradient id="earth" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset=".6" stop-color="#1d4ed8"/><stop offset="1" stop-color="#22c55e"/></linearGradient>
     <path id="arcTop" d="M 66 300 A 234 234 0 0 1 534 300"/>
-    <path id="arcBot" d="M 40 300 A 260 260 0 0 0 560 300"/>
+    <path id="arcBot" d="M 34 300 A 266 266 0 0 0 566 300"/>
+    <path id="arcCrew" d="M 66 300 A 234 234 0 0 0 534 300"/>
     <clipPath id="inner"><circle cx="300" cy="300" r="205"/></clipPath>
   </defs>
   <circle cx="300" cy="300" r="292" fill="#c9a227"/>
   <circle cx="300" cy="300" r="280" fill="#0b1226"/>
-  <circle cx="300" cy="300" r="274" fill="none" stroke="#c9a227" stroke-width="2" stroke-dasharray="7 6"/>
+  <circle cx="300" cy="300" r="276" fill="none" stroke="#c9a227" stroke-width="1.5" stroke-dasharray="7 6"/>
   <circle cx="300" cy="300" r="210" fill="url(#bg)" stroke="#c9a227" stroke-width="6"/>
   <g clip-path="url(#inner)">
     ${starDots}
@@ -5579,7 +6151,7 @@ function patchSVG() {
       <circle r="26" fill="#0b1733"/><path d="M 0 -26 A 26 26 0 0 1 0 26 A 12 26 0 0 0 0 -26 Z" fill="url(#earth)"/>
       <circle r="26" fill="none" stroke="#fff" stroke-opacity=".6"/>
     </g>
-    <g transform="translate(185 170)" stroke="#fde047" stroke-width="3" stroke-linecap="round">
+    <g transform="translate(172 210)" stroke="#fde047" stroke-width="3" stroke-linecap="round">
       ${Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6; return `<line x1="${(18 * Math.cos(a)).toFixed(1)}" y1="${(18 * Math.sin(a)).toFixed(1)}" x2="${(28 * Math.cos(a)).toFixed(1)}" y2="${(28 * Math.sin(a)).toFixed(1)}"/>`; }).join("")}
       <circle r="14" fill="#fef3c7" stroke="none"/>
     </g>
@@ -5592,16 +6164,18 @@ function patchSVG() {
       <path d="M -17 0 L -30 18 M 17 0 L 30 18 M -36 18 L -24 18 M 24 18 L 36 18" fill="none" stroke="#e5e7eb" stroke-width="3"/>
     </g>
   </g>
-  <text font-family="Orbitron, Inter, Arial, sans-serif" font-size="32" font-weight="800" fill="#f8fafc" letter-spacing="4">
+  <text font-family="Orbitron, Inter, Arial, sans-serif" font-size="${nameFs}" font-weight="800" fill="#f8fafc" letter-spacing="${nameLs}">
     <textPath href="#arcTop" startOffset="50%" text-anchor="middle">${esc(name)}</textPath></text>
-  <text font-family="Inter, Arial, sans-serif" font-size="17" font-weight="700" fill="#c9a227" letter-spacing="3">
+  <text font-family="Inter, Arial, sans-serif" font-size="${coordFs}" font-weight="700" fill="#c9a227" letter-spacing="2">
     <textPath href="#arcBot" startOffset="50%" text-anchor="middle">${esc(coord)}${cr ? " • " + esc(cr.name.toUpperCase()) : ""}</textPath></text>
-  <text x="300" y="468" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="800" fill="#1e293b" text-anchor="middle" letter-spacing="2">${esc(date)}${crew ? " • CDR " + esc(crew) : ""}</text>
+  ${crew ? `<text font-family="Inter, Arial, sans-serif" font-size="${crewFs}" font-weight="800" fill="#f8fafc" letter-spacing="2">
+    <textPath href="#arcCrew" startOffset="50%" text-anchor="middle">CDR • ${esc(crew)}</textPath></text>` : ""}
+  <text x="300" y="470" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800" fill="#1e293b" text-anchor="middle" letter-spacing="2">${esc(date)}</text>
   ${stitch}
   <text x="300" y="140" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#94a3b8" text-anchor="middle" letter-spacing="3">${t("gTotal")} ${total}/200</text>
 </svg>`;
 }
-function gRenderPatch() { gDefaults(); document.getElementById("gPatch").innerHTML = patchSVG(); }
+function gRenderPatch() { document.getElementById("gPatch").innerHTML = patchSVG(); }
 ["gName", "gCrew"].forEach(id => document.getElementById(id).addEventListener("input", () => { if (GM.step === 3) gRenderPatch(); }));
 document.getElementById("gSvg").addEventListener("click", () => {
   const blob = new Blob([patchSVG()], { type: "image/svg+xml" }), a = document.createElement("a");
