@@ -165,3 +165,8 @@ def test_only_whitelisted_data_reachable(client):
     for url in ["/data/users.json", "/data/users.json.bak", "/data/sites/../users.json", "/data/areas/polo_sud.json",
                 "/data/sites/altro.json", "/data/sites/mappa_x.txt", "/logs/audit.jsonl", "/app.py"]:
         assert client.get(url).status_code == 404, url
+
+
+def test_static_site_index_matches_api(client):
+    f = srv.write_site_index()
+    assert json.loads(f.read_text("utf-8"))["siti"] == client.get("/api/sites").json["siti"]

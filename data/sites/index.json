@@ -1,0 +1,139 @@
+{
+ "siti": [
+  {
+   "nome": "Sito_01",
+   "mappa": "data/sites/mappa_Sito_01.json",
+   "evoluzione": "data/sites/evoluzione_Sito_01.json"
+  },
+  {
+   "nome": "Sito_04",
+   "mappa": "data/sites/mappa_Sito_04.json",
+   "evoluzione": "data/sites/evoluzione_Sito_04.json"
+  },
+  {
+   "nome": "Sito_06",
+   "mappa": "data/sites/mappa_Sito_06.json",
+   "evoluzione": "data/sites/evoluzione_Sito_06.json"
+  },
+  {
+   "nome": "Sito_07",
+   "mappa": "data/sites/mappa_Sito_07.json",
+   "evoluzione": "data/sites/evoluzione_Sito_07.json"
+  },
+  {
+   "nome": "Sito_11",
+   "mappa": "data/sites/mappa_Sito_11.json",
+   "evoluzione": "data/sites/evoluzione_Sito_11.json"
+  },
+  {
+   "nome": "Sito_20",
+   "mappa": "data/sites/mappa_Sito_20.json",
+   "evoluzione": "data/sites/evoluzione_Sito_20.json"
+  },
+  {
+   "nome": "Sito_20v2",
+   "mappa": "data/sites/mappa_Sito_20v2.json",
+   "evoluzione": "data/sites/evoluzione_Sito_20v2.json"
+  },
+  {
+   "nome": "Sito_23",
+   "mappa": "data/sites/mappa_Sito_23.json",
+   "evoluzione": "data/sites/evoluzione_Sito_23.json"
+  },
+  {
+   "nome": "Sito_42",
+   "mappa": "data/sites/mappa_Sito_42.json",
+   "evoluzione": "data/sites/evoluzione_Sito_42.json"
+  },
+  {
+   "nome": "Sito_DM1",
+   "mappa": "data/sites/mappa_Sito_DM1.json",
+   "evoluzione": "data/sites/evoluzione_Sito_DM1.json"
+  },
+  {
+   "nome": "Sito_DM2",
+   "mappa": "data/sites/mappa_Sito_DM2.json",
+   "evoluzione": "data/sites/evoluzione_Sito_DM2.json"
+  },
+  {
+   "nome": "Sito_Haworth",
+   "mappa": "data/sites/mappa_Sito_Haworth.json",
+   "evoluzione": "data/sites/evoluzione_Sito_Haworth.json"
+  },
+  {
+   "nome": "Sito_LM1",
+   "mappa": "data/sites/mappa_Sito_LM1.json",
+   "evoluzione": "data/sites/evoluzione_Sito_LM1.json"
+  },
+  {
+   "nome": "Sito_LM2",
+   "mappa": "data/sites/mappa_Sito_LM2.json",
+   "evoluzione": "data/sites/evoluzione_Sito_LM2.json"
+  },
+  {
+   "nome": "Sito_LM3",
+   "mappa": "data/sites/mappa_Sito_LM3.json",
+   "evoluzione": "data/sites/evoluzione_Sito_LM3.json"
+  },
+  {
+   "nome": "Sito_LM4",
+   "mappa": "data/sites/mappa_Sito_LM4.json",
+   "evoluzione": "data/sites/evoluzione_Sito_LM4.json"
+  },
+  {
+   "nome": "Sito_LM5",
+   "mappa": "data/sites/mappa_Sito_LM5.json",
+   "evoluzione": "data/sites/evoluzione_Sito_LM5.json"
+  },
+  {
+   "nome": "Sito_LM6",
+   "mappa": "data/sites/mappa_Sito_LM6.json",
+   "evoluzione": "data/sites/evoluzione_Sito_LM6.json"
+  },
+  {
+   "nome": "Sito_LM7",
+   "mappa": "data/sites/mappa_Sito_LM7.json",
+   "evoluzione": "data/sites/evoluzione_Sito_LM7.json"
+  },
+  {
+   "nome": "Sito_LM8",
+   "mappa": "data/sites/mappa_Sito_LM8.json",
+   "evoluzione": "data/sites/evoluzione_Sito_LM8.json"
+  },
+  {
+   "nome": "Sito_NPA",
+   "mappa": "data/sites/mappa_Sito_NPA.json",
+   "evoluzione": "data/sites/evoluzione_Sito_NPA.json"
+  },
+  {
+   "nome": "Sito_NPB",
+   "mappa": "data/sites/mappa_Sito_NPB.json",
+   "evoluzione": "data/sites/evoluzione_Sito_NPB.json"
+  },
+  {
+   "nome": "Sito_NPC",
+   "mappa": "data/sites/mappa_Sito_NPC.json",
+   "evoluzione": "data/sites/evoluzione_Sito_NPC.json"
+  },
+  {
+   "nome": "Sito_NPD",
+   "mappa": "data/sites/mappa_Sito_NPD.json",
+   "evoluzione": "data/sites/evoluzione_Sito_NPD.json"
+  },
+  {
+   "nome": "Sito_SL2",
+   "mappa": "data/sites/mappa_Sito_SL2.json",
+   "evoluzione": "data/sites/evoluzione_Sito_SL2.json"
+  },
+  {
+   "nome": "Sito_SL3",
+   "mappa": "data/sites/mappa_Sito_SL3.json",
+   "evoluzione": "data/sites/evoluzione_Sito_SL3.json"
+  },
+  {
+   "nome": "Sito_Shoemaker",
+   "mappa": "data/sites/mappa_Sito_Shoemaker.json",
+   "evoluzione": "data/sites/evoluzione_Sito_Shoemaker.json"
+  }
+ ]
+}

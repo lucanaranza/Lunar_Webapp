@@ -4,7 +4,7 @@ Cosa fa il server:
   * login istituzionale verificato QUI (il browser non contiene più le credenziali)
   * sessioni con cookie HttpOnly / SameSite=Strict, scadenza per inattività e assoluta
   * blocco dei tentativi ripetuti (per IP e per account, con attesa crescente)
-  * serve l'unica pagina (static/index.html: edizione Educational ed Expert) e, in sola lettura,
+  * serve l'unica pagina (index.html: edizione Educational ed Expert) e, in sola lettura,
     i dati pubblici dell'analisi (data/sites/*.json, data/tabella_sole_terra.json)
   * consegna dei dati delle aree (data/areas/*.json) solo agli utenti autenticati,
     con limitazione facoltativa per istituzione
@@ -39,7 +39,7 @@ BASE = Path(__file__).resolve().parent
 
 # --------------------------------------------------------------------------- config
 CONFIG = {
-    "STATIC_DIR": Path(os.environ.get("MLSN_STATIC_DIR", BASE / "static")),
+    "STATIC_DIR": Path(os.environ.get("MLSN_STATIC_DIR", BASE)),               # index.html nella cartella principale (anche per GitHub Pages)
     "DATA_DIR": Path(os.environ.get("MLSN_DATA_DIR", BASE / "data")),        # file dell'analisi (pubblici, sola lettura)
     "AREAS_DIR": Path(os.environ.get("MLSN_AREAS_DIR", BASE / "data" / "areas")),
     "USERS_FILE": Path(os.environ.get("MLSN_USERS_FILE", BASE / "data" / "users.json")),
@@ -296,8 +296,7 @@ def favicon():
     return "", 204                                         # nessuna icona: evita un 404 a ogni visita
 
 
-@app.get("/api/sites")
-def list_sites():
+def site_index() -> list[dict]:
     """Siti disponibili: ogni mappa_<Sito>.json in data/sites, con la sua evoluzione_<Sito>.json se c'è."""
     d = CONFIG["DATA_DIR"] / "sites"
     out = []
@@ -308,7 +307,19 @@ def list_sites():
         ev = d / f"evoluzione_{name}.json"
         out.append({"nome": name, "mappa": f"data/sites/{p.name}",
                     "evoluzione": f"data/sites/{ev.name}" if ev.is_file() else None})
-    return jsonify(siti=out)
+    return out
+
+
+@app.get("/api/sites")
+def list_sites():
+    return jsonify(siti=site_index())
+
+
+def write_site_index() -> Path:
+    """data/sites/index.json: lo stesso elenco di /api/sites, per l'hosting statico (GitHub Pages) senza server."""
+    f = CONFIG["DATA_DIR"] / "sites" / "index.json"
+    f.write_text(json.dumps({"siti": site_index()}, indent=1, ensure_ascii=False) + "\n", "utf-8")
+    return f
 
 
 # --------------------------------------------------------------------------- API
@@ -461,6 +472,10 @@ def too_large(_):
 
 
 if __name__ == "__main__":
+    import sys
+    if sys.argv[1:] == ["index"]:                         # python app.py index  →  aggiorna data/sites/index.json
+        print(f"Aggiornato {write_site_index()} ({len(site_index())} siti)")
+        sys.exit(0)
     # Solo per sviluppo. In locale: http://127.0.0.1:8000 (Chrome/Firefox accettano i cookie Secure su localhost).
     # Per provare HTTPS in locale: MLSN_TLS=adhoc python app.py  (certificato autofirmato, richiede 'cryptography')
     ssl = "adhoc" if os.environ.get("MLSN_TLS") == "adhoc" else None

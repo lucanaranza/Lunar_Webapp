@@ -6,7 +6,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-const htmlPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'static', 'index.html');
+const htmlPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'index.html');
 const html = existsSync(htmlPath) ? readFileSync(htmlPath, 'utf8') : '';
 
 test('index.html esiste e non è vuoto', () => {
