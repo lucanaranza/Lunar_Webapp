@@ -985,6 +985,30 @@
   .as-btn.primary:hover:not(:disabled) { background: #35d579; }
   .as-btn.primary:disabled { opacity: .4; cursor: not-allowed; }
 
+  /* ----- Mappa di analisi: legenda compatta graduata, spie in alto ----- */
+  .map-legend { width: auto !important; min-width: 0; padding: .7rem .8rem !important; gap: .55rem !important; border-radius: 6px;
+    border-color: #2a3039 !important; background: rgba(15,17,21,.9) !important; }
+  .map-legend .legend-title { font: 600 .74rem "IBM Plex Sans", Inter, sans-serif !important; max-width: 150px; }
+  .map-legend .lg-body { height: 230px !important; gap: .55rem !important; }
+  .map-legend .legend-bar { width: 14px !important; }
+  #legendTicks { position: relative; display: block; min-width: 46px; font: 500 .72rem "IBM Plex Mono", ui-monospace, monospace !important; color: #e5e7eb; }
+  #legendTicks span { position: absolute; left: .5rem; transform: translateY(50%); white-space: nowrap; padding-left: 0; }
+  #legendTicks span::before { content: ""; position: absolute; left: -.5rem; top: 50%; width: .35rem; height: 1px; background: rgba(255,255,255,.55); }
+  .map-legend .legend-mask { font: .72rem "IBM Plex Sans", Inter, sans-serif !important; align-items: center !important; }
+  .map-legend .lg-hint { display: none; }
+  #mcPanel.mc-lamps { left: 50%; top: .7rem; transform: translateX(-50%); display: flex; gap: .5rem; padding: 0 !important; max-width: none !important;
+    background: none !important; border: 0 !important; box-shadow: none !important; }
+  #mcPanel.mc-lamps:empty { display: none; }
+  .mc-lamp { display: inline-flex; align-items: center; gap: .5rem; padding: .35rem .8rem .35rem .55rem; border-radius: 4px; white-space: nowrap;
+    background: rgba(15,17,21,.9); border: 1px solid #2a3039; font: 500 .82rem "IBM Plex Sans", Inter, sans-serif; color: #e5e7eb; cursor: default; }
+  .mc-lamp .lamp { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-size: .72rem; font-weight: 700; line-height: 1; }
+  .mc-lamp.on .lamp { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+  .mc-lamp.off { color: #fca5a5; border-color: #5b2a2a; }
+  .mc-lamp.off .lamp { background: #3b1114; color: #f87171; border: 1px solid #ef4444; }
+  body.ws-on:not(.phone) #stageMap .timebar { right: 3.6rem; }      /* lascia libero l'angolo del profilo */
+  body.phone #mcPanel.mc-lamps { top: .4rem; }
+  body.phone .mc-lamp { font-size: .72rem; padding: .25rem .55rem .25rem .4rem; }
+
   /* ----- Area Selection: mappa ----- */
   #globeWrap { overflow: hidden; }
   #globeWrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -1489,13 +1513,12 @@
         <div class="legend-title" id="legendTitle"></div>
         <div class="lg-body">
           <div class="legend-bar" id="legendBar"></div>
-          <div class="lg-labels"><span id="legendHi"></span><span id="legendMid"></span><span id="legendLo"></span></div>
+          <div class="lg-labels" id="legendTicks"></div>
         </div>
         <div class="legend-mask" id="legendMask"><i></i><span data-i18n="masked">Excluded</span></div>
         <div class="legend-mask energy" id="legendEnergy"><i></i><span data-i18n="maskEnergyLg">Battery below reserve</span></div>
-        <div class="lg-hint" data-i18n="lgHint">Brighter colour = higher value. Hover the map to read the exact value.</div>
       </div>
-      <div class="mc-panel" id="mcPanel" aria-live="polite"></div>
+      <div class="mc-panel mc-lamps" id="mcPanel" aria-live="polite"></div>
       <div class="timebar" id="timebar">
         <button class="tb" data-step="-24"></button>
         <button class="tb" data-step="-1"></button>
@@ -3349,6 +3372,16 @@ document.getElementById("horizonMode").addEventListener("click", e => {
 document.getElementById("zoomSel").addEventListener("change", e => { WS.zoom = +e.target.value; selectedSite = -1; layoutMap(); saveParams(); });
 document.getElementById("cratersChk").addEventListener("change", e => { WS.craters = e.target.checked; drawOverlays(); saveParams(); });
 
+// scala graduata accanto alla barra: valori equidistanti dal minimo (in basso) al massimo (in alto)
+function setLegendTicks(lo, hi, fmt, n = 6) {
+  const el = document.getElementById("legendTicks"), out = [];
+  if (Array.isArray(lo)) {                                  // scala a categorie: [[posizione 0..1, testo], ...]
+    for (const [p, txt] of lo) out.push(`<span style="bottom:${(p * 100).toFixed(1)}%">${esc(txt)}</span>`);
+  } else if (isFinite(lo) && isFinite(hi)) {
+    for (let i = 0; i < n; i++) { const p = i / (n - 1); out.push(`<span style="bottom:${(p * 100).toFixed(1)}%">${esc(fmt(lo + (hi - lo) * p))}</span>`); }
+  }
+  el.innerHTML = out.join("");
+}
 function updateLegend() {
   const L = WS.layer, stay = WS.horizon === "stay";
   document.getElementById("legendBar").style.background = `linear-gradient(0deg, ${PALETTES[layerPal(L)].join(",")})`;
@@ -3357,28 +3390,25 @@ function updateLegend() {
     const r = PX && PX.mrange, fmt = v => d && d.pct ? Math.round(v * 100) + "%" : d && d.unit === "h" ? fmtDur(v) : Math.round(v) + (d && d.unit ? " " + d.unit : "");
     const sr = PX && PX.scoreRange;
     document.getElementById("legendTitle").textContent = t("lg_" + L) + (d || L === "cross" ? ` · ${t("vMedia").toLowerCase()}` : "");
-    document.getElementById("legendMid").textContent = "";
-    document.getElementById("legendLo").textContent = L === "cross" ? (sr ? `${Math.round(sr[0] * 100)} · ${t("lo")}` : t("lo")) : (L === "sunNow" || L === "earthNow") ? t("no") : r ? fmt(r[0]) : "";
-    document.getElementById("legendHi").textContent = L === "cross" ? (sr ? `${t("hi")} · ${Math.round(sr[1] * 100)}` : t("hi")) : (L === "sunNow" || L === "earthNow") ? t("yes") : r ? fmt(r[1]) : "";
+    if (L === "sunNow" || L === "earthNow") setLegendTicks([[0, t("no")], [1, t("yes")]]);
+    else if (L === "cross") sr ? setLegendTicks(sr[0] * 100, sr[1] * 100, v => String(Math.round(v))) : setLegendTicks([[0, t("lo")], [1, t("hi")]]);
+    else r ? setLegendTicks(r[0], r[1], fmt) : setLegendTicks([]);
     document.getElementById("legendMask").hidden = !(L === "cross" || L === "m_lcl");
-    document.querySelector("#legendMask span").textContent = t(L === "m_lcl" ? "maskNotLand" : "maskedCons");
+    document.querySelector("#legendMask span").textContent = t("maskShort");
     document.getElementById("legendEnergy").hidden = true;
     return;
   }
-  { const sr0 = PX && PX.scoreRange;
-    document.getElementById("legendMid").textContent = L === "temp" ? "−55 °C" : L === "score" ? (sr0 ? String(Math.round((sr0[0] + sr0[1]) * 50)) : "") : L === "ice" ? "" : "50%"; }
   document.getElementById("legendTitle").textContent =
     stay && (L === "sun" || L === "earth") ? t(`lg_${L}_stay`, { h: WS.mission.stayHours })
     : (L === "sun" || L === "earth") && dataPeriod() ? `${t("lg_" + L)} · ${t("hYear").toLowerCase()} ${new Date(dataPeriod().start).getUTCFullYear()}` : t("lg_" + L);
   const sr = PX && PX.scoreRange;
-  const [lo, hi] = L === "ice" ? [t("far"), t("near")]
-    : L === "score" ? (sr ? [`${Math.round(sr[0] * 100)} · ${t("lo")}`, `${t("hi")} · ${Math.round(sr[1] * 100)}`] : [t("lo"), t("hi")])
-    : L === "temp" ? ["−230 °C", "+120 °C"] : ["0%", "100%"];
-  document.getElementById("legendLo").textContent = lo;
-  document.getElementById("legendHi").textContent = hi;
+  if (L === "ice") setLegendTicks([[0, t("far")], [1, t("near")]]);
+  else if (L === "score") sr ? setLegendTicks(sr[0] * 100, sr[1] * 100, v => String(Math.round(v))) : setLegendTicks([[0, t("lo")], [1, t("hi")]]);
+  else if (L === "temp") setLegendTicks(-230, 120, v => `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(Math.round(v))} °C`);
+  else setLegendTicks(0, 100, v => Math.round(v) + "%");
   document.getElementById("legendMask").hidden = !(L === "score" || L === "earth");
   document.getElementById("legendEnergy").hidden = !(L === "energy" || (L === "score" && energyExcl()));
-  document.querySelector("#legendMask span").textContent = t("masked");
+  document.querySelector("#legendMask span").textContent = t("maskShort");
 }
 function earthMostlyHidden(ee) {     // con l'evoluzione reale: quota dell'area senza Terra in vista, dai dati
   const P = PX;
@@ -3499,19 +3529,19 @@ function sampleDS(arr, D, x, y) {        // bilineare; x, y in km nella proiezio
 
 function layoutMap() {
   if (!MAPDATA) return;
-  const css = Math.max(260, Math.min(mapWrap.clientWidth - 40, mapWrap.clientHeight - 58) - 6);
+  const media = isMedia();                       // media annua: niente barra del tempo, la mappa usa tutta l'altezza
+  const css = Math.max(260, Math.min(mapWrap.clientWidth - 40, mapWrap.clientHeight - (media ? 12 : 58)) - 6);
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const S = Math.min(1400, Math.round(css * dpr)), k = S / css;
   mapCanvas.width = mapCanvas.height = S;
   mapCanvas.style.width = mapCanvas.style.height = css + "px";
-  mapCanvas.style.marginBottom = "56px";
+  mapCanvas.style.marginBottom = media ? "0px" : "56px";
   // il pannello Mission Control usa solo lo spazio libero a sinistra della mappa (non copre Sole e Terra)
   const side = Math.max(150, (mapWrap.clientWidth - css) / 2 - 24);
-  document.getElementById("mcPanel").style.maxWidth = side + "px";
   document.getElementById("mapLegend").style.setProperty("width", Math.min(210, side) + "px", "important");
   ORBIT.dirty = true;
   const viewDeg = REGION.r * WS.zoom;
-  const margin = 50 * k, R = S / 2 - margin, scale = R / rForDeg(viewDeg);
+  const margin = 40 * k, R = S / 2 - margin, scale = R / rForDeg(viewDeg);
   const n = S * S, D = MAPDATA, F = () => new Float32Array(n);
   const P = { S, k, R, scale, viewDeg, cx: S / 2, cy: S / 2, css, inside: new Uint8Array(n),
     sunF: F(), earthF: F(), ice: F(), sHzE: F(), sHzS: F(), sphi: F(), cphi: F(), clam: F(), slam: F(), lat: F(), lon: F(),
@@ -3758,8 +3788,9 @@ document.getElementById("crossBox").addEventListener("input", e => {
   renderCrossBox(); queueRecolor(); saveParams();
 });
 function applyViewMode() {
-  const media = isMedia();
-  document.getElementById("stageMap").classList.toggle("media", media);
+  const media = isMedia(), sm = document.getElementById("stageMap"), was = sm.classList.contains("media");
+  sm.classList.toggle("media", media);
+  if (was !== media && PX && wsView.dataset.stage === "map") requestAnimationFrame(() => layoutMap());   // cambia lo spazio disponibile
   if (media) { try { if (ORBIT.on) setOrbit(false); if (playTimer) stopPlay(); } catch (e) {} }
   renderLayerTabs(); renderCrossBox();
 }
@@ -4139,14 +4170,11 @@ function updateProbe() {
   const pc = x => nIn ? Math.round(100 * x / nIn) : 0;
   const areaCom = nCom === 0 ? `<span class="bad">${esc(t("mcAreaNoCom"))}</span>` : esc(t("mcAreaCom", { p: pc(nCom) }));
   const areaSun = nSun === 0 ? `<span class="bad">${esc(t("mcAreaNoSun"))}</span>` : esc(t("mcAreaSun", { p: pc(nSun) }));
-  mc.innerHTML = `<div class="sec"><div class="st ${com.now ? "ok" : "los"}"><span class="dot"></span>📡 ${t(com.now ? "mcAcq" : "mcLos")}</div>
-      <div class="exp">${esc(t(com.now ? "mcComYes" : "mcComNo"))}</div>
-      <div class="big">${esc(com.inH == null ? t("mcNever") : t(com.now ? "mcLosClear" : "mcAosClear", { d: fmtDur(com.inH) }))}</div>
-      <div class="area">${areaCom}</div></div>
-    <div class="sec"><div class="st ${sun.now ? "sun" : "dark"}"><span class="dot"></span>☀ ${t(sun.now ? "mcSunNow" : "mcDarkNow")}</div>
-      <div class="big">${esc(sunLine)}</div>
-      <div class="area">${areaSun}</div></div>
-    <div class="for">${esc(t("mcFor", { p: tg.label, c: coord }))}</div>`;
+  // spie per il punto scelto (sito n.1 o sonda): luce verde = sì, ✗ rossa = no; il dettaglio resta nel tooltip
+  const lamp = (on, key, tip) => `<div class="mc-lamp ${on ? "on" : "off"}" title="${esc(tip)}"><span class="lamp">${on ? "" : "✗"}</span>${esc(t(key))}</div>`;
+  mc.innerHTML = lamp(com.now, "mcLink", `${com.inH == null ? t("mcNever") : t(com.now ? "mcLosClear" : "mcAosClear", { d: fmtDur(com.inH) })} · ${t("mcFor", { p: tg.label, c: coord })}`)
+    + lamp(sun.now, "mcIllum", `${sunLine} · ${t("mcFor", { p: tg.label, c: coord })}`);
+  void areaCom; void areaSun;
 
   // --- batteria lungo la permanenza (passo fine)
   const C = energyCfg(), H = m.stayHours, step = Math.max(.25, H / 480), cap = C.cap, reserve = C.reserve;
@@ -5783,7 +5811,7 @@ Object.keys(I18N).forEach(c => Object.assign(I18N[c], I18N_LAND[c] || {}));
 
 /* ---------- Testi della nuova Area Selection (workspace stile LROC) ---------- */
 const I18N_AS = {
-  it: { covNoServer: "I dati dei siti sono nella cartella data/: apri il sito da un server (python app.py → http://127.0.0.1:8000, oppure il link GitHub Pages), non come file", wsTitle: "Workspace", asTitle: "Selezione area", asSites: "Siti", asGroup: "Siti del Polo Sud", importData: "Importa dati area",
+  it: { tr17d: "Spiega i colori del livello attuale con una scala graduata: in basso il valore minimo, in alto il massimo. Il riquadro tratteggiato indica le zone escluse.", tr20t: "Spie: collegamento Terra e illuminazione", tr20d: "In alto al centro due spie dicono cosa succede <b>adesso</b> nel punto scelto (il sito n.1 o la sonda): <b>Collegamento Terra</b> = la Terra è visibile, <b>Illuminazione</b> = il punto è al Sole.\nLuce verde = sì, ✗ rossa = no. Passa il mouse su una spia per sapere tra quanto cambia.", maskShort: "Esclusi", mcLink: "Collegamento Terra", mcIllum: "Illuminazione", covNoServer: "I dati dei siti sono nella cartella data/: apri il sito da un server (python app.py → http://127.0.0.1:8000, oppure il link GitHub Pages), non come file", wsTitle: "Workspace", asTitle: "Selezione area", asSites: "Siti", asGroup: "Siti del Polo Sud", importData: "Importa dati area",
         confirmArea: "Conferma e analizza", asHelpBtn: "Come si usa", asProfile: "Account", asSouthPole: "Polo Sud", asNorthPole: "Polo Nord",
         asMode3d: "3D · Globo", asMode2d: "2D · Polo Sud · stereografica polare", asTo2d: "Mappa 2D Polo Sud", asTo3d: "Globo 3D",
         globeHelp: "Scegli un sito dall'elenco o clicca il suo anello sulla mappa: la vista vola sul sito. Trascina per ruotare o spostare, usa la rotella per lo zoom. Ingrandendo vicino al Polo Sud si apre la mappa 2D, più precisa; dentro ogni sito si vede il rilievo reale del DEM.",
@@ -5791,7 +5819,7 @@ const I18N_AS = {
         tr2t: "Reticolo e punti cardinali", tr2d: "Sopra la mappa trovi il <b>reticolo</b> di latitudine e longitudine con le etichette, e le frecce <b>N</b>, <b>E</b>, <b>S</b>, <b>O</b>: nel globo stanno sul bordo del disco, nella mappa 2D in alto a destra (il nord è sempre lontano dal polo).\nIn basso a sinistra leggi le coordinate sotto il cursore e la risoluzione; in alto a sinistra puoi passare tu tra globo 3D e mappa 2D.",
         tr3d: "Qui ci sono tutti i siti con dati: per ognuno il nome e l'estensione approssimativa (Ø in km).\nClicca un sito e la mappa vola fin lì; quello selezionato ha la barra verde.",
         tr5d: "In basso vedi il sito scelto, le coordinate del centro e l'estensione." },
-  en: { covNoServer: "Site data live in the data/ folder: open the site from a server (python app.py → http://127.0.0.1:8000, or the GitHub Pages link), not as a file", wsTitle: "Workspace", asTitle: "Area Selection", asSites: "Sites", asGroup: "South Pole sites", importData: "Import area data",
+  en: { tr17d: "It explains the colours of the current layer with a graduated scale: the minimum at the bottom, the maximum at the top. The hatched box marks excluded zones.", tr20t: "Status lights: Earth datalink and illumination", tr20d: "At the top centre two lights tell you what is happening <b>now</b> at the chosen point (site #1 or the probe): <b>Earth datalink</b> = Earth is visible, <b>Illumination</b> = the point is sunlit.\nGreen light = yes, red ✗ = no. Hover a light to see how long until it changes.", maskShort: "Excluded", mcLink: "Earth datalink", mcIllum: "Illumination", covNoServer: "Site data live in the data/ folder: open the site from a server (python app.py → http://127.0.0.1:8000, or the GitHub Pages link), not as a file", wsTitle: "Workspace", asTitle: "Area Selection", asSites: "Sites", asGroup: "South Pole sites", importData: "Import area data",
         confirmArea: "Confirm and analyze", asHelpBtn: "How to use", asProfile: "Account", asSouthPole: "South Pole", asNorthPole: "North Pole",
         asMode3d: "3D · Globe", asMode2d: "2D · South Pole · polar stereographic", asTo2d: "2D South Pole map", asTo3d: "3D globe",
         globeHelp: "Pick a site from the list or click its ring on the map: the view flies to it. Drag to rotate or pan, scroll to zoom. Zooming in near the South Pole opens the sharper 2D map; inside each site you see the real relief from the DEM.",
@@ -5799,15 +5827,15 @@ const I18N_AS = {
         tr2t: "Grid and cardinal directions", tr2d: "On the map you find the latitude / longitude <b>grid</b> with labels and the <b>N</b>, <b>E</b>, <b>S</b>, <b>W</b> arrows: on the globe they sit on the edge of the disc, on the 2D map at the top right (north always points away from the pole).\nBottom left shows the coordinates under the cursor and the resolution; top left lets you switch between 3D globe and 2D map yourself.",
         tr3d: "All sites with data are listed here, each with its name and approximate extent (Ø in km).\nClick a site and the map flies there; the selected one has the green bar.",
         tr5d: "At the bottom you see the chosen site, its centre coordinates and its extent." },
-  es: { wsTitle: "Workspace", asTitle: "Selección de área", asSites: "Sitios", asGroup: "Sitios del Polo Sur", importData: "Importar datos de área",
+  es: { maskShort: "Excluidos", mcLink: "Enlace con la Tierra", mcIllum: "Iluminación", wsTitle: "Workspace", asTitle: "Selección de área", asSites: "Sitios", asGroup: "Sitios del Polo Sur", importData: "Importar datos de área",
         confirmArea: "Confirmar y analizar", asHelpBtn: "Cómo se usa", asProfile: "Cuenta", asSouthPole: "Polo Sur", asNorthPole: "Polo Norte",
         asMode3d: "3D · Globo", asMode2d: "2D · Polo Sur · estereográfica polar", asTo2d: "Mapa 2D Polo Sur", asTo3d: "Globo 3D",
         globeHelp: "Elige un sitio de la lista o haz clic en su anillo: la vista vuela hasta él. Arrastra para girar o mover y usa la rueda para el zoom. Al acercarte al Polo Sur se abre el mapa 2D, más nítido; dentro de cada sitio se ve el relieve real del DEM." },
-  fr: { wsTitle: "Workspace", asTitle: "Sélection de zone", asSites: "Sites", asGroup: "Sites du pôle Sud", importData: "Importer des données de zone",
+  fr: { maskShort: "Exclus", mcLink: "Liaison Terre", mcIllum: "Éclairage", wsTitle: "Workspace", asTitle: "Sélection de zone", asSites: "Sites", asGroup: "Sites du pôle Sud", importData: "Importer des données de zone",
         confirmArea: "Confirmer et analyser", asHelpBtn: "Mode d'emploi", asProfile: "Compte", asSouthPole: "Pôle Sud", asNorthPole: "Pôle Nord",
         asMode3d: "3D · Globe", asMode2d: "2D · Pôle Sud · stéréographique polaire", asTo2d: "Carte 2D pôle Sud", asTo3d: "Globe 3D",
         globeHelp: "Choisissez un site dans la liste ou cliquez sur son anneau : la vue s'y déplace. Faites glisser pour tourner ou déplacer, molette pour zoomer. En zoomant près du pôle Sud, la carte 2D, plus nette, s'ouvre ; dans chaque site on voit le relief réel du MNT." },
-  de: { wsTitle: "Workspace", asTitle: "Gebietsauswahl", asSites: "Standorte", asGroup: "Standorte am Südpol", importData: "Gebietsdaten importieren",
+  de: { maskShort: "Ausgeschlossen", mcLink: "Erdverbindung", mcIllum: "Beleuchtung", wsTitle: "Workspace", asTitle: "Gebietsauswahl", asSites: "Standorte", asGroup: "Standorte am Südpol", importData: "Gebietsdaten importieren",
         confirmArea: "Bestätigen und analysieren", asHelpBtn: "Bedienung", asProfile: "Konto", asSouthPole: "Südpol", asNorthPole: "Nordpol",
         asMode3d: "3D · Globus", asMode2d: "2D · Südpol · polarstereografisch", asTo2d: "2D-Karte Südpol", asTo3d: "3D-Globus",
         globeHelp: "Wählen Sie einen Standort aus der Liste oder klicken Sie auf seinen Ring: Die Ansicht fliegt dorthin. Ziehen zum Drehen oder Verschieben, Mausrad zum Zoomen. Nahe dem Südpol öffnet sich beim Zoomen die schärfere 2D-Karte; in jedem Standort sieht man das echte Relief des DGM." },
