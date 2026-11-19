@@ -1,7 +1,29 @@
 /* =====================================================================
    1) STORIA
    ===================================================================== */
-const WM = (h, f, w = 240) => `https://upload.wikimedia.org/wikipedia/commons/thumb/${h}/${f}/${w}px-${f}${f.endsWith(".svg") ? ".png" : ""}`;
+/* Images in images/history/ (downloaded once from Wikimedia Commons; all NASA public domain except SMART-1, CC BY-SA 2.5).
+   patch-*.webp = official mission patch · site-*.webp = reference photo shown in the card (usually the landing site from orbit) */
+const CM = f => "https://commons.wikimedia.org/wiki/File:" + f;
+const LRO = ["Il sito di atterraggio visto dall'orbita dalla sonda LRO: al centro lo stadio di discesa del modulo lunare, rimasto sulla Luna.",
+             "The landing site seen from orbit by the LRO probe: at the centre is the lunar module's descent stage, still on the Moon."];
+const HPHOTO = {
+  sv1: { cap: ["Surveyor 1 ancora sul suolo lunare, fotografato dall'orbita da LRO (freccia).", "Surveyor 1 still on the lunar surface, photographed from orbit by LRO (arrow)."], by: "NASA/GSFC/Arizona State University", page: CM("Surveyor_1_-_America’s_first_soft_lunar_landing_(LROC13_-_surv_thumb_big).png") },
+  a11: { cap: LRO, by: "NASA/GSFC/Arizona State University", page: CM("LRO_Apollo11_landing_site_369440main_lroc_apollo11_lrg.jpg") },
+  a12: { cap: ["Il sito di Apollo 12 visto da LRO: a poche centinaia di metri c'è la sonda Surveyor 3 che l'equipaggio andò a visitare.", "The Apollo 12 site seen by LRO: a few hundred metres away is the Surveyor 3 probe the crew walked to."], by: "NASA/GSFC/Arizona State University", page: CM("First_Look-_Apollo_12_and_Surveyor_3_(LROC141_-_M104662862R_a12_area).jpg") },
+  a14: { cap: LRO, by: "NASA/GSFC/Arizona State University", page: CM("LROC’s_First_Look_at_the_Apollo_Landing_Sites_(LROC157_-_A14LEMa_1000).png") },
+  a15: { cap: LRO, by: "NASA/GSFC/Arizona State University", page: CM("LROC’s_First_Look_at_the_Apollo_Landing_Sites_(LROC157_-_A15LEMa_1000).png") },
+  a16: { cap: LRO, by: "NASA/GSFC/Arizona State University", page: CM("LROC’s_First_Look_at_the_Apollo_Landing_Sites_(LROC157_-_A16LEMa_1000).png") },
+  a17: { cap: LRO, by: "NASA/GSFC/Arizona State University", page: CM("LROC’s_First_Look_at_the_Apollo_Landing_Sites_(LROC157_-_A17LEMa_1000).png") },
+  lp: { cap: ["Lunar Prospector in orbita attorno alla Luna (illustrazione NASA).", "Lunar Prospector in orbit around the Moon (NASA illustration)."], by: "NASA", page: CM("Lunar_Prospector_orbiter.jpg") },
+  smart1: { cap: ["Il lampo dell'impatto di SMART-1 sulla Luna, ripreso dal telescopio CFHT alle Hawaii.", "The flash of SMART-1's impact on the Moon, recorded by the CFHT telescope in Hawaii."], by: "Canada-France-Hawaii Telescope", lic: "CC BY-SA 2.5", page: CM("SMART-1_Impact_flash.jpg") },
+  lcross: { cap: ["Il punto d'impatto di LCROSS nel cratere Cabeus, al Polo Sud.", "The LCROSS impact point in Cabeus crater, at the South Pole."], by: "NASA Goddard", page: CM("Preview_of_LCROSS_Impact_Site_(3993323623).jpg") },
+  art2: { cap: ["L'eclissi di Sole vista dalla capsula Orion durante Artemis II (aprile 2026): la Luna copre il Sole.", "The solar eclipse seen from the Orion capsule during Artemis II (April 2026): the Moon covers the Sun."], by: "NASA", page: CM("Solar_eclipse_taken_from_Artemis_II_-_April_2026.jpg") },
+};
+// crew roles, in the order of the crew field
+const CREW_ROLES = {
+  apollo: [["Comandante", "Commander"], ["Pilota del modulo lunare", "Lunar module pilot"], ["Pilota del modulo di comando (in orbita)", "Command module pilot (stayed in orbit)"]],
+  art2: [["Comandante", "Commander"], ["Pilota", "Pilot"], ["Specialista di missione", "Mission specialist"], ["Specialista di missione (CSA, Canada)", "Mission specialist (CSA, Canada)"]],
+};
 const HIST = [
   { id: "sv1", name: "Surveyor 1", agency: "NASA", date: "1966-06-02", lat: -2.47, lon: -43.34, place: "Oceanus Procellarum", group: "robotic",
     intro: ["Surveyor 1 era una sonda robotica a tre gambe, grande come un'auto piccola. È stata la prima sonda americana a posarsi dolcemente sulla Luna, tre anni prima degli astronauti.",
@@ -19,7 +41,7 @@ const HIST = [
     links: [["NASA", "https://science.nasa.gov/mission/surveyor-1/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Surveyor_1"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Surveyor_1"]] },
 
   { id: "a11", name: "Apollo 11", agency: "NASA", date: "1969-07-20", lat: .674, lon: 23.473, place: "Mare Tranquillitatis", group: "apollo",
-    patch: WM("2/27", "Apollo_11_insignia.png"), crew: "Neil Armstrong, Buzz Aldrin, Michael Collins",
+    patch: "images/history/patch-a11.webp", crew: "Neil Armstrong, Buzz Aldrin, Michael Collins",
     intro: ["La missione in cui per la prima volta due esseri umani, Neil Armstrong e Buzz Aldrin, hanno camminato sulla Luna, mentre Michael Collins li aspettava in orbita. Il modulo lunare si chiamava «Eagle».",
             "The mission in which two humans, Neil Armstrong and Buzz Aldrin, walked on the Moon for the first time, while Michael Collins waited for them in orbit. The lunar module was called “Eagle”."],
     why: [["La regola numero uno era la sicurezza. Il Mare della Tranquillità è una distesa di lava antica, piatta e liscia, con pochi crateri grandi e pochi massi: il posto ideale per un primo atterraggio in cui tutto era nuovo.",
@@ -39,7 +61,7 @@ const HIST = [
     links: [["NASA", "https://www.nasa.gov/mission/apollo-11/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_11"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_11"]] },
 
   { id: "a12", name: "Apollo 12", agency: "NASA", date: "1969-11-19", lat: -3.01, lon: -23.42, place: "Oceanus Procellarum", group: "apollo",
-    patch: WM("8/8d", "Apollo_12_insignia.png"), crew: "Pete Conrad, Alan Bean, Richard Gordon",
+    patch: "images/history/patch-a12.webp", crew: "Pete Conrad, Alan Bean, Richard Gordon",
     intro: ["Quattro mesi dopo Apollo 11, Pete Conrad e Alan Bean tornarono sulla Luna con una sfida nuova: atterrare in un punto preciso, scelto in anticipo.",
             "Four months after Apollo 11, Pete Conrad and Alan Bean returned to the Moon with a new challenge: landing on a precise spot chosen in advance."],
     why: [["Apollo 11 era atterrato a circa 6 km dal punto previsto. Per le missioni future, verso zone più interessanti ma più strette, bisognava dimostrare di saper «parcheggiare» con precisione.",
@@ -55,7 +77,7 @@ const HIST = [
     links: [["NASA", "https://www.nasa.gov/mission/apollo-12/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_12"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_12"]] },
 
   { id: "a14", name: "Apollo 14", agency: "NASA", date: "1971-02-05", lat: -3.65, lon: -17.47, place: "Fra Mauro", group: "apollo",
-    patch: WM("d/d7", "Apollo_14-insignia.png"), crew: "Alan Shepard, Edgar Mitchell, Stuart Roosa",
+    patch: "images/history/patch-a14.webp", crew: "Alan Shepard, Edgar Mitchell, Stuart Roosa",
     intro: ["Dopo l'incidente di Apollo 13, che non poté atterrare, Apollo 14 andò nello stesso luogo. Al comando c'era Alan Shepard, il primo americano nello spazio.",
             "After the Apollo 13 accident, which could not land, Apollo 14 went to the same place. In command was Alan Shepard, the first American in space."],
     why: [["Fra Mauro non è un mare: è un terreno collinoso fatto di detriti lanciati lontano dall'enorme impatto che scavò il bacino Imbrium, grande come mezza Europa.",
@@ -71,7 +93,7 @@ const HIST = [
     links: [["NASA", "https://www.nasa.gov/mission/apollo-14/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_14"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_14"]] },
 
   { id: "a15", name: "Apollo 15", agency: "NASA", date: "1971-07-30", lat: 26.13, lon: 3.63, place: "Hadley–Apennine", group: "apollo",
-    patch: WM("e/e5", "Apollo_15-insignia.png"), crew: "David Scott, James Irwin, Alfred Worden",
+    patch: "images/history/patch-a15.webp", crew: "David Scott, James Irwin, Alfred Worden",
     intro: ["La prima delle missioni «J», più lunghe e scientifiche: tre giorni sulla Luna e, per la prima volta, un'auto elettrica, il Lunar Roving Vehicle.",
             "The first of the “J” missions, longer and more scientific: three days on the Moon and, for the first time, an electric car, the Lunar Roving Vehicle."],
     why: [["Con il rover gli astronauti potevano percorrere decine di chilometri. Così si poteva scegliere un sito vario, con diversi tipi di terreno vicini tra loro.",
@@ -87,7 +109,7 @@ const HIST = [
     links: [["NASA", "https://www.nasa.gov/mission/apollo-15/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_15"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_15"]] },
 
   { id: "a16", name: "Apollo 16", agency: "NASA", date: "1972-04-21", lat: -8.97, lon: 15.50, place: "Descartes", group: "apollo",
-    patch: WM("6/66", "Apollo-16-LOGO.png"), crew: "John Young, Charles Duke, Ken Mattingly",
+    patch: "images/history/patch-a16.webp", crew: "John Young, Charles Duke, Ken Mattingly",
     intro: ["L'unica missione Apollo atterrata negli altopiani centrali, le zone chiare della Luna che vediamo anche a occhio nudo.",
             "The only Apollo mission to land in the central highlands, the bright areas of the Moon we can see with the naked eye."],
     why: [["Gli altopiani coprono la maggior parte della Luna, ma nessuno ci era ancora atterrato. Senza quei campioni la storia lunare restava a metà.",
@@ -103,7 +125,7 @@ const HIST = [
     links: [["NASA", "https://www.nasa.gov/mission/apollo-16/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_16"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_16"]] },
 
   { id: "a17", name: "Apollo 17", agency: "NASA", date: "1972-12-11", lat: 20.19, lon: 30.77, place: "Taurus–Littrow", group: "apollo",
-    patch: WM("7/76", "Apollo_17-insignia.png"), crew: "Eugene Cernan, Harrison Schmitt, Ronald Evans",
+    patch: "images/history/patch-a17.webp", crew: "Eugene Cernan, Harrison Schmitt, Ronald Evans",
     intro: ["L'ultima missione Apollo e, finora, l'ultima volta di esseri umani sulla Luna. A bordo c'era Harrison Schmitt, l'unico geologo ad aver camminato sulla Luna.",
             "The last Apollo mission and, so far, the last time humans were on the Moon. On board was Harrison Schmitt, the only geologist to have walked on the Moon."],
     why: [["Essendo l'ultima occasione, si scelse il sito più ricco possibile. Taurus–Littrow è una valle stretta tra montagne alte oltre 2 km, ai margini del Mare Serenitatis.",
@@ -119,7 +141,7 @@ const HIST = [
     links: [["NASA", "https://www.nasa.gov/mission/apollo-17/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Apollo_17"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Apollo_17"]] },
 
   { id: "lp", name: "Lunar Prospector", agency: "NASA", date: "1999-07-31", lat: -87.7, lon: 42.1, place: ["Cratere Shoemaker (Polo Sud)", "Shoemaker crater (South Pole)"], group: "robotic", approx: true,
-    patch: WM("0/05", "Lunar_Prospector_insignia.png"),
+    patch: "images/history/patch-lp.webp",
     intro: ["Una piccola sonda a forma di barile che per 19 mesi ha girato intorno alla Luna passando sopra i poli. Non doveva atterrare: alla fine fu fatta cadere apposta su un cratere del Polo Sud.",
             "A small barrel-shaped probe that circled the Moon for 19 months, passing over the poles. It was not meant to land: at the end it was crashed on purpose into a South Pole crater."],
     why: [["Dall'orbita aveva misurato molto idrogeno vicino ai poli, un indizio di possibile ghiaccio d'acqua nascosto nei crateri dove il Sole non arriva mai.",
@@ -165,7 +187,7 @@ const HIST = [
     links: [["NASA", "https://science.nasa.gov/mission/lcross/"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/LCROSS"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/LCROSS"]] },
 
   { id: "art2", name: "Artemis II", agency: "NASA · ESA", date: "2026-04-06", lat: null, lon: 180, place: ["Sorvolo del lato nascosto", "Far-side flyby"], group: "future", flyby: true,
-    patch: WM("9/9c", "Artemis_program_(solid_with_wordmark).svg"), patchGeneric: true, crew: "Reid Wiseman, Victor Glover, Christina Koch, Jeremy Hansen",
+    patch: "images/history/patch-art2.webp", crew: "Reid Wiseman, Victor Glover, Christina Koch, Jeremy Hansen",
     intro: ["Il primo volo con astronauti verso la Luna dal 1972. Quattro persone a bordo della capsula Orion hanno girato intorno alla Luna e sono tornate a Terra, dall'1 all'11 aprile 2026. Il modulo di servizio che dava energia e spinta a Orion è stato costruito in Europa dall'ESA.",
             "The first crewed flight to the Moon since 1972. Four people aboard the Orion capsule flew around the Moon and came back to Earth, from 1 to 11 April 2026. The service module that gave Orion power and thrust was built in Europe by ESA."],
     why: [["Artemis II non doveva atterrare: era una prova generale. Prima di portare persone sulla superficie bisognava verificare che Orion, i suoi sistemi di supporto vitale e lo scudo termico funzionassero con un equipaggio vero.",
@@ -181,7 +203,7 @@ const HIST = [
     links: [["NASA", "https://www.nasa.gov/mission/artemis-ii/"], ["ESA", "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Orion"], ["Wikipedia IT", "https://it.wikipedia.org/wiki/Artemis_II"], ["Wikipedia EN", "https://en.wikipedia.org/wiki/Artemis_II"]] },
 
   { id: "art4", name: "Artemis IV", agency: "NASA · ESA", date: "2028", lat: -86, lon: 10, place: ["Polo Sud (regioni candidate)", "South Pole (candidate regions)"], group: "future", approx: true, planned: true,
-    patch: WM("9/9c", "Artemis_program_(solid_with_wordmark).svg"), patchGeneric: true,
+    patch: "images/history/patch-artemis.webp", patchGeneric: true,
     intro: ["Sarà il primo allunaggio con equipaggio del programma Artemis, previsto per il 2028. Quattro astronauti voleranno su Orion fino all'orbita lunare; due scenderanno sulla superficie con un lander commerciale, vicino al Polo Sud, dove nessun essere umano è mai stato.",
             "It will be the first crewed landing of the Artemis program, planned for 2028. Four astronauts will fly Orion to lunar orbit; two will descend to the surface in a commercial lander, near the South Pole, where no human has ever been."],
     why: [["Il motivo principale è l'acqua. Nei crateri in ombra permanente c'è ghiaccio (lo hanno dimostrato Lunar Prospector e LCROSS). Il ghiaccio si può trasformare in acqua da bere, ossigeno da respirare e carburante per i razzi.",
@@ -236,6 +258,18 @@ function hBadge(h) {
     <text x="60" y="103" text-anchor="middle" fill="${c}" font-family="Inter, sans-serif" font-weight="700" font-size="10" letter-spacing="2">${esc(h.agency.replace(/ · /g, "/"))}</text>
   </svg>`;
 }
+function hPhoto(h) {
+  const ph = HPHOTO[h.id]; if (!ph) return "";
+  return `<figure class="h-photo"><a href="${ph.page}" target="_blank" rel="noopener noreferrer"><img src="images/history/site-${h.id}.webp" alt="${esc(tL(ph.cap[0], ph.cap[1]))}" loading="lazy"></a>
+    <figcaption>${esc(tL(ph.cap[0], ph.cap[1]))}<span>${esc(ph.by)} · ${esc(ph.lic || tL("pubblico dominio", "public domain"))}</span></figcaption></figure>`;
+}
+function hCrewCard(h) {
+  if (!h.crew) return "";
+  const names = h.crew.split(/,\s*/), roles = CREW_ROLES[h.id] || CREW_ROLES[h.group] || [];
+  const q = encodeURIComponent(`${h.name} crew portrait`);
+  return `<h5>${t("hCrew")}</h5><ul class="h-crew">${names.map((n, i) => `<li><b>${esc(n)}</b>${roles[i] ? `<span>${esc(tL(roles[i][0], roles[i][1]))}</span>` : ""}</li>`).join("")}</ul>
+    <a class="h-crew-link" href="https://commons.wikimedia.org/w/index.php?title=Special:MediaSearch&type=image&search=${q}" target="_blank" rel="noopener noreferrer">${tL("Foto ufficiale dell'equipaggio", "Official crew photo")} ↗</a>`;
+}
 function renderHistoryDetail() {
   const h = HIST.find(x => x.id === HG.sel); if (!h) return;
   const dt = h.date.length > 4 ? new Date(h.date + "T12:00:00Z").toLocaleDateString(lang, { dateStyle: "long" }) : h.date;
@@ -246,9 +280,11 @@ function renderHistoryDetail() {
       <div class="h-patch">${h.patch ? `<img src="${h.patch}" alt="${esc(t("hPatchAlt", { n: h.name }))}" referrerpolicy="no-referrer" loading="lazy">` : hBadge(h)}</div>
       <div><span class="tag" style="color:${HCOL[h.group]}">${t(h.group === "apollo" ? "hApollo" : h.group === "future" ? "hFuture" : "hRobotic")}${h.planned ? " · " + t("hPlanned") : ""}</span>
       <h4>${esc(h.name)}</h4>
-      <div class="meta">${esc(h.agency)} · ${esc(dt)}<br>${esc(hPlace(h))} · ${pos}${h.crew ? `<br>${t("hCrew")}: ${esc(h.crew)}` : ""}</div></div>
+      <div class="meta">${esc(h.agency)} · ${esc(dt)}<br>${esc(hPlace(h))} · ${pos}</div></div>
     </div>
     ${h.patch ? `<p class="h-pcap">${t(h.patchGeneric ? "hPatchGen" : "hPatchCap")}</p>` : `<p class="h-pcap">${t("hPatchNone")}</p>`}
+    ${hPhoto(h)}
+    ${hCrewCard(h)}
     <h5>${t("hWhat")}</h5><p>${esc(tL(h.intro[0], h.intro[1]))}</p>
     <h5>${t("hWhy")}</h5><ul>${h.why.map(w => `<li>${esc(tL(w[0], w[1]))}</li>`).join("")}</ul>
     <div class="h-alt"><h5>${t("hAlt")}</h5><p>${esc(tL(h.alt[0], h.alt[1]))}</p></div>
