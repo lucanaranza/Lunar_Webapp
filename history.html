@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>History · L.A.N.D.</title>
+<!-- Open source: no sign-in, no tracking. The page only talks to its own origin (data/ and images/). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://upload.wikimedia.org; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="images/land-mark.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Inter:wght@400;600&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/land.css">
+<link rel="stylesheet" href="css/edu.css">
+</head>
+<body data-page="history" class="lroc">
+<div class="rotate-hint" id="rotateHint" role="dialog" aria-modal="true">
+  <div><span class="ph">📱</span><h3 data-i18n="rotTitle">Turn your phone</h3><p data-i18n="rotText"></p>
+    <div class="rb"><button class="go" id="rotGo" data-i18n="rotGo">Full screen, landscape</button><button class="skip" id="rotSkip" data-i18n="rotSkip">Continue anyway</button></div></div>
+</div>
+<a href="index.html" class="land-mark-link" aria-label="L.A.N.D. home"><img id="landMark" alt="L.A.N.D." src="images/land-mark.webp"></a>
+<!-- language -->
+<div class="lang">
+  <button class="lang-toggle" id="langToggle" aria-haspopup="true" aria-expanded="false" aria-label="Language">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z"/></svg>
+    <span id="langCode">EN</span>
+  </button>
+  <ul class="lang-menu" id="langMenu" role="menu"></ul>
+</div>
+<section class="view active ws-view edu-view lroc-view" id="view-educational">
+  <header class="ws-top">
+    <div class="ws-title">
+      <a class="ws-back" href="index.html" data-i18n-title="back" title="Back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></a>
+      <h2 data-i18n="educational">Educational Edition</h2>
+    </div>
+    <div class="ws-center"><nav class="edu-tabs" id="eduTabs"><a href="history.html" data-tab="history" class="active" aria-current="page" data-i18n="eduHistory">History</a><a href="reasoning.html" data-tab="reason" data-i18n="eduReason">Reasoning</a><a href="mission.html" data-tab="game" data-i18n="eduGame">Mission</a><a href="deep-dive.html" data-tab="deep" data-i18n="eduDeep">Deep dive</a></nav></div>
+    <div class="ws-top-actions"></div>
+  </header>
+  <div class="ws-body" id="pane-history">
+    <aside class="ws-side">
+      <section class="side-card">
+        <h3 data-i18n="hTitle">Why there?</h3>
+        <p class="slider-desc" data-i18n="hIntro"></p>
+        <div class="layer-tabs four" id="hFilter">
+          <button data-f="all" class="active" data-i18n="hAll">All</button>
+          <button data-f="apollo" data-i18n="hApollo">Apollo</button>
+          <button data-f="robotic" data-i18n="hRobotic">Robotic</button>
+          <button data-f="future" data-i18n="hFuture">Artemis</button>
+        </div>
+        <div class="h-font"><span data-i18n="hFont">Text size</span>
+          <div id="hFont"><button data-z="1" aria-label="A">A</button><button data-z="1.2" aria-label="A+">A+</button><button data-z="1.45" aria-label="A++">A++</button></div></div>
+      </section>
+      <ol class="mission-list" id="hList"></ol>
+    </aside>
+    <div class="map-wrap" id="hWrap">
+      <canvas id="hGlobeGL" class="sphere-gl"></canvas>
+      <canvas id="hGlobe" class="sphere"></canvas>
+      <article class="h-detail" id="hDetail"></article>
+    </div>
+  </div>
+
+
+</section>
+<script src="js/core/i18n-text.js"></script>
+<script src="js/core/core.js"></script>
+<script src="js/core/geo.js"></script>
+<script src="js/core/data.js"></script>
+<script src="js/core/moon-gl.js"></script>
+<script src="js/pages/edu-common.js"></script>
+<script src="js/pages/history.js"></script>
+</body>
+</html>

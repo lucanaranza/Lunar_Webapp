@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "users": {
+    "polimi/edoardo": {
+      "name": "Edoardo",
+      "institution": "polimi",
+      "auth": {
+        "salt": "2a0557e006ed2b96f90e3360c584d750",
+        "hash": "0495127d0d83903ff6c6ee95de38055011fcf7a1fa405583e71d98c604f925ab",
+        "kdf": "scrypt",
+        "n": 16384,
+        "r": 8,
+        "p": 1
+      },
+      "created": "2026-11-16T18:05:28Z",
+      "disabled": false
+    },
+    "polimi/caterina": {
+      "name": "Caterina",
+      "institution": "polimi",
+      "auth": {
+        "salt": "2fe5d8dd3838154a287c499df205cdb3",
+        "hash": "a812326e86ffa59dcbecabe473eb2b0e125e365f27d7314f06311e669e4bcd74",
+        "kdf": "scrypt",
+        "n": 16384,
+        "r": 8,
+        "p": 1
+      },
+      "created": "2026-11-16T18:05:28Z",
+      "disabled": false
+    },
+    "polimi/luca": {
+      "name": "Luca",
+      "institution": "polimi",
+      "auth": {
+        "salt": "8e00fe56ff0ffd4110fc67b7478fc666",
+        "hash": "974919a8a988480f21c92ca4f5e728baa8caa40dd3cef4ddc397c2204359ea7c",
+        "kdf": "scrypt",
+        "n": 16384,
+        "r": 8,
+        "p": 1
+      },
+      "created": "2026-11-16T18:05:29Z",
+      "disabled": false
+    },
+    "polimi/giovanni": {
+      "name": "Giovanni",
+      "institution": "polimi",
+      "auth": {
+        "salt": "48d1726edc0db8048fc91ed7e621d50e",
+        "hash": "2d455ac2ad16c8d1bfe6d8bf166f35d322aceef78445b5adb89e477c2ca69b52",
+        "kdf": "scrypt",
+        "n": 16384,
+        "r": 8,
+        "p": 1
+      },
+      "created": "2026-11-16T18:05:29Z",
+      "disabled": false
+    },
+    "polimi/lorenzo b": {
+      "name": "Lorenzo B",
+      "institution": "polimi",
+      "auth": {
+        "salt": "4fbc81eac46183de64cf11a72a985324",
+        "hash": "9f84bb6e6a888b2ab3ef5fb84f7bb6b14ccedc77f5c4e469ee226c88fd67e8c8",
+        "kdf": "scrypt",
+        "n": 16384,
+        "r": 8,
+        "p": 1
+      },
+      "created": "2026-11-16T18:05:29Z",
+      "disabled": false
+    },
+    "polimi/lorenzo d": {
+      "name": "Lorenzo D",
+      "institution": "polimi",
+      "auth": {
+        "salt": "b650b95aea540cd7d13dded97b23bc22",
+        "hash": "263e50a105105337e6518c4b83520008fb4651156308c85a2a899c29afe4209f",
+        "kdf": "scrypt",
+        "n": 16384,
+        "r": 8,
+        "p": 1
+      },
+      "created": "2026-11-16T18:05:29Z",
+      "disabled": false
+    },
+    "polimi/user": {
+      "name": "user",
+      "institution": "polimi",
+      "auth": {
+        "salt": "298be4a44e1930bd7fc7d834364db149",
+        "hash": "c4de90c2eb81e16971bd1eb663b53c13753cd6bbf0f4f9df870ce45ebcc5c625",
+        "kdf": "scrypt",
+        "n": 16384,
+        "r": 8,
+        "p": 1
+      },
+      "created": "2026-11-16T18:05:29Z",
+      "disabled": false
+    }
+  }
+}

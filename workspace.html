@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Area Selection · L.A.N.D.</title>
+<!-- Open source: no sign-in, no tracking. The page only talks to its own origin (data/ and images/). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://upload.wikimedia.org; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="images/land-mark.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Inter:wght@400;600&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/land.css">
+</head>
+<body data-page="workspace" class="lroc">
+<div class="rotate-hint" id="rotateHint" role="dialog" aria-modal="true">
+  <div><span class="ph">📱</span><h3 data-i18n="rotTitle">Turn your phone</h3><p data-i18n="rotText"></p>
+    <div class="rb"><button class="go" id="rotGo" data-i18n="rotGo">Full screen, landscape</button><button class="skip" id="rotSkip" data-i18n="rotSkip">Continue anyway</button></div></div>
+</div>
+<a href="index.html" class="land-mark-link" aria-label="L.A.N.D. home"><img id="landMark" alt="L.A.N.D." src="images/land-mark.webp"></a>
+<!-- language -->
+<div class="lang">
+  <button class="lang-toggle" id="langToggle" aria-haspopup="true" aria-expanded="false" aria-label="Language">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z"/></svg>
+    <span id="langCode">EN</span>
+  </button>
+  <ul class="lang-menu" id="langMenu" role="menu"></ul>
+</div>
+<section class="view active ws-view lroc-view" id="view-workspace" data-stage="globe">
+  <header class="ws-top">
+    <div class="ws-title">
+      <a class="ws-back" href="index.html" data-i18n-title="back" title="Back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></a>
+      <h2 data-i18n="wsTitle">Workspace</h2>
+    </div>
+    <div class="ws-center"><h1 class="ws-stage-title" data-i18n="asTitle">Area Selection</h1></div>
+    <div class="ws-top-actions"><button class="btn small" id="btnGuide" data-i18n="guideBtn">? Guide</button></div>
+  </header>
+  <!-- Area Selection: 3D globe → 2D map of the South Pole -->
+  <div class="ws-body stage on" id="stageGlobe">
+    <aside class="ws-side as-panel">
+      <div class="as-head">
+        <h3 data-i18n="asSites">Sites</h3>
+        <div class="as-add">
+          <button class="as-btn" id="btnImportData">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 2.5 8 12 13l9.5-5z"/><path d="M2.5 12.5 12 17.5l9.5-5"/><path d="M2.5 16.5 12 21.5l9.5-5"/></svg>
+            <span data-i18n="importData">Import area data</span>
+          </button>
+          <button class="as-btn split" id="btnAsHelp" aria-expanded="false" data-i18n-title="asHelpBtn" title="How to use" aria-label="How to use">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+        <input type="file" id="dataFile" accept=".json,application/json" hidden>
+        <p class="as-help" id="asHelp" hidden data-i18n="globeHelp"></p>
+        <p class="field-hint" id="dataMsg"></p>
+      </div>
+      <div class="as-group">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/></svg>
+        <span data-i18n="asGroup">South Pole sites</span><span class="n" id="covCount"></span>
+      </div>
+      <ul class="cov-list as-list" id="covList"></ul>
+      <div class="as-foot">
+        <div id="selInfo" class="sel-info"></div>
+        <p class="sel-status" id="selStatus"></p>
+        <button class="as-btn primary" id="btnConfirmArea" disabled data-i18n="confirmArea">Confirm and analyze</button>
+      </div>
+    </aside>
+    <div class="map-wrap as-map" id="globeWrap">
+      <canvas id="globeGL"></canvas>
+      <canvas id="poleCanvas"></canvas>
+      <canvas id="globeCanvas"></canvas>
+      <div class="as-mode"><span id="asModeLbl"></span><button type="button" class="as-btn sm" id="asModeBtn"></button></div>
+      <div class="as-coords" id="globeHover"></div>
+      <div class="globe-empty" id="globeEmpty" hidden>
+        <p data-i18n="covEmpty"></p>
+        <button class="btn small primary" id="btnImportData2" data-i18n="importData">Import area data</button>
+      </div>
+      <div class="map-busy show" id="globeBusy" data-i18n="computing">Computing…</div>
+    </div>
+  </div>
+  <!-- confirm the area → analysis.html -->
+  <div class="setup" id="confirmBox">
+    <div class="setup-card">
+      <h3 data-i18n="confirmTitle">Confirm the area?</h3>
+      <p class="muted" id="confirmText"></p>
+      <div class="actions">
+        <button class="as-btn" id="btnConfirmNo" data-i18n="cancel">Cancel</button>
+        <button class="as-btn primary" id="btnConfirmYes" data-i18n="confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="js/core/i18n-text.js"></script>
+<script src="js/core/core.js"></script>
+<script src="js/core/geo.js"></script>
+<script src="js/core/data.js"></script>
+<script src="js/core/state.js"></script>
+<script src="js/core/moon-gl.js"></script>
+<script src="js/core/tour.js"></script>
+<script src="js/pages/workspace.js"></script>
+</body>
+</html>

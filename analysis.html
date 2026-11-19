@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heat map · L.A.N.D.</title>
+<!-- Open source: no sign-in, no tracking. The page only talks to its own origin (data/ and images/). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://upload.wikimedia.org; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="images/land-mark.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Inter:wght@400;600&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/land.css">
+<link rel="stylesheet" href="css/analysis.css">
+</head>
+<body data-page="analysis" class="lroc">
+<div class="rotate-hint" id="rotateHint" role="dialog" aria-modal="true">
+  <div><span class="ph">📱</span><h3 data-i18n="rotTitle">Turn your phone</h3><p data-i18n="rotText"></p>
+    <div class="rb"><button class="go" id="rotGo" data-i18n="rotGo">Full screen, landscape</button><button class="skip" id="rotSkip" data-i18n="rotSkip">Continue anyway</button></div></div>
+</div>
+<a href="index.html" class="land-mark-link" aria-label="L.A.N.D. home"><img id="landMark" alt="L.A.N.D." src="images/land-mark.webp"></a>
+<!-- language -->
+<div class="lang">
+  <button class="lang-toggle" id="langToggle" aria-haspopup="true" aria-expanded="false" aria-label="Language">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z"/></svg>
+    <span id="langCode">EN</span>
+  </button>
+  <ul class="lang-menu" id="langMenu" role="menu"></ul>
+</div>
+<section class="view active ws-view lroc-view" id="view-analysis" data-stage="analysis">
+  <header class="ws-top">
+    <div class="ws-title">
+      <a class="ws-back" href="workspace.html" data-i18n-title="changeArea" title="Back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></a>
+      <h2 data-i18n="wsTitle">Workspace</h2>
+    </div>
+    <div class="ws-center"><h1 class="ws-stage-title" data-i18n="anTitle">Heat map</h1><span class="stage-sub" id="stageSub"></span><span class="demo-badge" id="demoBadge" hidden data-i18n="demoData">Demo data</span></div>
+    <div class="ws-top-actions"><a class="btn small" href="workspace.html" data-i18n="changeArea">Change area</a><button class="btn small" id="btnGuide" data-i18n="guideBtn">? Guide</button></div>
+  </header>
+  <div class="ws-body stage on media" id="stageMap">
+    <aside class="ws-side as-panel an-panel" id="anPanel">
+      <div class="as-head">
+        <h3 data-i18n="anMission">Mission</h3>
+        <input id="mName" class="an-name" type="text" maxlength="60" data-m="name" autocomplete="off" data-i18n-title="mName" aria-label="Mission name">
+        <div class="as-add">
+          <button class="as-btn" id="btnImportMission">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v3h16v-3"/></svg>
+            <span data-i18n="importMission">Import mission</span>
+          </button>
+          <button class="as-btn split" id="btnMissionMenu" aria-haspopup="true" aria-expanded="false" title="Export" aria-label="Export">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="as-menu" id="missionMenu" role="menu" hidden>
+            <button type="button" role="menuitem" id="btnExportMission" data-i18n="exportMission">Export mission</button>
+            <button type="button" role="menuitem" id="btnExportData" data-i18n="exportData">Export area data</button>
+          </div>
+        </div>
+        <input type="file" id="missionFile" accept=".json,application/json" hidden>
+        <p class="field-hint mission-msg" id="missionMsg"></p>
+      </div>
+      <div class="an-scroll">
+      <section class="an-sec" id="secWeights">
+        <h4 data-i18n="weightsTitle">Weights</h4>
+        <div class="sliders" data-sliders="side"></div>
+        <label class="mean-lbl" for="meanMode" data-i18n="meanLbl">How to combine the weights</label>
+        <select id="meanMode" class="an-select"><option value="arith" data-i18n="meanArith">Weighted arithmetic mean</option><option value="geo" data-i18n="meanGeo">Weighted geometric mean</option></select>
+        <p class="field-hint" id="meanHint"></p>
+      </section>
+      <section class="an-sec" id="secCross">
+        <h4 data-i18n="anCrossTitle">Selectable weights</h4>
+        <p class="slider-desc m-only" data-i18n="crossHelp"></p>
+        <div class="cross-box m-only" id="crossBox"></div>
+        <p class="slider-desc t-only" data-i18n="anCrossStay"></p>
+      </section>
+      <section class="an-sec" id="secTiming">
+        <h4 data-i18n="timeTitle">Timing</h4>
+        <div class="coord-row">
+          <div class="field"><label for="arrivalSide" data-i18n="arrival">Landing</label><input type="datetime-local" id="arrivalSide" data-arrival></div>
+          <div class="field"><label for="mStay" data-i18n="mStay">Stay (hours)</label><input id="mStay" type="number" min="1" max="720" step="1" data-m="stayHours"></div>
+        </div>
+        <p class="field-hint" data-i18n="arrivalNote"></p>
+        <p class="field-hint period-note" id="periodNote" hidden></p>
+        <p class="ephem" id="ephem"></p>
+      </section>
+      <section class="an-sec" id="secOpt">
+        <h4 data-i18n="optTitle">Constraints</h4>
+        <p class="field-hint" data-i18n="optHelp"></p>
+        <div class="opt-add-row"><select id="optAdd" class="opt-add"></select>
+          <button type="button" class="q-btn" id="optHelpAll" aria-expanded="false" title="?">?</button></div>
+        <div class="opt-help-all" id="optHelpPanel" hidden></div>
+        <div class="opt-list" id="optList"></div>
+      </section>
+      <section class="an-sec" id="secSites">
+        <h4 data-i18n="topSites">Best sites</h4>
+        <ol class="sites" id="sitesList"></ol>
+      </section>
+      </div>
+    </aside>
+    <div class="map-wrap an-map" id="mapWrap">
+      <canvas id="mapCanvas"></canvas>
+      <canvas id="orbitBack" aria-hidden="true"></canvas>
+      <canvas id="orbitGL" aria-hidden="true"></canvas>
+      <canvas id="orbitCanvas" aria-label="3D"></canvas>
+      <div class="map-tip" id="mapTip"></div>
+      <!-- top left: view -->
+      <div class="an-box an-view">
+        <span class="an-lbl" data-i18n="viewTitle">View</span>
+        <div class="an-seg view-mode" id="horizonMode">
+          <button data-h="cycle"><b data-i18n="vMedia">Yearly average</b></button>
+          <button data-h="stay"><b data-i18n="vTime">Over time</b></button>
+        </div>
+        <button class="as-btn sm an-3d" id="btnOrbit" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><ellipse cx="12" cy="12" rx="8" ry="3.2"/></svg>
+          <span id="btnOrbitLbl"></span>
+        </button>
+      </div>
+      <div class="orbit-hint" id="orbitHint" data-i18n="orbitHint"></div>
+      <!-- top centre: link / sunlight lamps (over time) -->
+      <div class="mc-panel mc-lamps" id="mcPanel" aria-live="polite"></div>
+      <!-- top right: legend -->
+      <div class="map-legend" id="mapLegend">
+        <div class="legend-title" id="legendTitle"></div>
+        <div class="lg-body">
+          <div class="legend-bar" id="legendBar"></div>
+          <div class="lg-labels" id="legendTicks"></div>
+        </div>
+        <div class="legend-mask" id="legendMask"><i></i><span data-i18n="masked">Excluded</span></div>
+        <div class="legend-mask energy" id="legendEnergy"><i></i><span data-i18n="maskEnergyLg">Battery below reserve</span></div>
+      </div>
+      <!-- bottom right: map layers -->
+      <div class="an-box an-layers" id="layersBox">
+        <span class="an-lbl" data-i18n="layers">Map layer</span>
+        <div class="an-seg grid" id="layerTabs"></div>
+        <div class="map-opts">
+          <label><span data-i18n="zoom">Extent</span>
+            <select id="zoomSel"><option value="1">100%</option><option value="0.6">60%</option><option value="0.3">30%</option></select></label>
+          <label class="chk"><input type="checkbox" id="cratersChk" checked> <span data-i18n="craters">Craters</span></label>
+        </div>
+      </div>
+      <!-- bottom left: energy budget (over time) -->
+      <div class="an-box an-energy t-only" id="energyBox">
+        <button type="button" class="an-fold" id="energyToggle" aria-expanded="true"><span data-i18n="energyTitle">Energy budget</span><i>▾</i></button>
+        <div class="an-energy-body">
+          <p class="slider-desc" id="eFor"></p>
+          <div class="echart-wrap" id="eWrap">
+            <canvas id="eChart" role="img"></canvas>
+            <div class="map-tip" id="eTip"></div>
+          </div>
+          <p class="e-stats" id="eStats"></p>
+        </div>
+      </div>
+      <!-- bottom: time bar (over time) -->
+      <div class="timebar" id="timebar">
+        <button class="tb" data-step="-24"></button>
+        <button class="tb" data-step="-1"></button>
+        <button class="tb play" id="btnPlay" aria-label="Play">▶</button>
+        <button class="tb" data-step="1"></button>
+        <button class="tb" data-step="24"></button>
+        <input type="range" id="timeSlider" min="0" max="720" step="1" value="0" aria-label="Time">
+        <select id="playStep" aria-label="Step"><option value="1">1 h</option><option value="6">6 h</option><option value="24">24 h</option><option value="168">7 d</option></select>
+        <div class="tb-label" id="timeLabel"></div>
+      </div>
+      <div class="map-busy" id="mapBusy" data-i18n="computing">Computing…</div>
+    </div>
+  </div>
+</section>
+<script src="js/core/i18n-text.js"></script>
+<script src="js/core/core.js"></script>
+<script src="js/core/geo.js"></script>
+<script src="js/core/data.js"></script>
+<script src="js/core/state.js"></script>
+<script src="js/core/moon-gl.js"></script>
+<script src="js/core/tour.js"></script>
+<script src="js/pages/analysis.js"></script>
+</body>
+</html>

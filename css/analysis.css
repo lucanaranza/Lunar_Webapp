@@ -1,0 +1,130 @@
+/* =====================================================================
+   analysis.html – heat map page, same look as the Area Selection (body.lroc)
+   left: one panel (mission · weights · selectable weights · timing · constraints · best sites)
+   map:  view top-left · legend top-right · layers bottom-right · energy bottom-left · time bar bottom
+   ===================================================================== */
+
+/* ---------- header: title in the centre, site under it ---------- */
+#view-analysis .ws-center { display: flex; flex-direction: column; align-items: center; gap: .1rem; }
+#view-analysis .ws-center .stage-sub { display: block; }
+#view-analysis .demo-badge { pointer-events: none; margin-top: .2rem; }
+.lroc-view a.btn { text-decoration: none; display: inline-flex; align-items: center; }
+
+/* ---------- left panel ---------- */
+#stageMap { grid-template-columns: 330px 1fr; gap: .75rem; }
+.an-panel .as-head { position: relative; }
+.an-panel .as-add { position: relative; }
+.an-name { width: 100%; height: 36px; padding: 0 .7rem; border-radius: 3px; background: #262b33; border: 1px solid #2f3640; color: #e8ecf2;
+  font: 500 .92rem "IBM Plex Sans", Inter, sans-serif; }
+.an-name:focus { outline: none; border-color: #2cc26b; }
+.as-menu { position: absolute; right: 0; top: calc(100% + 4px); z-index: 20; min-width: 200px; display: flex; flex-direction: column; padding: 4px;
+  background: #262b33; border: 1px solid #3a424e; border-radius: 3px; box-shadow: 0 10px 30px rgba(0,0,0,.55); }
+.as-menu[hidden] { display: none; }
+.as-menu button { text-align: left; padding: .5rem .7rem; border: 0; border-radius: 2px; background: none; color: #e8ecf2; cursor: pointer;
+  font: 500 .86rem "IBM Plex Sans", Inter, sans-serif; }
+.as-menu button:hover { background: #38404b; }
+.an-panel .mission-msg { font: .76rem "IBM Plex Sans", Inter, sans-serif; color: #86efac; }
+.an-panel .mission-msg.bad { color: var(--danger); }
+.an-panel .mission-msg:empty { display: none; }
+.an-scroll { flex: 1; min-height: 0; overflow-y: auto; }
+.an-sec { padding: .75rem .9rem .9rem; border-bottom: 1px solid #2b313b; display: flex; flex-direction: column; gap: .6rem; }
+.an-sec:last-child { border-bottom: 0; }
+.an-sec > h4 { font: 600 .68rem "IBM Plex Sans", Inter, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #9aa3af; }
+.an-panel .slider-desc, .an-panel .field-hint { font: .76rem/1.45 "IBM Plex Sans", Inter, sans-serif; color: #98a2ae; }
+.an-panel .slider-head { font: 500 .88rem "IBM Plex Sans", Inter, sans-serif; }
+.an-panel .slider-head output { font: 500 .86rem "IBM Plex Mono", ui-monospace, monospace; }
+.an-panel .slider-head .dot { box-shadow: none; }
+.an-panel .slider-row .slider-desc { display: none; }               /* the long help is in the tour */
+.an-panel .mean-lbl { margin-top: .2rem; font: 600 .66rem "IBM Plex Sans", Inter, sans-serif; letter-spacing: .08em; color: #9aa3af; }
+.an-select, .an-panel select, .an-panel input[type=datetime-local], .an-panel input[type=number] {
+  width: 100%; padding: .45rem .55rem; border-radius: 3px; background: #262b33 !important; border: 1px solid #3a424e !important;
+  color: #e8ecf2 !important; font: 500 .84rem "IBM Plex Sans", Inter, sans-serif; color-scheme: dark; }
+.an-panel select option { background: #1f232a; color: #e8ecf2; }
+.an-panel .field label { font: 600 .66rem "IBM Plex Sans", Inter, sans-serif; letter-spacing: .08em; color: #9aa3af; }
+.an-panel .coord-row { gap: .5rem; }
+.an-panel .ephem { font: .72rem/1.5 "IBM Plex Mono", ui-monospace, monospace; color: #98a2ae; }
+.an-panel .ephem:empty { display: none; }
+/* constraints: same graphite look as the rest of the panel */
+.an-panel .opt-add { margin: 0 !important; border: 1px dashed #4b5563 !important; color: #e8ecf2 !important; font-weight: 500; }
+.an-panel .opt-row { background: #262b33 !important; border: 1px solid #2f3640 !important; border-left: 3px solid #2cc26b !important; border-radius: 2px; }
+.an-panel .opt-row .opt-head span { color: #e8ecf2; font: 500 .86rem "IBM Plex Sans", Inter, sans-serif; }
+.an-panel .opt-row .opt-fields label { color: #98a2ae !important; font: .72rem "IBM Plex Sans", Inter, sans-serif !important; }
+.an-panel .opt-row input[type=number], .an-panel .opt-row select { color: #e8ecf2 !important; font-weight: 500; }
+.an-panel .q-btn { border-color: #4b5563; background: #262b33; color: #cbd5e1; }
+.an-panel .q-btn:hover, .an-panel .q-btn.on { background: #2cc26b; border-color: #2cc26b; color: #05140b; }
+.an-panel .opt-help, .an-panel .opt-help-all { background: #262b33; border-color: #2f3640; }
+.an-panel .opt-help b, .an-panel .opt-help-all b, .an-panel .opt-help-all dt { color: #86efac; }
+.an-panel .cross-row { font: .82rem "IBM Plex Sans", Inter, sans-serif; }
+.an-panel .cross-row output { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+/* best sites: same cards as the site list of the Area Selection */
+.an-panel .sites { gap: 4px; }
+.an-panel .sites button { background: #262b33; border: 1px solid #2f3640; border-left: 3px solid #3d4550; border-radius: 2px;
+  font: .8rem "IBM Plex Sans", Inter, sans-serif; padding: .45rem .55rem; }
+.an-panel .sites button:hover { background: #2c323b; border-color: #2f3640; border-left-color: #4ade80; }
+.an-panel .sites button.sel { background: #22302a; border-color: #2c4a38; border-left-color: #2cc26b; }
+.an-panel .sites .n { font: 600 .72rem "IBM Plex Mono", ui-monospace, monospace; background: #e8ecf2; }
+.an-panel .sites .sc { font: 600 .9rem "IBM Plex Mono", ui-monospace, monospace; color: #4ade80; }
+.an-panel .sites .vals { font: .7rem "IBM Plex Mono", ui-monospace, monospace; color: #98a2ae; }
+
+/* ---------- map ---------- */
+.an-map { overflow: hidden; }
+#orbitBack, #orbitGL { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; border-radius: 4px;
+  transform: scale(1.5); transition: opacity .7s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
+#orbitBack { background: #000; }
+#orbitCanvas { background: transparent !important; border-radius: 4px; }
+.map-wrap.orbit #orbitBack, .map-wrap.orbit #orbitGL { opacity: 1; transform: none; }
+.an-box { position: absolute; z-index: 3; background: rgba(23,26,30,.92); border: 1px solid #0d0f12; border-radius: 4px;
+  font: .78rem "IBM Plex Mono", ui-monospace, monospace; color: #cbd5e1; }
+.an-lbl { font: 600 .64rem "IBM Plex Sans", Inter, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: #8b95a1; }
+.an-seg { display: inline-flex; gap: 2px; padding: 2px; border-radius: 3px; background: #11151a; border: 1px solid #2a3039; }
+.an-seg button { border: 0; border-radius: 2px; background: transparent; color: #aab3bf; cursor: pointer; padding: .32rem .7rem;
+  font: 500 .78rem "IBM Plex Sans", Inter, sans-serif; white-space: nowrap; }
+.an-seg button b { font-weight: 500; font-size: inherit; }
+.an-seg button:hover { color: #fff; background: #262b33; }
+.an-seg button.active { background: #2f3640; color: #fff; box-shadow: inset 0 -2px 0 #2cc26b; }
+.view-mode.an-seg button { display: inline-block; padding: .32rem .75rem; }
+/* top left: view (yearly average / over time) + 3D */
+.an-view { left: 12px; top: 12px; display: flex; align-items: center; gap: .6rem; padding: .3rem .35rem .3rem .75rem; }
+.an-3d { display: inline-flex; align-items: center; gap: .4rem; }
+.an-3d svg { width: 15px; height: 15px; }
+.an-3d.on { background: #2cc26b; border-color: #2cc26b; color: #05140b; }
+.orbit-hint { top: 3.4rem !important; left: 14px; right: auto !important; z-index: 3; }
+/* top right: legend */
+#mapLegend.map-legend { top: 12px !important; right: 12px !important; transform: none !important; z-index: 3; max-height: calc(100% - 210px); }
+/* top centre: lamps (link / sunlight) */
+#mcPanel.mc-lamps { top: 12px; z-index: 3; }
+/* bottom right: map layers */
+.an-layers { right: 12px; bottom: 12px; width: 300px; padding: .55rem .6rem .6rem; display: flex; flex-direction: column; gap: .45rem; }
+.an-seg.grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+.an-seg.grid button { padding: .34rem .3rem; text-align: center; overflow: hidden; text-overflow: ellipsis; }
+.an-layers .map-opts { font: .76rem "IBM Plex Sans", Inter, sans-serif; color: #aab3bf; }
+.an-layers select { padding: .2rem .4rem; border-radius: 3px; background: #262b33; border: 1px solid #3a424e; color: #e8ecf2; font: .76rem "IBM Plex Mono", monospace; }
+/* bottom: time bar, between the left edge and the layers box */
+#stageMap .timebar { left: 12px; right: 324px; bottom: 12px; border-radius: 4px; background: rgba(23,26,30,.92); border-color: #0d0f12; }
+#stageMap .timebar .tb { font-family: "IBM Plex Mono", ui-monospace, monospace; border-radius: 3px; }
+#stageMap .tb-label { font-family: "IBM Plex Mono", ui-monospace, monospace; min-width: 170px; }
+/* bottom left: energy budget (over time), can be folded */
+.an-energy { left: 12px; bottom: 70px; width: 250px; padding: .45rem .7rem .6rem; }
+.an-fold { width: 100%; display: flex; justify-content: space-between; align-items: center; background: none; border: 0; cursor: pointer;
+  color: #8b95a1; font: 600 .64rem "IBM Plex Sans", Inter, sans-serif; letter-spacing: .1em; text-transform: uppercase; padding: .15rem 0; }
+.an-fold i { font-style: normal; transition: transform .2s; }
+.an-energy.folded .an-fold i { transform: rotate(-90deg); }
+.an-energy.folded .an-energy-body { display: none; }
+.an-energy .slider-desc { font: .72rem "IBM Plex Sans", Inter, sans-serif; color: #98a2ae; margin: .2rem 0 .3rem; }
+.an-energy #eChart { height: 120px; }
+.an-energy .e-stats { font: .72rem/1.45 "IBM Plex Sans", Inter, sans-serif; }
+.map-wrap.orbit .an-energy, .map-wrap.orbit .an-layers { display: none; }
+#stageMap.media .an-energy { display: none !important; }
+#stageMap.media .orbit-hint { display: none; }
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 1250px) {
+  .an-layers, .an-energy { width: 250px; }
+  #stageMap .timebar { right: 274px; }
+  .an-view .an-lbl { display: none; }
+}
+body.phone #stageMap { grid-template-columns: 1fr; }
+body.phone .an-layers { width: auto; left: 8px; right: 8px; bottom: 60px; }
+body.phone .an-layers.m-closed, body.phone #mapLegend.m-closed { display: none; }
+body.phone #stageMap .timebar { right: 8px; left: 8px; bottom: 8px; }
+body.phone .an-energy { display: none; }

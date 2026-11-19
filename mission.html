@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission · L.A.N.D.</title>
+<!-- Open source: no sign-in, no tracking. The page only talks to its own origin (data/ and images/). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://upload.wikimedia.org; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="images/land-mark.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Inter:wght@400;600&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/land.css">
+<link rel="stylesheet" href="css/edu.css">
+</head>
+<body data-page="game" class="lroc">
+<div class="rotate-hint" id="rotateHint" role="dialog" aria-modal="true">
+  <div><span class="ph">📱</span><h3 data-i18n="rotTitle">Turn your phone</h3><p data-i18n="rotText"></p>
+    <div class="rb"><button class="go" id="rotGo" data-i18n="rotGo">Full screen, landscape</button><button class="skip" id="rotSkip" data-i18n="rotSkip">Continue anyway</button></div></div>
+</div>
+<a href="index.html" class="land-mark-link" aria-label="L.A.N.D. home"><img id="landMark" alt="L.A.N.D." src="images/land-mark.webp"></a>
+<!-- language -->
+<div class="lang">
+  <button class="lang-toggle" id="langToggle" aria-haspopup="true" aria-expanded="false" aria-label="Language">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z"/></svg>
+    <span id="langCode">EN</span>
+  </button>
+  <ul class="lang-menu" id="langMenu" role="menu"></ul>
+</div>
+<section class="view active ws-view edu-view lroc-view" id="view-educational">
+  <header class="ws-top">
+    <div class="ws-title">
+      <a class="ws-back" href="index.html" data-i18n-title="back" title="Back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></a>
+      <h2 data-i18n="educational">Educational Edition</h2>
+    </div>
+    <div class="ws-center"><nav class="edu-tabs" id="eduTabs"><a href="history.html" data-tab="history" data-i18n="eduHistory">History</a><a href="reasoning.html" data-tab="reason" data-i18n="eduReason">Reasoning</a><a href="mission.html" data-tab="game" class="active" aria-current="page" data-i18n="eduGame">Mission</a><a href="deep-dive.html" data-tab="deep" data-i18n="eduDeep">Deep dive</a></nav></div>
+    <div class="ws-top-actions"></div>
+  </header>
+  <div class="ws-body" id="pane-game">
+    <aside class="ws-side">
+      <section class="side-card">
+        <ol class="g-steps" id="gSteps">
+          <li data-s="0" class="on" data-i18n="gStep0">Difficulty</li>
+          <li data-s="1" data-i18n="gStep1">Choose the site</li>
+          <li data-s="2" data-i18n="gStep2">Landing</li>
+          <li data-s="3" data-i18n="gStep3">Mission patch</li>
+        </ol>
+      </section>
+      <section class="side-card" id="gSide0">
+        <h3 data-i18n="gDiffTitle">Choose the difficulty</h3>
+        <div class="g-diff" id="gDiff">
+          <button data-d="easy"><b data-i18n="gEasy">Easy</b><span data-i18n="gEasyD"></span></button>
+          <button data-d="medium"><b data-i18n="gMedium">Medium</b><span data-i18n="gMediumD"></span></button>
+          <button data-d="hard"><b data-i18n="gHard">Hard</b><span data-i18n="gHardD"></span></button>
+        </div>
+      </section>
+      <section class="side-card" id="gSide1" hidden>
+        <h3 data-i18n="gBriefing">Briefing</h3>
+        <div class="g-brief" id="gBrief"></div>
+        <button class="btn small primary" id="gConfirm" disabled data-i18n="gConfirm">Confirm site</button>
+        <div class="g-result" id="gResult"></div>
+        <button class="btn small primary" id="gToLand" hidden data-i18n="gToLand">Start the landing</button>
+        <button class="btn small" id="gNew1" data-i18n="gNew">New scenario</button>
+        <button class="btn small" id="gChangeDiff" data-i18n="gChangeDiff">Change difficulty</button>
+      </section>
+      <section class="side-card" id="gSide2" hidden>
+        <h3 data-i18n="gLandTitle">Manual landing</h3>
+        <p class="slider-desc" data-i18n="gLandHelp"></p>
+        <div class="x-btns">
+          <button class="btn small primary" id="gStartDescent" data-i18n="gStartDescent">Start descent</button>
+          <button class="btn small g-auto" id="gAuto" data-i18n="gAutoBtn">Autoland (L)</button>
+        </div>
+        <div class="g-tele" id="gTele"></div>
+        <div class="g-result" id="gLandRes"></div>
+        <button class="btn small" id="gRetry" hidden data-i18n="gRetry">Try again</button>
+        <button class="btn small primary" id="gToPatch" hidden data-i18n="gToPatch">Create the patch</button>
+        <button class="btn small" id="gSkipLand" data-i18n="gSkipLand">Skip the landing</button>
+        <p class="slider-desc" data-i18n="gSkipNote"></p>
+      </section>
+      <section class="side-card" id="gSide3" hidden>
+        <h3 data-i18n="gPatchTitle">Your mission patch</h3>
+        <div class="field"><label for="gName" data-i18n="gName">Mission name</label><input id="gName" type="text" maxlength="30"></div>
+        <div class="field"><label for="gCrew" data-i18n="gCrew">Commander</label><input id="gCrew" type="text" maxlength="28"></div>
+        <div class="x-btns">
+          <button class="btn small primary" id="gSvg" data-i18n="gSvg">Download SVG</button>
+          <button class="btn small" id="gPng" data-i18n="gPng">Download PNG</button>
+        </div>
+        <button class="btn small" id="gNew3" data-i18n="gNew">New scenario</button>
+      </section>
+    </aside>
+    <div class="map-wrap" id="gWrap">
+      <canvas id="gMap"></canvas>
+      <canvas id="gLander" tabindex="0"></canvas>
+      <div class="g-pad" id="gPadCtl" hidden>
+        <span class="lr"><button data-k="left" aria-label="◀">◀</button><button data-k="right" aria-label="▶">▶</button></span><button data-k="up" aria-label="▲">▲</button>
+      </div>
+      <div class="g-patch" id="gPatch"></div>
+      <div class="g-compass" id="gCompass" hidden>
+        <div class="g-c-east" data-i18n="gEast">towards East</div>
+        <svg viewBox="-10 -14 180 188" aria-hidden="true"><path d="M5.5 37 A86 86 0 0 1 154.5 37" fill="none" stroke="#7fd3ff" stroke-width="2.5"/><path d="M159.5 45.7 L159.7 34 L149.3 40Z" fill="#7fd3ff"/><g font-family="Orbitron,Inter,sans-serif" font-weight="900" font-size="15" fill="#fde047" text-anchor="middle" stroke="#0a0b0d" stroke-width="3" paint-order="stroke"><path d="M80.0 18.0L90.0 80.0L80 80Z" fill="#fde047"/><path d="M80.0 18.0L70.0 80.0L80 80Z" fill="#ca8a04"/><text x="80.0" y="11.0">N</text><path d="M106.9 53.1L84.9 84.9L80 80Z" fill="#fef3c7"/><path d="M106.9 53.1L75.1 75.1L80 80Z" fill="#d6c68e"/><path d="M142.0 80.0L80.0 90.0L80 80Z" fill="#fde047"/><path d="M142.0 80.0L80.0 70.0L80 80Z" fill="#ca8a04"/><text x="154.0" y="85.0">N</text><path d="M106.9 106.9L75.1 84.9L80 80Z" fill="#fef3c7"/><path d="M106.9 106.9L84.9 75.1L80 80Z" fill="#d6c68e"/><path d="M80.0 142.0L70.0 80.0L80 80Z" fill="#fde047"/><path d="M80.0 142.0L90.0 80.0L80 80Z" fill="#ca8a04"/><text x="80.0" y="159.0">N</text><path d="M53.1 106.9L75.1 75.1L80 80Z" fill="#fef3c7"/><path d="M53.1 106.9L84.9 84.9L80 80Z" fill="#d6c68e"/><path d="M18.0 80.0L80.0 70.0L80 80Z" fill="#fde047"/><path d="M18.0 80.0L80.0 90.0L80 80Z" fill="#ca8a04"/><text x="6.0" y="85.0">N</text><path d="M53.1 53.1L84.9 75.1L80 80Z" fill="#fef3c7"/><path d="M53.1 53.1L75.1 84.9L80 80Z" fill="#d6c68e"/></g><circle cx="80" cy="80" r="6" fill="#111" stroke="#fde047" stroke-width="2"/></svg>
+        <div class="g-c-pole" data-i18n="gPoleS">SOUTH POLE</div>
+        <h4>★ <span data-i18n="gCompassT">Where is North?</span></h4>
+        <p data-i18n="gCompassNote"></p>
+      </div>
+      <div class="map-busy" id="gBusy" data-i18n="computing">Computing…</div>
+    </div>
+  </div>
+
+
+</section>
+<script src="js/core/i18n-text.js"></script>
+<script src="js/core/core.js"></script>
+<script src="js/core/geo.js"></script>
+<script src="js/core/data.js"></script>
+<script src="js/core/moon-gl.js"></script>
+<script src="js/pages/edu-common.js"></script>
+<script src="js/pages/mission.js"></script>
+</body>
+</html>

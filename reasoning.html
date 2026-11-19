@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reasoning · L.A.N.D.</title>
+<!-- Open source: no sign-in, no tracking. The page only talks to its own origin (data/ and images/). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://upload.wikimedia.org; connect-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="images/land-mark.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Inter:wght@400;600&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/land.css">
+<link rel="stylesheet" href="css/edu.css">
+</head>
+<body data-page="reason" class="lroc">
+<div class="rotate-hint" id="rotateHint" role="dialog" aria-modal="true">
+  <div><span class="ph">📱</span><h3 data-i18n="rotTitle">Turn your phone</h3><p data-i18n="rotText"></p>
+    <div class="rb"><button class="go" id="rotGo" data-i18n="rotGo">Full screen, landscape</button><button class="skip" id="rotSkip" data-i18n="rotSkip">Continue anyway</button></div></div>
+</div>
+<a href="index.html" class="land-mark-link" aria-label="L.A.N.D. home"><img id="landMark" alt="L.A.N.D." src="images/land-mark.webp"></a>
+<!-- language -->
+<div class="lang">
+  <button class="lang-toggle" id="langToggle" aria-haspopup="true" aria-expanded="false" aria-label="Language">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3z"/></svg>
+    <span id="langCode">EN</span>
+  </button>
+  <ul class="lang-menu" id="langMenu" role="menu"></ul>
+</div>
+<section class="view active ws-view edu-view lroc-view" id="view-educational">
+  <header class="ws-top">
+    <div class="ws-title">
+      <a class="ws-back" href="index.html" data-i18n-title="back" title="Back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></a>
+      <h2 data-i18n="educational">Educational Edition</h2>
+    </div>
+    <div class="ws-center"><nav class="edu-tabs" id="eduTabs"><a href="history.html" data-tab="history" data-i18n="eduHistory">History</a><a href="reasoning.html" data-tab="reason" class="active" aria-current="page" data-i18n="eduReason">Reasoning</a><a href="mission.html" data-tab="game" data-i18n="eduGame">Mission</a><a href="deep-dive.html" data-tab="deep" data-i18n="eduDeep">Deep dive</a></nav></div>
+    <div class="ws-top-actions"></div>
+  </header>
+  <div class="ws-body" id="pane-reason">
+    <aside class="ws-side">
+      <section class="side-card">
+        <p class="step-tag" data-i18n="rStep1">1 · Mission</p>
+        <h3 data-i18n="rMissionTitle">Your assigned mission</h3>
+        <div id="rMission"></div>
+        <button class="btn small" id="rNew" data-i18n="rNewBtn">New game</button>
+      </section>
+      <section class="side-card">
+        <p class="step-tag" data-i18n="rStep2">2 · Maps</p>
+        <h3 data-i18n="rMapsTitle">Explore the maps</h3>
+        <p class="slider-desc" data-i18n="rMapsHelp"></p>
+        <div class="layer-tabs r-layers" id="rLayers"></div>
+        <div class="r-legend" id="rLegend"></div>
+      </section>
+      <section class="side-card">
+        <p class="step-tag" data-i18n="rStep3">3 · Experts</p>
+        <h3 data-i18n="rExpertsTitle">The mission council</h3>
+        <div id="rPersonas" class="personas"></div>
+        <button class="btn small" id="rAsk" data-i18n="rAskBtn">Ask the experts</button>
+      </section>
+      <section class="side-card">
+        <p class="step-tag" data-i18n="rStep4">4 · Your choice</p>
+        <p class="slider-desc" id="rPickTxt"></p>
+        <button class="btn small primary" id="rConfirm" disabled data-i18n="rConfirmBtn">Confirm the site</button>
+      </section>
+    </aside>
+    <div class="map-wrap" id="rWrap">
+      <canvas id="rMap"></canvas>
+      <div class="map-tip" id="rTip"></div>
+      <article class="r-explain" id="rExplain"></article>
+      <div class="map-busy" id="rBusy" data-i18n="computing">Computing…</div>
+    </div>
+  </div>
+
+
+</section>
+<script src="js/core/i18n-text.js"></script>
+<script src="js/core/core.js"></script>
+<script src="js/core/geo.js"></script>
+<script src="js/core/data.js"></script>
+<script src="js/core/moon-gl.js"></script>
+<script src="js/pages/edu-common.js"></script>
+<script src="js/pages/reasoning.js"></script>
+</body>
+</html>

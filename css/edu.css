@@ -1,0 +1,107 @@
+/* =====================================================================
+   Educational pages (history, reasoning, mission, deep-dive)
+   Same look as the Expert Area Selection: black, graphite panels, IBM Plex Sans / Mono, flat 4px corners.
+   No starry background (it was slow): plain black behind the maps.
+   ===================================================================== */
+.edu-view { font-family: "IBM Plex Sans", Inter, system-ui, sans-serif; }
+.edu-view .ws-top h2 { font: 300 1.45rem "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .08em; color: #e8ecf2; text-transform: none; }
+
+/* tabs = one page each, in the centre of the top bar (like the stage title of the workspace) */
+.edu-view .ws-center { pointer-events: auto; }
+.edu-tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: 4px; background: rgba(23,26,30,.92); border: 1px solid #0d0f12; }
+.edu-tabs a { padding: .42rem 1rem; border-radius: 2px; color: #aab3bf; text-decoration: none; white-space: nowrap;
+  font: 500 .86rem "IBM Plex Sans", Inter, sans-serif; letter-spacing: .02em; }
+.edu-tabs a:hover { color: #fff; background: #262b33; }
+.edu-tabs a.active { background: #2f3640; color: #fff; box-shadow: inset 0 -2px 0 #2cc26b; }
+
+/* panels */
+.edu-view .ws-body { grid-template-columns: 340px 1fr; gap: .75rem; }
+.edu-view .ws-side { gap: .6rem; padding-right: 0; }
+.edu-view .side-card { background: #1f232a; border: 1px solid #2a3039; border-radius: 4px; padding: .85rem .9rem; gap: .65rem; }
+.edu-view .side-card h3, .edu-view .step-tag, #pane-reason .side-card h3, #pane-game .side-card h3, #pane-history .side-card h3 {
+  font: 600 .7rem "IBM Plex Sans", Inter, sans-serif !important; letter-spacing: .08em; text-transform: uppercase; color: #9aa3af !important; }
+.edu-view .step-tag { color: #4ade80 !important; }
+#pane-history .side-card h3 { font-size: calc(.74rem * var(--hz)) !important; }
+.edu-view .slider-desc, #pane-reason .slider-desc, #pane-game .slider-desc { font-family: "IBM Plex Sans", Inter, sans-serif; color: #b6bec9; }
+.edu-view .map-wrap, #hWrap, #rWrap, #gWrap, #dWrap { background: #000 !important; border: 1px solid #1b1f26 !important; border-radius: 4px !important; }
+
+/* buttons: same as the workspace (as-btn) */
+.edu-view .btn { font-family: "IBM Plex Sans", Inter, sans-serif; font-weight: 500; letter-spacing: .01em; text-transform: none; border-radius: 3px;
+  background: #2f3640; border: 1px solid #3a424e; box-shadow: none; backdrop-filter: none; }
+.edu-view .btn:hover, .edu-view .btn:focus-visible { transform: none; background: #38404b; border-color: #4b5563; box-shadow: none; }
+.edu-view .btn.primary { background: #2cc26b; border-color: #2cc26b; color: #05140b; font-weight: 600; }
+.edu-view .btn.primary:hover:not(:disabled) { background: #35d579; }
+.edu-view .btn.small { padding: .55rem .95rem; font-size: .86rem; }
+
+/* segmented filters (history filter, map layers, reasoning layers) */
+.edu-view .layer-tabs { background: #11151a; border: 1px solid #2a3039; border-radius: 3px; padding: 2px; gap: 2px; }
+.edu-view .layer-tabs button { border-radius: 2px; color: #aab3bf; font-family: "IBM Plex Sans", Inter, sans-serif; font-weight: 500; }
+.edu-view .layer-tabs button:hover { background: #262b33; color: #fff; }
+.edu-view .layer-tabs button.active { background: #2f3640; color: #fff; box-shadow: inset 0 -2px 0 #2cc26b; }
+#hFont button { border-radius: 3px; border-color: #3a424e; font-family: "IBM Plex Sans", Inter, sans-serif; }
+#hFont button.active { background: #2f3640; border-color: #2cc26b; }
+
+/* lists: same cards as the site list (left colour bar, mono details) */
+.mission-list { gap: 4px; }
+.mission-list button { background: #262b33; border: 1px solid #2f3640; border-left: 3px solid #3d4550; border-radius: 2px; padding: .55rem .65rem; }
+.mission-list button:hover { background: #2c323b; border-color: #2f3640; border-left-color: #4ade80; }
+.mission-list button.sel { background: #22302a; border-color: #2c4a38; border-left-color: #2cc26b; }
+.mission-list .nm { font-family: "IBM Plex Sans", Inter, sans-serif !important; font-weight: 500 !important; }
+.mission-list .yr, .mission-list .pl { font-family: "IBM Plex Mono", ui-monospace, monospace !important; color: #98a2ae !important; }
+
+/* cards on the map (history detail, reasoning explanation) */
+.h-detail, .r-explain { background: rgba(31,35,42,.96) !important; border: 1px solid #2a3039 !important; border-radius: 4px !important; }
+.h-detail h4, .r-explain h4 { font-family: "IBM Plex Sans", Inter, sans-serif !important; font-weight: 300 !important; letter-spacing: 0 !important; color: #eef1f5; }
+.h-detail .meta { font-family: "IBM Plex Mono", ui-monospace, monospace !important; color: #98a2ae !important; }
+.h-detail h5, .r-explain h5 { font-family: "IBM Plex Sans", Inter, sans-serif !important; font-weight: 600 !important; letter-spacing: .08em !important;
+  color: #9aa3af !important; font-size: calc(.72rem * var(--hz, 1)) !important; }
+.h-detail p, .h-detail ul, .r-explain { font-family: "IBM Plex Sans", Inter, sans-serif; color: #dfe4ea; }
+.h-detail .tag { border-radius: 2px; font-family: "IBM Plex Mono", ui-monospace, monospace; }
+.h-alt { border-left-color: #fbbf24; background: #262b33; border-radius: 0 3px 3px 0; }
+.h-links a { border-radius: 3px; border-color: #3a424e; background: #262b33; color: #e8ecf2; font-family: "IBM Plex Sans", Inter, sans-serif; }
+.h-links a:hover { background: #38404b; }
+.r-explain .big-score, .g-result .big { font-family: "IBM Plex Mono", ui-monospace, monospace !important; font-weight: 500 !important; color: #4ade80; }
+.r-explain .lesson { background: #262b33; border-radius: 3px; }
+.r-mname { font-family: "IBM Plex Sans", Inter, sans-serif !important; font-weight: 500 !important; }
+
+/* reasoning: experts and legend */
+.persona { background: #262b33 !important; border: 1px solid #2f3640 !important; border-left: 3px solid var(--c) !important; border-radius: 2px !important; }
+.r-legend { background: #1a1e23; border-color: #2a3039; border-radius: 3px; }
+.r-sit { border-radius: 3px; }
+
+/* mission game */
+.g-steps li { border-radius: 2px; background: #262b33; font-family: "IBM Plex Sans", Inter, sans-serif; }
+.g-steps li.on { background: #2f3640; color: #fff; box-shadow: inset 0 -2px 0 #2cc26b; }
+.g-diff button { background: #262b33; border: 1px solid #2f3640; border-left: 3px solid #3d4550; border-radius: 2px; }
+.g-diff button:hover { background: #2c323b; border-color: #2f3640; }
+.g-diff button.active { background: #22302a; border-color: #2c4a38; border-left-color: #2cc26b; }
+.g-tele div { background: #262b33; border-radius: 2px; }
+.g-tele { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+.g-compass { background: rgba(23,26,30,.94); border-color: #2a3039; border-radius: 4px; }
+.edu-view .field input { border-radius: 3px; background: #262b33; border-color: #3a424e; font-family: "IBM Plex Sans", Inter, sans-serif; }
+
+/* deep dive */
+.edu-view select.opt-add { background: #262b33 !important; color: #e8ecf2 !important; border: 1px solid #3a424e !important; border-radius: 3px; font-weight: 500; }
+.d-layers button { border-radius: 2px !important; background: #262b33 !important; border: 1px solid #2f3640 !important; border-left: 3px solid #3d4550 !important; }
+.d-layers button.active { background: #22302a !important; border-color: #2c4a38 !important; border-left-color: #2cc26b !important; }
+.d-legend { background: rgba(23,26,30,.94) !important; border: 1px solid #0d0f12 !important; border-radius: 4px !important; }
+
+/* intro cards at the start of each game */
+.edu-intro { background: rgba(0,0,0,.6); backdrop-filter: none; }
+.edu-intro .card { background: #1f232a !important; border: 1px solid #2a3039 !important; border-radius: 6px !important; box-shadow: 0 20px 50px rgba(0,0,0,.6); }
+.edu-intro .kick { font-family: "IBM Plex Mono", ui-monospace, monospace !important; font-weight: 500 !important; color: #4ade80 !important; }
+.edu-intro h3 { font-family: "IBM Plex Sans", Inter, sans-serif !important; font-weight: 300 !important; }
+.edu-intro p, .edu-intro ol { font-family: "IBM Plex Sans", Inter, sans-serif; }
+.edu-intro .mis { border-radius: 3px; }
+.edu-intro button { border-radius: 3px !important; background: #2cc26b !important; color: #05140b !important; font: 600 1rem "IBM Plex Sans", Inter, sans-serif !important; letter-spacing: .02em !important; }
+.edu-intro button:hover { background: #35d579 !important; filter: none; }
+
+/* history globe: WebGL Moon under the canvas with markers */
+#hWrap { position: relative; }
+.sphere-gl { position: absolute; pointer-events: none; display: block; }
+canvas.sphere { position: relative; z-index: 1; }
+
+@media (max-width: 1100px) { .edu-tabs a { padding: .4rem .6rem; font-size: .78rem; } }
+body.phone .edu-view .ws-center { display: block; position: static; transform: none; }
+/* history globe covers the whole panel (see drawSphere) */
+#hWrap canvas.sphere, #hWrap .sphere-gl { position: absolute; inset: 0; width: 100% !important; height: 100% !important; left: 0 !important; top: 0 !important; }
